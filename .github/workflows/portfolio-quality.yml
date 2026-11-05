@@ -20,7 +20,9 @@ jobs:
           persist-credentials: false
       - name: Verify existing runner Node without dependency installation
         run: node --version
-      - name: Validate JavaScript syntax
-        run: node --check assets/main.js
+      - name: Validate JavaScript syntax (main and optional motion)
+        run: |
+          node --check assets/main.js
+          node --check assets/motion.js
       - name: Verify portfolio content, routes, design and behavior contracts
         run: node scripts/check-site.mjs

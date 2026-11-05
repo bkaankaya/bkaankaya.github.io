@@ -1,4 +1,5 @@
 name: One-time browser visual verification
+# Final contrast and mobile CTA review
 
 on:
   push:

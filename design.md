@@ -50,3 +50,5 @@ The static radial foundation remains in `app/globals.css`. A dedicated `app/ambi
 Visitors can pause/resume the ambient animation using the header's labeled button; preference is stored locally. The control uses `aria-pressed`, keyboard focus and visible state. The scene is `aria-hidden` and pointer-inert. Under 640px, Save-Data or Reduced Motion, decorative orb animations do not run. These controls reflect WCAG 2.2 SC 2.2.2 without claiming a complete accessibility audit.
 
 No new UI animation dependency, canvas, WebGL, external font or telemetry was introduced. Review with high zoom, slow CPU emulation and real-device testing before making performance claims. Sources: https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide and https://web.dev/articles/animations-guide .
+
+On viewports ≤640px and under reduced-motion or Save-Data, the decorative layers are stationary, so the pause button is hidden rather than exposing a nonfunctional control.

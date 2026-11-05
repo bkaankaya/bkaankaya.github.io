@@ -55,3 +55,9 @@ test("responsive devices retain an obvious mobile route to contact", () => {
   assert.match(ambient, /@media \(max-width: 430px\)/)
   assert.match(ambient, /\.header-contact \{ display: none; \}/)
 })
+
+test("motion button is absent where background animation is intentionally disabled", () => {
+  assert.match(ambient, /@media \(max-width: 640px\)[\s\S]*?\.motion-toggle \{ display: none; \}/)
+  assert.match(ambient, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.motion-toggle \{ display: none; \}/)
+  assert.match(ambient, /html\[data-save-data\] \.motion-toggle \{ display: none; \}/)
+})

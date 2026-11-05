@@ -127,7 +127,8 @@
   animation-play-state: paused;
 }
 @media (max-width: 640px) {
-  .motion-toggle { width: 42px; height: 42px; }
+  /* Small screens run a static composition, so no inert pause control. */
+  .motion-toggle { display: none; }
   .ambient-scene__orb--violet {
     width: 120vw;
     height: 70vw;
@@ -151,7 +152,7 @@
 /* Honor OS setting and the user's browser's optional data-saving preference. */
 @media (prefers-reduced-motion: reduce) {
   .ambient-scene__orb { animation: none !important; }
-  .motion-toggle { transition: none; }
-  .motion-toggle:hover { transform: none; }
+  .motion-toggle { display: none; }
 }
 html[data-save-data] .ambient-scene__orb { animation: none !important; }
+html[data-save-data] .motion-toggle { display: none; }

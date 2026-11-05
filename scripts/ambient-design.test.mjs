@@ -32,3 +32,26 @@ test("light theme subtle text on base background meets 4.5 to 1", () => {
   assert.ok((luminance("#f6f7fb") + .05) / (luminance("#626980") + .05) >= 4.5)
   assert.ok(css.includes("--site-subtle: #626980"))
 })
+
+const ambient = readFileSync("app/ambient.css", "utf8")
+const header = readFileSync("components/portfolio/site-header.tsx", "utf8")
+
+test("ambient scene uses only compositor-friendly transform and opacity animation", () => {
+  assert.match(ambient, /@keyframes aurora-violet-float/)
+  assert.match(ambient, /@keyframes aurora-blue-float/)
+  assert.doesNotMatch(ambient, /@keyframes[^}]+(?:filter:|background-position:|top:|left:)/)
+  assert.match(ambient, /@media \(prefers-reduced-motion: reduce\)/)
+  assert.match(ambient, /html\[data-save-data\] \.ambient-scene__orb/)
+})
+test("continuous ambience can be paused and resumed through a named button", () => {
+  assert.match(shell, /data-motion=\{motionPaused \? "paused" : "playing"\}/)
+  assert.match(shell, /MOTION_STORAGE_KEY/)
+  assert.match(header, /aria-label=\{motionPaused \? "Resume ambient background motion" : "Pause ambient background motion"\}/)
+  assert.match(header, /aria-pressed=\{motionPaused\}/)
+  assert.match(ambient, /\.portfolio-app\[data-motion="paused"\] \.ambient-scene__orb/)
+})
+test("responsive devices retain an obvious mobile route to contact", () => {
+  assert.match(header, /mobile-contact-link/)
+  assert.match(ambient, /@media \(max-width: 430px\)/)
+  assert.match(ambient, /\.header-contact \{ display: none; \}/)
+})

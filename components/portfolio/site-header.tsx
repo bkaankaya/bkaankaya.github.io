@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react"
-import { ArrowUpRight, Menu, Moon, Sun, X } from "lucide-react"
+import { ArrowUpRight, Menu, Moon, Pause, Play, Sun, X } from "lucide-react"
 import type { PortfolioTheme } from "@/components/portfolio/portfolio-shell"
 
 const navigation = [
@@ -22,9 +22,13 @@ function normalizePath(pathname: string | null): string {
 export function SiteHeader({
   theme,
   onToggleTheme,
+  motionPaused,
+  onToggleMotion,
 }: {
   theme: PortfolioTheme
   onToggleTheme: () => void
+  motionPaused: boolean
+  onToggleMotion: () => void
 }) {
   const pathname = usePathname()
   const activePath = normalizePath(pathname)
@@ -148,6 +152,16 @@ export function SiteHeader({
           >
             <ThemeIcon aria-hidden="true" />
           </button>
+          <button
+            className="motion-toggle"
+            type="button"
+            onClick={onToggleMotion}
+            aria-label={motionPaused ? "Resume ambient background motion" : "Pause ambient background motion"}
+            aria-pressed={motionPaused}
+            title={motionPaused ? "Resume background motion" : "Pause background motion"}
+          >
+            {motionPaused ? <Play aria-hidden="true" /> : <Pause aria-hidden="true" />}
+          </button>
           <Link className="button button-primary header-contact" href="/about#contact">
             Contact <ArrowUpRight aria-hidden="true" />
           </Link>
@@ -186,6 +200,14 @@ export function SiteHeader({
             </Link>
           )
         })}
+        <Link
+          className="navigation-link mobile-contact-link"
+          href="/about#contact"
+          onClick={() => setMenuOpen(false)}
+          tabIndex={menuOpen ? 0 : -1}
+        >
+          Contact
+        </Link>
       </nav>
     </header>
   )

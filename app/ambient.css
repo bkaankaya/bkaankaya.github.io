@@ -1,0 +1,157 @@
+/* Ambient scene: deliberately separate from component and layout styles.
+   Built from soft gradients, not a video, canvas, JS frame loop or blur filter.
+   Only transform / opacity are animated. Buttons remain fully interactive. */
+.portfolio-app > .ambient-scene {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  contain: paint;
+}
+.portfolio-app > .portfolio-main,
+.portfolio-app > .portfolio-footer {
+  position: relative;
+  z-index: 1;
+}
+.portfolio-app > .site-header { z-index: 50; }
+
+.ambient-scene__orb {
+  position: absolute;
+  display: block;
+  border-radius: 50%;
+  pointer-events: none;
+  transform: translate3d(0, 0, 0);
+  transform-origin: center;
+}
+.ambient-scene__orb--violet {
+  top: -7rem;
+  right: -18rem;
+  width: min(79rem, 125vw);
+  height: min(56rem, 90vw);
+  background: radial-gradient(ellipse at 50% 48%,
+    rgba(132, 87, 255, 0.39) 0%,
+    rgba(106, 77, 239, 0.21) 31%,
+    rgba(68, 81, 208, 0.095) 52%,
+    transparent 76%);
+  opacity: .85;
+  animation: aurora-violet-float 22s ease-in-out infinite alternate;
+}
+.ambient-scene__orb--blue {
+  top: 43rem;
+  left: -25rem;
+  width: min(86rem, 118vw);
+  height: min(65rem, 95vw);
+  background: radial-gradient(ellipse at 51% 51%,
+    rgba(49, 116, 226, 0.27) 0%,
+    rgba(42, 95, 210, 0.15) 38%,
+    rgba(31, 149, 168, 0.055) 57%,
+    transparent 78%);
+  opacity: .72;
+  animation: aurora-blue-float 28s ease-in-out -5s infinite alternate;
+}
+.ambient-scene__grid {
+  position: absolute;
+  inset: 0 0 auto;
+  height: min(78rem, 72%);
+  background-image:
+    linear-gradient(to right, rgba(185, 162, 255, .12) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(185, 162, 255, .12) 1px, transparent 1px);
+  background-size: 86px 86px;
+  opacity: .22;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 48%, transparent 95%);
+  mask-image: linear-gradient(to bottom, transparent, #000 18%, #000 48%, transparent 95%);
+}
+@keyframes aurora-violet-float {
+  0% { transform: translate3d(-3%, -2%, 0) scale(.95); opacity: .59; }
+  50% { opacity: .89; }
+  100% { transform: translate3d(7%, 4%, 0) scale(1.06); opacity: .74; }
+}
+@keyframes aurora-blue-float {
+  0% { transform: translate3d(6%, 3%, 0) scale(1.05); opacity: .7; }
+  100% { transform: translate3d(-4%, -5%, 0) scale(.95); opacity: .98; }
+}
+
+/* A distinct art direction for light mode, not simply inverted colors. */
+.portfolio-app[data-theme="light"] .ambient-scene__orb--violet {
+  background: radial-gradient(ellipse at 50% 48%,
+    rgba(152, 127, 235, .23), rgba(142, 125, 225, .14) 38%, transparent 76%);
+}
+.portfolio-app[data-theme="light"] .ambient-scene__orb--blue {
+  background: radial-gradient(ellipse at 51% 51%,
+    rgba(111, 164, 238, .20), rgba(119, 167, 222, .105) 39%, transparent 78%);
+}
+.portfolio-app[data-theme="light"] .ambient-scene__grid {
+  background-image:
+    linear-gradient(to right, rgba(75, 88, 158, .10) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(75, 88, 158, .10) 1px, transparent 1px);
+  opacity: .19;
+}
+/* The underlying CSS background stays static and route-aware. */
+@supports selector(.portfolio-app:has(.experience-section)) {
+  .portfolio-app:has(.project-archive) .ambient-scene__orb--blue { top: 31rem; left: -19rem; }
+  .portfolio-app:has(.experience-section) .ambient-scene__orb--violet { right: -33rem; top: 12rem; }
+  .portfolio-app:has(.education-layout) .ambient-scene__orb--blue { top: 19rem; left: -26rem; }
+  .portfolio-app:has(.about-main) .ambient-scene__orb--violet { right: -23rem; top: 4rem; }
+}
+
+/* Optional visitor control (WCAG 2.2.2): pause and resume in-place. */
+.motion-toggle {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--site-border);
+  border-radius: 11px;
+  background: var(--site-panel);
+  color: var(--site-text);
+  cursor: pointer;
+  transition: border-color 180ms ease, background-color 180ms ease, transform 180ms ease;
+}
+.motion-toggle svg { width: 18px; height: 18px; }
+.motion-toggle:hover {
+  border-color: var(--site-border-strong);
+  background: var(--site-panel-strong);
+  transform: translateY(-2px);
+}
+.motion-toggle[aria-pressed="true"] {
+  border-color: var(--site-accent);
+  background: var(--site-panel-strong);
+}
+.portfolio-app[data-motion="paused"] .ambient-scene__orb {
+  animation-play-state: paused;
+}
+.portfolio-app[data-motion="paused"] .hero-section::before {
+  animation-play-state: paused;
+}
+@media (max-width: 640px) {
+  .motion-toggle { width: 42px; height: 42px; }
+  .ambient-scene__orb--violet {
+    width: 120vw;
+    height: 70vw;
+    top: 2rem;
+    right: -37vw;
+    opacity: .63;
+  }
+  .ambient-scene__orb--blue {
+    width: 125vw;
+    height: 100vw;
+    left: -50vw;
+    top: 36rem;
+    opacity: .52;
+  }
+  .ambient-scene__orb { animation: none; }
+  .ambient-scene__grid { opacity: .1; background-size: 66px 66px; }
+}
+@media (max-width: 430px) {
+  .header-contact { display: none; }
+}
+/* Honor OS setting and the user's browser's optional data-saving preference. */
+@media (prefers-reduced-motion: reduce) {
+  .ambient-scene__orb { animation: none !important; }
+  .motion-toggle { transition: none; }
+  .motion-toggle:hover { transform: none; }
+}
+html[data-save-data] .ambient-scene__orb { animation: none !important; }

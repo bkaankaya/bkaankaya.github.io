@@ -1,3 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://bkaankaya.github.io/sitemap.xml

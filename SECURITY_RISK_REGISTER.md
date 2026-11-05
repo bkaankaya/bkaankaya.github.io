@@ -31,3 +31,13 @@ Not claimed: that the site is "not vulnerable". Claimed: no exploit prerequisite
 | R-2 | No CSP / HTTP response headers (GitHub Pages cannot set them) | Open – hosting limit, see `docs/SECURITY_ARCHITECTURE.md` |
 | R-3 | Dependabot alerts / CodeQL / secret scanning / push protection / Enforce HTTPS not verifiable from code | Owner UI steps listed in `SECURITY_REVIEW_2026-11-05.md` |
 | R-4 | Local runtime differs from CI (Node 24 / pnpm 9.12.2 vs Node 22 / pnpm 10.11.0) | Verify on first CI run |
+
+## Exposure classes (do not conflate)
+
+- **Static runtime (published site):** only HTML/JS/CSS/assets from out/ are served. Server-side advisories have no demonstrated prerequisite here ("not established as reachable"), which is not a guarantee.
+- **Build time / developer machines / CI:** vulnerable packages are installed and executed (Next.js build, PostCSS, Tailwind). Lack of runtime reachability does not mean they are patched.
+- **Future hosting migration:** moving to a Node/server host, or enabling image optimization, Server Actions, middleware, `use cache` or next/og, could make many server advisories directly exploitable; re-audit and upgrade first.
+
+## Quality gate gap
+
+`package.json` declares `"lint": "eslint ."` but ESLint is not a declared dependency, so `pnpm run lint` does not work. This is an incomplete gate; adding ESLint requires owner approval.

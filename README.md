@@ -53,5 +53,24 @@ Static output is generated in `out/` (`output: 'export'`, `trailingSlash: true`,
 
 ## Security
 
-Static GitHub Pages site: no backend, auth or user data. Run \
-ode --test scripts/*.test.mjs\ (after \pnpm run build\ with \REQUIRE_OUT=1\ to also audit \out/\) and \pnpm audit --audit-level high\ (currently red: see [SECURITY_RISK_REGISTER.md](SECURITY_RISK_REGISTER.md)). Review: [SECURITY_REVIEW_2026-11-05.md](SECURITY_REVIEW_2026-11-05.md); trust boundary and CSP/header limits: [docs/SECURITY_ARCHITECTURE.md](docs/SECURITY_ARCHITECTURE.md). Actions are pinned to commit SHAs; do not upgrade dependencies without owner approval.
+Static GitHub Pages site: no backend, authentication or user data. The deployed artifact is plain static files, but build-time tooling (Next.js, PostCSS, ...) still resolves vulnerable package versions, so audit results are kept truthful (red) until the owner approves upgrades. See [SECURITY_RISK_REGISTER.md](SECURITY_RISK_REGISTER.md), [SECURITY_REVIEW_2026-11-05.md](SECURITY_REVIEW_2026-11-05.md) and [docs/SECURITY_ARCHITECTURE.md](docs/SECURITY_ARCHITECTURE.md) (trust boundary, CSP/header limits).
+
+CI toolchain: Node 22, pnpm 10.11.0. Security checks (POSIX shell):
+
+```bash
+pnpm install --frozen-lockfile
+node scripts/verify-portfolio-contacts.mjs
+pnpm exec tsc --noEmit
+node --test scripts/*.test.mjs
+pnpm run build
+REQUIRE_OUT=1 node --test scripts/security-static.test.mjs
+pnpm audit --audit-level high   # currently exits non-zero (known advisories)
+```
+
+PowerShell variant of the artifact audit:
+
+```powershell
+$env:REQUIRE_OUT = "1"; node --test scripts/security-static.test.mjs; Remove-Item Env:REQUIRE_OUT
+```
+
+Note: `pnpm run lint` (`eslint .`) is **not a working quality gate** because ESLint is not a declared dependency; adding it requires owner approval. Actions are pinned to commit SHAs; do not upgrade dependencies without owner approval.

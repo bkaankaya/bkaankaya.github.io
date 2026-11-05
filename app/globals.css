@@ -151,6 +151,16 @@ html[data-theme="light"] {
   --site-panel-strong: rgba(255, 255, 255, 0.075);
   --site-accent: #a77aff;
   --site-shadow: 0 22px 58px rgba(0, 0, 0, 0.26);
+  /* Ambient palette: static gradients, no extra full-screen layer. */
+  --ambient-violet: rgba(116, 86, 237, 0.16);
+  --ambient-blue: rgba(69, 105, 207, 0.10);
+  --ambient-cyan: rgba(56, 132, 155, 0.065);
+  --ambient-one-x: 90%;
+  --ambient-one-y: 8%;
+  --ambient-two-x: 8%;
+  --ambient-two-y: 54%;
+  --ambient-three-x: 92%;
+  --ambient-three-y: 91%;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   --duration-fast: 160ms;
@@ -162,8 +172,9 @@ html[data-theme="light"] {
   overflow-x: clip;
   color: var(--site-text);
   background:
-    radial-gradient(ellipse 48rem 30rem at 92% 7%, rgba(42, 66, 166, 0.2), transparent 72%),
-    radial-gradient(ellipse 36rem 25rem at 88% 16%, rgba(111, 64, 242, 0.16), transparent 74%),
+    radial-gradient(ellipse 47rem 32rem at var(--ambient-one-x) var(--ambient-one-y), var(--ambient-violet), transparent 76%),
+    radial-gradient(ellipse 43rem 32rem at var(--ambient-two-x) var(--ambient-two-y), var(--ambient-blue), transparent 78%),
+    radial-gradient(ellipse 46rem 33rem at var(--ambient-three-x) var(--ambient-three-y), var(--ambient-cyan), transparent 78%),
     linear-gradient(145deg, #080a16 0%, #0b1022 54%, #080b17 100%);
   transition: color 280ms ease, background-color 280ms ease;
 }
@@ -174,17 +185,44 @@ html[data-theme="light"] {
   --site-bg-soft: #eef0f8;
   --site-text: #17192b;
   --site-muted: #51576d;
-  --site-subtle: #737a91;
+  --site-subtle: #626980;
   --site-border: rgba(47, 51, 88, 0.15);
   --site-border-strong: rgba(47, 51, 88, 0.25);
   --site-panel: rgba(255, 255, 255, 0.66);
   --site-panel-strong: rgba(255, 255, 255, 0.86);
   --site-accent: #7148d8;
   --site-shadow: 0 18px 48px rgba(29, 31, 60, 0.1);
+  --ambient-violet: rgba(155, 126, 222, 0.13);
+  --ambient-blue: rgba(110, 151, 225, 0.095);
+  --ambient-cyan: rgba(116, 178, 195, 0.065);
   background:
-    radial-gradient(ellipse 48rem 30rem at 92% 7%, rgba(93, 113, 232, 0.12), transparent 72%),
-    radial-gradient(ellipse 38rem 26rem at 88% 16%, rgba(158, 112, 255, 0.11), transparent 74%),
+    radial-gradient(ellipse 47rem 32rem at var(--ambient-one-x) var(--ambient-one-y), var(--ambient-violet), transparent 76%),
+    radial-gradient(ellipse 43rem 32rem at var(--ambient-two-x) var(--ambient-two-y), var(--ambient-blue), transparent 78%),
+    radial-gradient(ellipse 46rem 33rem at var(--ambient-three-x) var(--ambient-three-y), var(--ambient-cyan), transparent 78%),
     linear-gradient(145deg, #f9f9fc 0%, #f1f2f8 60%, #f8f8fb 100%);
+}
+
+
+/* Route-aware static accents. :has() is progressive; base ambience is the fallback. */
+@supports selector(.portfolio-app:has(.interior-main)) {
+  .portfolio-app:has(.project-archive) {
+    --ambient-one-x: 85%; --ambient-one-y: 14%;
+    --ambient-two-x: 11%; --ambient-two-y: 64%;
+  }
+  .portfolio-app:has(.experience-section) {
+    --ambient-one-x: 13%; --ambient-one-y: 14%;
+    --ambient-two-x: 89%; --ambient-two-y: 58%;
+    --ambient-three-x: 18%; --ambient-three-y: 91%;
+  }
+  .portfolio-app:has(.education-layout) {
+    --ambient-one-x: 88%; --ambient-one-y: 18%;
+    --ambient-two-x: 10%; --ambient-two-y: 49%;
+    --ambient-three-x: 82%; --ambient-three-y: 87%;
+  }
+  .portfolio-app:has(.about-main) {
+    --ambient-one-x: 80%; --ambient-one-y: 11%;
+    --ambient-two-x: 6%; --ambient-two-y: 57%;
+  }
 }
 
 .portfolio-app,
@@ -454,7 +492,7 @@ html[data-theme="light"] {
   content: "";
   pointer-events: none;
   transform: rotate(-15deg);
-  animation: wave-drift 13s ease-in-out infinite alternate;
+  animation: ambient-arc-settle 3500ms var(--ease-out) 1 both;
 }
 
 .hero-grid {
@@ -2143,12 +2181,14 @@ html[data-theme="light"] {
   }
 }
 
-@keyframes wave-drift {
+@keyframes ambient-arc-settle {
   from {
-    transform: translate3d(0, 0, 0) rotate(-15deg);
+    opacity: 0.55;
+    transform: translate3d(0, 14px, 0) rotate(-16deg);
   }
   to {
-    transform: translate3d(0, 10px, 0) rotate(-14deg);
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotate(-15deg);
   }
 }
 
@@ -2783,6 +2823,24 @@ html[data-theme="light"] {
 
   .contact-grid {
     grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Network Information API is optional; where available, reduce decorative motion. */
+html[data-save-data] .hero-section::before {
+  animation: none;
+}
+
+@media (max-width: 600px) {
+  .portfolio-app {
+    --ambient-violet: rgba(116, 86, 237, 0.11);
+    --ambient-blue: rgba(69, 105, 207, 0.075);
+    --ambient-cyan: rgba(56, 132, 155, 0.045);
+  }
+  .portfolio-app[data-theme="light"] {
+    --ambient-violet: rgba(155, 126, 222, 0.095);
+    --ambient-blue: rgba(110, 151, 225, 0.07);
+    --ambient-cyan: rgba(116, 178, 195, 0.04);
   }
 }
 

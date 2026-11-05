@@ -7,6 +7,7 @@ const read = file => readFileSync(join(root, file), 'utf8');
 const page = read('index.html');
 const css = read('assets/styles.css');
 const js = read('assets/main.js');
+const cinematic = read('assets/cinematic.css');
 const projectNames = readdirSync(join(root, 'projects'), { withFileTypes: true })
   .filter(entry => entry.isDirectory()).map(entry => entry.name).sort();
 
@@ -52,6 +53,16 @@ for (const marker of [
   'history.pushState', 'popstate', 'aria-pressed', 'localStorage',
 ]) assert.ok(js.includes(marker), 'Missing behavior contract: ' + marker);
 
+assert.match(page, /class="shell hero cinematic-hero"/, 'Home hero must have photographic composition class');
+assert.match(page, /href="\/assets\/cinematic.css"/, 'Cinematic layer must load on the homepage');
+for (const marker of [
+  '.cinematic-hero', 'prefers-reduced-motion:reduce', 'portfolio-scroll-meter',
+  '.portrait-photo', '.pipeline', 'max-width:600px'
+]) assert.ok(cinematic.includes(marker), 'Missing cinematic motion contract: ' + marker);
+assert.ok(!/transition:\s*all\b/i.test(cinematic), 'Motion layer must not animate all properties');
+for (const marker of ['IntersectionObserver', '.animate(', 'visibilitychange', 'prefers-reduced-motion', 'requestAnimationFrame']) {
+  assert.ok(js.includes(marker), 'Missing progressive enhancement: ' + marker);
+}
 assert.ok(!/<script[^>]+src="https?:\/\//i.test(page), 'No external script/CDN is needed');
 assert.ok(!/transition:\s*all\b/i.test(css), 'Do not animate every CSS property');
 

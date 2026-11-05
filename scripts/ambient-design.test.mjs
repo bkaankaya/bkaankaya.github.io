@@ -53,11 +53,17 @@ test("continuous ambience can be paused and resumed through a named button", () 
 test("responsive devices retain an obvious mobile route to contact", () => {
   assert.match(header, /mobile-contact-link/)
   assert.match(ambient, /@media \(max-width: 430px\)/)
-  assert.match(ambient, /\.header-contact \{ display: none; \}/)
+  assert.match(ambient, /\.portfolio-app \.header-contact \{ display: none; \}/)
 })
 
 test("motion button is absent where background animation is intentionally disabled", () => {
   assert.match(ambient, /@media \(max-width: 640px\)[\s\S]*?\.motion-toggle \{ display: none; \}/)
   assert.match(ambient, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.motion-toggle \{ display: none; \}/)
   assert.match(ambient, /html\[data-save-data\] \.motion-toggle \{ display: none; \}/)
+})
+
+test("light actions retain visible contrast independently of the base button rule", () => {
+  assert.match(ambient, /\.portfolio-app\[data-theme="light"\] \.button-primary/)
+  assert.match(ambient, /background: #252541/)
+  assert.match(ambient, /color: #ffffff !important/)
 })

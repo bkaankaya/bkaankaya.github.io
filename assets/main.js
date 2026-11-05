@@ -113,3 +113,64 @@
     render(currentFilter());
   }
 })();
+
+
+/* Motion enhancements modeled on Vague/DoraVoice; readable content by default. */
+(() => {
+  'use strict';
+  const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+  const canAnimate = () => !reduced?.matches && !navigator.connection?.saveData && !document.hidden;
+  if (!('animate' in Element.prototype) || !('IntersectionObserver' in window) || !canAnimate()) return;
+  const easing = 'cubic-bezier(.16,1,.3,1)';
+  const active = new Set();
+  const run = (element, delay = 0, distance = 20, duration = 650) => {
+    if (!canAnimate() || !element.isConnected) return;
+    const animation = element.animate([
+      { opacity: .65, transform: 'translate3d(0, ' + distance + 'px, 0)' },
+      { opacity: 1, transform: 'translate3d(0, 0, 0)' }
+    ], { duration, delay, easing, fill: 'none' });
+    active.add(animation);
+    animation.addEventListener('finish', () => active.delete(animation), { once: true });
+    animation.addEventListener('cancel', () => active.delete(animation), { once: true });
+  };
+  const stop = () => {
+    for (const animation of active) animation.cancel();
+    active.clear();
+  };
+  const observer = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+      observer.unobserve(entry.target);
+      const order = Number(entry.target.dataset.motionOrder || '0');
+      run(entry.target, Math.min(order * 65, 195), 21, 660);
+    }
+  }, { rootMargin: '0px 0px -8% 0px', threshold: .09 });
+  reduced?.addEventListener?.('change', event => {
+    if (event.matches) { observer.disconnect(); stop(); }
+  });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); });
+
+  const hero = document.querySelector('.cinematic-hero');
+  if (hero) requestAnimationFrame(() => {
+    hero.querySelectorAll('.hero-status, h1, .hero-copy > p, .buttons, .facts')
+      .forEach((element, index) => run(element, Math.min(index * 85, 340), 13, 720));
+  });
+
+  document.querySelectorAll(
+    '.section-head, .featured-grid .card, .project-grid .card, .timeline-row, ' +
+    '.skill-row, .contact-box, .case-hero, .case-article section'
+  ).forEach((element, index) => {
+    element.dataset.motionOrder = String(index % 4);
+    observer.observe(element);
+  });
+
+  // Filtered cards communicate the updated results without animating layout.
+  const filterBar = document.querySelector('.filters');
+  filterBar?.addEventListener('click', event => {
+    if (!(event.target instanceof Element) || !event.target.closest('button[data-filter]')) return;
+    requestAnimationFrame(() => {
+      document.querySelectorAll('.project-grid .card:not(.hide)')
+        .forEach((element, index) => run(element, Math.min(index * 28, 140), 12, 380));
+    });
+  });
+})();

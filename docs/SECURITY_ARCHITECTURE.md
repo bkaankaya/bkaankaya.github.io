@@ -2,7 +2,7 @@
 
 ## Trust boundary
 - Build: GitHub Actions → `pnpm run build` → `out/` (+ `postbuild` flatten) → Pages artifact → `actions/deploy-pages`.
-- Runtime: static files only. No server, API, auth, database, cookies (only `localStorage` theme preference), forms or uploads. CSRF/SQLi/JWT/etc. are not applicable.
+- Runtime: static files only. No server, API, auth, database, cookies (localStorage is used only for theme and nonessential animation preferences), forms or uploads. CSRF/SQLi/JWT/etc. are not applicable.
 - Public repo: everything in the repo and `out/` is public.
 
 ## Controls in the repo

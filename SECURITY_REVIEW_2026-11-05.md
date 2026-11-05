@@ -32,3 +32,9 @@ Status: **hardening completed with residual risk** (see SECURITY_RISK_REGISTER.m
 - Settings → Code security: enable Dependabot alerts + security updates, Secret scanning, Push protection; set up CodeQL (JavaScript/TypeScript, default setup).
 - Settings → Pages: confirm **Enforce HTTPS**.
 - Approve: Next.js upgrade (and postcss) per the register; adding eslint; header-level CSP via CDN.
+
+---
+
+## Final owner-approved remediation (later on 5 November 2026)
+
+The earlier findings above are **historical** and should not be interpreted as the current dependency state. The owner authorized Next 16.4.5 and PostCSS 8.5.32 updates and a minimal transitive resolution to source-map-js 1.2.2 and baseline-browser-mapping 2.11.0. See [updated risk register](SECURITY_RISK_REGISTER.md) for the current status. The [targeted upgrade validation run](https://github.com/bkaankaya/bkaankaya.github.io/actions/runs/42065828859) completed with “No known vulnerabilities found”. Normal CI remains fail-closed if a new audit advisory appears.

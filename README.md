@@ -44,7 +44,7 @@ All active routes live under `app/(portfolio)/` and share the persistent shell i
 ```bash
 pnpm install --frozen-lockfile
 node scripts/verify-portfolio-contacts.mjs
-pnpm exec tsc --noEmit
+pnpm run check
 pnpm run build
 ```
 
@@ -53,7 +53,7 @@ Static output is generated in `out/` (`output: 'export'`, `trailingSlash: true`,
 
 ## Security
 
-Static GitHub Pages site: no backend, authentication or user data. The deployed artifact is plain static files, but build-time tooling (Next.js, PostCSS, ...) still resolves vulnerable package versions, so audit results are kept truthful (red) until the owner approves upgrades. See [SECURITY_RISK_REGISTER.md](SECURITY_RISK_REGISTER.md), [SECURITY_REVIEW_2026-11-05.md](SECURITY_REVIEW_2026-11-05.md) and [docs/SECURITY_ARCHITECTURE.md](docs/SECURITY_ARCHITECTURE.md) (trust boundary, CSP/header limits).
+Static GitHub Pages site: no backend, authentication or user data. The deployed artifact is plain static files. The owner's approved targeted upgrades to Next.js 16.4.5 / PostCSS 8.5.32 plus narrow transitive pnpm overrides have been completed. The 2026-11-05 final lockfile scan found no known advisories; ongoing pnpm audit is still enforced and may flag new issues in the future. See [SECURITY_RISK_REGISTER.md](SECURITY_RISK_REGISTER.md), [SECURITY_REVIEW_2026-11-05.md](SECURITY_REVIEW_2026-11-05.md) and [docs/SECURITY_ARCHITECTURE.md](docs/SECURITY_ARCHITECTURE.md) (trust boundary, CSP/header limits).
 
 CI toolchain: Node 22, pnpm 10.11.0. Security checks (POSIX shell):
 
@@ -64,7 +64,7 @@ pnpm exec tsc --noEmit
 node --test scripts/*.test.mjs
 pnpm run build
 REQUIRE_OUT=1 node --test scripts/security-static.test.mjs
-pnpm audit --audit-level high   # currently exits non-zero (known advisories)
+pnpm audit --audit-level high   # enforced; must exit successfully
 ```
 
 PowerShell variant of the artifact audit:
@@ -73,4 +73,12 @@ PowerShell variant of the artifact audit:
 $env:REQUIRE_OUT = "1"; node --test scripts/security-static.test.mjs; Remove-Item Env:REQUIRE_OUT
 ```
 
-Note: `pnpm run lint` (`eslint .`) is **not a working quality gate** because ESLint is not a declared dependency; adding it requires owner approval. Actions are pinned to commit SHAs; do not upgrade dependencies without owner approval.
+Code quality: use `pnpm run check` for TypeScript diagnostics and zero-dependency regression tests. This is deliberately **not** a replacement for ESLint's style/hook rule coverage; ESLint remains uninstalled to keep the build dependency graph small. Actions are pinned to commit SHAs; review future dependency upgrades explicitly.
+
+## Ambient Aurora and motion controls
+
+- `app/ambient.css` contains the dedicated animated visual layers; `app/globals.css` retains static theme backgrounds and the once-only hero arc.
+- Two compositor-oriented gradient shapes float at different slow speeds on desktop. Small screens and browsers using Save-Data or Reduced Motion keep the composition static.
+- The header's Pause/Play control persistently stops/resumes nonessential background motion (stored as `bk-ambient-paused`), with keyboard labels and `aria-pressed`.
+- Technical grid decoration is pointer-inert. No new animation framework or runtime dependency was added.
+

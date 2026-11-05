@@ -40,3 +40,13 @@ All animations and transitions are restricted to compositor-friendly properties 
 - Preserve all content, verified contact links, the project interactions and GitHub Pages static output; do not add Motion/GSAP/WebGL merely for ambience.
 - QA should verify the final motion at 4+ seconds, 320/390/768/1440/1920px, both color themes, route-specific gradients, reduced motion, and 200% text zoom.
 - References: https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide | https://web.dev/articles/animations-guide | https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion
+
+---
+
+## Revised premium ambient motion system — 2026-11-05
+
+The static radial foundation remains in `app/globals.css`. A dedicated `app/ambient.css` now adds **two** finite-area, semi-transparent gradient orbs and an unobtrusive fixed-pattern grid. Only `transform` and `opacity` animate at slow, asynchronous durations (22 / 28 seconds). The once-only 3500ms hero arc remains separate. Color composition is distinct in light and dark themes. Route-specific backgrounds are CSS-only.
+
+Visitors can pause/resume the ambient animation using the header's labeled button; preference is stored locally. The control uses `aria-pressed`, keyboard focus and visible state. The scene is `aria-hidden` and pointer-inert. Under 640px, Save-Data or Reduced Motion, decorative orb animations do not run. These controls reflect WCAG 2.2 SC 2.2.2 without claiming a complete accessibility audit.
+
+No new UI animation dependency, canvas, WebGL, external font or telemetry was introduced. Review with high zoom, slow CPU emulation and real-device testing before making performance claims. Sources: https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide and https://web.dev/articles/animations-guide .

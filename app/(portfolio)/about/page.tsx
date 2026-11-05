@@ -78,7 +78,7 @@ export default function AboutPage() {
             </a>
           </Reveal>
           <Reveal delay={50}>
-            <a className="contact-card" href={portfolioContact.githubUrl} target="_blank" rel="noreferrer">
+            <a className="contact-card" href={portfolioContact.githubUrl} target="_blank" rel="noopener noreferrer">
               <BrandIcon className="contact-brand-icon" brand="github" size={23} />
               <ArrowUpRight className="contact-card-arrow" aria-hidden="true" />
               <strong>GitHub</strong>
@@ -86,7 +86,7 @@ export default function AboutPage() {
             </a>
           </Reveal>
           <Reveal delay={100}>
-            <a className="contact-card" href={portfolioContact.linkedinUrl} target="_blank" rel="noreferrer">
+            <a className="contact-card" href={portfolioContact.linkedinUrl} target="_blank" rel="noopener noreferrer">
               <BrandIcon className="contact-brand-icon" brand="linkedin" size={23} />
               <ArrowUpRight className="contact-card-arrow" aria-hidden="true" />
               <strong>LinkedIn</strong>

@@ -39,10 +39,10 @@ export function HomePage() {
               style={{ "--hero-step": 3 } as CSSProperties}
               aria-label="Social links"
             >
-              <a href={portfolioContact.githubUrl} target="_blank" rel="noreferrer" aria-label="GitHub profile" title="GitHub">
+              <a href={portfolioContact.githubUrl} target="_blank" rel="noopener noreferrer" aria-label="GitHub profile" title="GitHub">
                 <BrandIcon brand="github" size={20} />
               </a>
-              <a href={portfolioContact.linkedinUrl} target="_blank" rel="noreferrer" aria-label="LinkedIn profile" title="LinkedIn">
+              <a href={portfolioContact.linkedinUrl} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile" title="LinkedIn">
                 <BrandIcon brand="linkedin" size={20} />
               </a>
               <a href={portfolioContact.mailto} aria-label="Email B. Kaan Kaya" title="Email">

@@ -16,3 +16,30 @@ node_modules
 out/
 *.tsbuildinfo
 .DS_Store
+
+# Secrets and credentials (never commit)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.p8
+*.keystore
+id_rsa*
+id_ed25519*
+credentials*.json
+secrets*.json
+*.secret
+*.secrets
+
+# Local scanner / debug output
+*.sarif
+gitleaks-report*
+trufflehog-*
+secret-scan-*
+audit-report*.json
+npm-debug.log*
+pnpm-debug.log*
+*.log

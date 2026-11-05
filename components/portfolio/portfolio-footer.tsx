@@ -19,10 +19,10 @@ export function PortfolioFooter() {
         </div>
         <div className="footer-links footer-socials">
           <p className="footer-label">FIND ME ONLINE</p>
-          <a href={portfolioContact.githubUrl} target="_blank" rel="noreferrer">
+          <a href={portfolioContact.githubUrl} target="_blank" rel="noopener noreferrer">
             <BrandIcon brand="github" size={15} /> GitHub <ArrowUpRight aria-hidden="true" />
           </a>
-          <a href={portfolioContact.linkedinUrl} target="_blank" rel="noreferrer">
+          <a href={portfolioContact.linkedinUrl} target="_blank" rel="noopener noreferrer">
             <BrandIcon brand="linkedin" size={15} /> LinkedIn <ArrowUpRight aria-hidden="true" />
           </a>
           <a href={portfolioContact.mailto}>

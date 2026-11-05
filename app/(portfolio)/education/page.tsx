@@ -22,7 +22,7 @@ export default function EducationPage() {
                 <div className="education-card-heading">
                   <span className="education-icon"><Icon aria-hidden="true" /></span>
                   <div><h2>{school}</h2><h3>{program}</h3></div>
-                  <a className="education-link" href={school === "University of Rome Tor Vergata" ? "https://web.uniroma2.it/en/" : "https://www.polito.it/en"} target="_blank" rel="noreferrer" aria-label={`Learn more about ${school}`}><ArrowUpRight aria-hidden="true" /></a>
+                  <a className="education-link" href={school === "University of Rome Tor Vergata" ? "https://web.uniroma2.it/en/" : "https://www.polito.it/en"} target="_blank" rel="noopener noreferrer" aria-label={`Learn more about ${school}`}><ArrowUpRight aria-hidden="true" /></a>
                 </div>
                 <p className="education-description">{description}</p>
                 <div className="education-meta">

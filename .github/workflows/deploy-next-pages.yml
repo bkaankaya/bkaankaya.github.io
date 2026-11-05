@@ -18,15 +18,15 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Checkout existing main branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '22'
       - name: Set up pnpm (package versions are pinned by the committed lockfile)
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
         with:
           version: '10.11.0'
           run_install: false
@@ -36,6 +36,8 @@ jobs:
         run: node scripts/verify-portfolio-contacts.mjs
       - name: Typecheck portfolio source
         run: pnpm exec tsc --noEmit
+      - name: Run security regression tests (flatten script, links, SVG)
+        run: node --test scripts/*.test.mjs
       - name: Build static GitHub Pages output
         run: pnpm run build
       - name: Verify the actual routes before publishing
@@ -46,12 +48,44 @@ jobs:
           test -s out/education/index.html
           test -s out/about/index.html
           touch out/.nojekyll
+      - name: Audit published artifact (no secrets, source maps or remote scripts)
+        run: node --test scripts/security-static.test.mjs
+        env:
+          REQUIRE_OUT: '1'
       - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
       - name: Upload generated files, not the Next.js source tree
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
         with:
           path: ./out
+
+  # Reports known advisories for the locked dependency graph. Intentionally not
+  # continue-on-error and not suppressed: a red result is the truthful state until
+  # the owner approves a Next.js upgrade (see SECURITY_RISK_REGISTER.md). It does not
+  # gate the deploy job, so a published site is never blocked by an advisory alone.
+  security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout existing main branch
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: '22'
+      - name: Set up pnpm (package versions are pinned by the committed lockfile)
+        uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
+        with:
+          version: '10.11.0'
+          run_install: false
+      - name: Install without updating dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Audit locked dependencies (high and critical)
+        run: pnpm audit --audit-level high
 
   deploy:
     needs: build
@@ -66,4 +100,4 @@ jobs:
     steps:
       - name: Deploy generated site
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4

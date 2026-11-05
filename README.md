@@ -50,3 +50,8 @@ pnpm run build
 
 Static output is generated in `out/` (`output: 'export'`, `trailingSlash: true`, `images.unoptimized: true`) and deployed automatically via `.github/workflows/deploy-next-pages.yml`.
 
+
+## Security
+
+Static GitHub Pages site: no backend, auth or user data. Run \
+ode --test scripts/*.test.mjs\ (after \pnpm run build\ with \REQUIRE_OUT=1\ to also audit \out/\) and \pnpm audit --audit-level high\ (currently red: see [SECURITY_RISK_REGISTER.md](SECURITY_RISK_REGISTER.md)). Review: [SECURITY_REVIEW_2026-11-05.md](SECURITY_REVIEW_2026-11-05.md); trust boundary and CSP/header limits: [docs/SECURITY_ARCHITECTURE.md](docs/SECURITY_ARCHITECTURE.md). Actions are pinned to commit SHAs; do not upgrade dependencies without owner approval.

@@ -28,3 +28,15 @@ All animations and transitions are restricted to compositor-friendly properties 
 5. **Top-Layer Project Dialog (`components/portfolio/project-card.tsx`)**: Uses native `<dialog>` (`showModal()`) with `@starting-style`, `transition-behavior: allow-discrete`, and `[data-closing]` fallback for smooth entry and exit animations, body scroll lock, and trigger focus restoration.
 6. **Reduced Motion (`@media (prefers-reduced-motion: reduce)`)**: Disables transform movement, wave drift, stagger animations, and view transitions on a case-by-case basis while keeping content immediately readable (`opacity: 1`).
 
+
+---
+
+## Ambient Aurora implementation — 5 November 2026
+
+- Preserve the existing navy/violet portfolio identity while using a static three-focus radial background on all five routes; use progressively enhanced route-aware `:has()` selectors instead of an additional animated full-viewport layer.
+- Koyu and light themes use separate low-opacity violet, blue and cyan tokens; screens under 600px get reduced glow intensity.
+- The hero ellipse completes exactly one 3500ms `transform` and `opacity` animation, then stops. Reduced-motion disables it, while browsers with the optional Network Information API expose `Save-Data` through an HTML data attribute so the same decorative animation stops.
+- The contrast of `#626980` subtle text against the light-theme base `#f6f7fb` is approximately 5.09:1; test actual blended backgrounds in-browser before claiming universal WCAG conformity.
+- Preserve all content, verified contact links, the project interactions and GitHub Pages static output; do not add Motion/GSAP/WebGL merely for ambience.
+- QA should verify the final motion at 4+ seconds, 320/390/768/1440/1920px, both color themes, route-specific gradients, reduced motion, and 200% text zoom.
+- References: https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide | https://web.dev/articles/animations-guide | https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion

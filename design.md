@@ -73,3 +73,33 @@ Independent:
 - https://web.dev/articles/vitals
 
 Vendor design systems are comparative references, while W3C WCAG is the normative accessibility standard; Core Web Vitals are field-measurable performance metrics.
+
+
+## Cinematic motion study — 5 November 2026
+
+### Verified inputs and constraints
+- **Scale AI careers:** https://scale.com/careers. The supplied screenshot and public page show a restrained header, near-full-width photographic hero with rounded corners, a dark readability overlay, a dominant white headline and a clear CTA. The page HTML confirms the headline and call to action. **The exact proprietary source, transition durations and animation implementation were not available for verification; do not claim our animations are copied from their runtime.**
+- **Vague- (own repository):** `frontend/src/components/sections/HeroSection.tsx` uses a photographic hero, dark horizontal overlay and simple CTA transition. `frontend/src/app/page.tsx` uses Framer Motion's `motion.div`, `AnimatePresence`, opacity/y/scale entry and exit states, and staggered spring transitions for product cards. Its motion logic was studied, not transplanted or used as a dependency.
+- **AI-Receptionist / DoraVoice (own repository):** `apps/web/src/components/marketing-site/MarketingMotion.tsx` uses `IntersectionObserver`, no-motion fallback and progressive enhancement. `apps/web/src/components/ui/Reveal.tsx` preserves visible SSR content and triggers a one-time transform/opacity reveal. `ScrollText.tsx` evaluates native view timelines and reduction settings. The portfolio follows the visibility-first and observer-once concepts.
+
+### Applied design translation
+- `assets/cinematic.css` provides a wide photo-led hero, gradient readability layers, original engineering text and a three-stage process strip. This is an original composition using the existing author photo, not an impersonation of Scale AI.
+- `assets/main.js` adds a short, once-only hero text entrance and viewport-triggered section/card reveals with the browser's Web Animations API and `IntersectionObserver`. The document remains visible before JS and with JS disabled.
+- Filter interactions use a subtle entrance without animating grid sizes or positions. Hover states are reduced to modest transforms; there is no high-frequency pointer-tracking or perpetual animation.
+- CSS scroll progress is opt-in via `@supports(animation-timeline:scroll())`, with no JS/polyfill fallback for this decorative cue.
+- If `prefers-reduced-motion:reduce` is active, page-reveal movement is omitted and CSS image/menu movement is disabled. A change while animations are playing cancels active animations.
+- No version changes, React runtime, Framer Motion or third-party assets were introduced. Preserve all homepage bio facts, the TED University credential, and every project detail page.
+
+### Release checklist
+1. GitHub Pages deploy succeeds at the exact updated `main` SHA.
+2. Run `node --check assets/main.js` and `node scripts/check-site.mjs` (12 project pages plus homepage, routes, design invariants and semantics).
+3. Manual viewport tests: 320, 390, 768, 1024, 1440 and 1920 pixels; verify no clipping or overlap in hero process strip and statistics, visible focus, open mobile menu and dark mode.
+4. Check JavaScript disabled and `prefers-reduced-motion` states. Confirm the hero remains readable without animations.
+5. Use actual Lighthouse/real-user measurements for Core Web Vitals. Neither a successful deployment nor a smooth local screenshot establishes field performance.
+6. The original portrait asset is 280 × 350px; a larger photographic placement can expose pixelation. Replacing the image with a higher-resolution, approved image asset is a separate media improvement and should be checked for LCP bytes.
+
+References:
+- https://vercel.com/design/guidelines
+- https://motion.dev/docs/performance
+- https://motion.dev/docs/react-accessibility
+- https://developer.chrome.com/docs/modern-web-guidance/guides/ui-atoms/shrinking-header-on-scroll

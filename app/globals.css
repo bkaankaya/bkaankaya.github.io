@@ -180,6 +180,13 @@ html[data-theme="light"] {
   transition: color 280ms ease, background-color 280ms ease;
 }
 
+/* A saved light theme is applied during hydration. Never interpolate light
+   surfaces against dark-text colors while the first client render settles. */
+html:not([data-theme-ready]) .portfolio-app,
+html:not([data-theme-ready]) .portfolio-app * {
+  transition-duration: 0ms !important;
+}
+
 .portfolio-app[data-theme="light"] {
   color-scheme: light;
   --site-bg: #f6f7fb;

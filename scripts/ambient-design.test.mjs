@@ -67,3 +67,9 @@ test("light actions retain visible contrast independently of the base button rul
   assert.match(ambient, /background: #252541/)
   assert.match(ambient, /color: #ffffff !important/)
 })
+
+test("first saved-theme hydration never interpolates dark text over light surfaces", () => {
+  assert.match(css, /html:not\(\[data-theme-ready\]\) \.portfolio-app/)
+  assert.match(shell, /document\.documentElement\.dataset\.themeReady = "true"/)
+  assert.match(shell, /window\.requestAnimationFrame/)
+})

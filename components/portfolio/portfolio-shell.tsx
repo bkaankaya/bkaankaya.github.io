@@ -14,6 +14,13 @@ export function PortfolioShell({ children }: { children: React.ReactNode }) {
   const [motionPaused, setMotionPaused] = useState(false)
 
   useEffect(() => {
+    // React hydrates the static dark-themed markup before reading localStorage.
+    // Restore transitions only after the saved theme and text colors have settled.
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        document.documentElement.dataset.themeReady = "true"
+      })
+    })
     // Browser Network Information API is optional. Content never depends on it.
     const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection
     document.documentElement.toggleAttribute("data-save-data", connection?.saveData === true)

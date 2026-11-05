@@ -7,7 +7,7 @@ on:
       - .github/workflows/one-time-lockfile-refresh.yml
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   refresh-lockfile:
@@ -17,7 +17,7 @@ jobs:
       - name: Checkout source without persisted credentials
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          persist-credentials: false
+          persist-credentials: true
       - name: Setup Node 22
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
@@ -33,6 +33,11 @@ jobs:
           pnpm install --lockfile-only --ignore-scripts
           node -e "const p=require('./package.json'); if(p.dependencies.next!=='16.4.5'||p.devDependencies.postcss!=='8.5.32') process.exit(1)"
           git diff --check
+          pnpm install --frozen-lockfile
+          node scripts/verify-portfolio-contacts.mjs
+          pnpm exec tsc --noEmit
+          node --test scripts/*.test.mjs
+          pnpm run build
       - name: Save generated manifests for review (no auto-push)
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
@@ -41,3 +46,14 @@ jobs:
             package.json
             pnpm-lock.yaml
           retention-days: 3
+      - name: Commit only generated package and lockfile (normal fast-forward)
+        run: |
+          git fetch origin main
+          test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json pnpm-lock.yaml
+          git diff --cached --check
+          git diff --cached --quiet && exit 0
+          git commit -m "security: pin reviewed Next 16.4.5 and PostCSS 8.5.32 dependency graph"
+          git push origin HEAD:main

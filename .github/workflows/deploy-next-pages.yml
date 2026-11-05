@@ -34,6 +34,8 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Check verified public portfolio contact links
         run: node scripts/verify-portfolio-contacts.mjs
+      - name: Typecheck portfolio source
+        run: pnpm exec tsc --noEmit
       - name: Build static GitHub Pages output
         run: pnpm run build
       - name: Verify the actual routes before publishing

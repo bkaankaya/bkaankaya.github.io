@@ -1,18 +1,15 @@
 import {
   Activity,
   Building2,
-  Cloud,
   Code2,
-  Coffee,
   Cpu,
-  Database,
   GraduationCap,
   Layers,
   Link2,
   ScanLine,
-  Terminal,
   type LucideIcon,
 } from "lucide-react"
+import type { BrandId } from "@/components/portfolio/brand-icon"
 
 export type ProjectCategory = "AI" | "Full-stack" | "Embedded" | "Research" | "Blockchain"
 export type ProjectAccent = "violet" | "teal" | "orange" | "blue" | "pink"
@@ -107,15 +104,15 @@ export const processSteps: { title: string; description: string; icon: LucideIco
   { title: "Learn", description: "Stay curious and keep improving.", icon: GraduationCap },
 ]
 
-export const technologies: { name: string; detail: string; icon: LucideIcon }[] = [
-  { name: "React", detail: "UI", icon: Code2 },
-  { name: "Next.js", detail: "Web", icon: Layers },
-  { name: "Python", detail: "AI", icon: Terminal },
-  { name: "Java", detail: "Backend", icon: Coffee },
-  { name: "Docker", detail: "DevOps", icon: Cpu },
-  { name: "PostgreSQL", detail: "Data", icon: Database },
-  { name: "AWS", detail: "Cloud", icon: Cloud },
-  { name: "More", detail: "Tools", icon: Activity },
+export const technologies: { name: string; detail: string; brand: BrandId }[] = [
+  { name: "React", detail: "UI", brand: "react" },
+  { name: "Next.js", detail: "Web", brand: "nextjs" },
+  { name: "Python", detail: "AI", brand: "python" },
+  { name: "Java", detail: "Backend", brand: "java" },
+  { name: "Docker", detail: "DevOps", brand: "docker" },
+  { name: "PostgreSQL", detail: "Data", brand: "postgresql" },
+  { name: "AWS", detail: "Cloud", brand: "aws" },
+  { name: "More", detail: "Tools", brand: "more" },
 ]
 
 export const experienceItems: { title: string; description: string; date: string; icon: LucideIcon; accent: ProjectAccent }[] = [

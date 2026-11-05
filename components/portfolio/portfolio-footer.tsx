@@ -1,5 +1,6 @@
 import Link from "next/link"
-import { ArrowUpRight, Github, Linkedin, Mail } from "lucide-react"
+import { ArrowUpRight, Mail } from "lucide-react"
+import { BrandIcon } from "@/components/portfolio/brand-icon"
 import { portfolioContact } from "@/lib/portfolio-contact"
 
 export function PortfolioFooter() {
@@ -18,9 +19,15 @@ export function PortfolioFooter() {
         </div>
         <div className="footer-links footer-socials">
           <p className="footer-label">FIND ME ONLINE</p>
-          <a href={portfolioContact.githubUrl} target="_blank" rel="noreferrer"><Github aria-hidden="true" /> GitHub <ArrowUpRight aria-hidden="true" /></a>
-          <a href={portfolioContact.linkedinUrl} target="_blank" rel="noreferrer"><Linkedin aria-hidden="true" /> LinkedIn <ArrowUpRight aria-hidden="true" /></a>
-          <a href={portfolioContact.mailto}><Mail aria-hidden="true" /> Email <ArrowUpRight aria-hidden="true" /></a>
+          <a href={portfolioContact.githubUrl} target="_blank" rel="noreferrer">
+            <BrandIcon brand="github" size={15} /> GitHub <ArrowUpRight aria-hidden="true" />
+          </a>
+          <a href={portfolioContact.linkedinUrl} target="_blank" rel="noreferrer">
+            <BrandIcon brand="linkedin" size={15} /> LinkedIn <ArrowUpRight aria-hidden="true" />
+          </a>
+          <a href={portfolioContact.mailto}>
+            <Mail aria-hidden="true" /> Email <ArrowUpRight aria-hidden="true" />
+          </a>
         </div>
       </div>
       <div className="portfolio-container footer-bottom">

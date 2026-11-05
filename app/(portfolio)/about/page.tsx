@@ -1,11 +1,12 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowRight, ArrowUpRight, Github, Linkedin, Mail, MapPin, Layers, Activity, Code2 } from "lucide-react"
+import { ArrowRight, ArrowUpRight, Mail, MapPin, Layers, Activity, Code2 } from "lucide-react"
+import { BrandIcon } from "@/components/portfolio/brand-icon"
 import { Reveal } from "@/components/portfolio/reveal"
 import { portfolioContact } from "@/lib/portfolio-contact"
 
-const portraitSource = "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-EopK6L1jOreIYg5r738E7f63cWJs4z.png"
+const portraitSource = "/portrait-kaan.webp"
 
 export const metadata: Metadata = {
   title: "About | B. Kaan Kaya",
@@ -30,10 +31,19 @@ export default function AboutPage() {
         </Reveal>
         <Reveal className="about-profile-panel" delay={100}>
           <div className="about-portrait-frame">
-            <Image className="profile-photo" src={portraitSource} alt="Portrait of B. Kaan Kaya" width={1536} height={1024} unoptimized />
+            <Image
+              className="profile-photo"
+              src={portraitSource}
+              alt="Portrait of B. Kaan Kaya"
+              width={520}
+              height={520}
+              priority
+              fetchPriority="high"
+              unoptimized
+            />
           </div>
           <div className="about-status-card">
-            <span><MapPin aria-hidden="true" />Based in Europe</span>
+            <span><MapPin aria-hidden="true" />Based in Turkey, Ankara · Open to relocating to Europe</span>
             <span><i className="availability-dot" />Open to collaboration</span>
             <span><Layers aria-hidden="true" />Interested in product, frontend and AI experiences</span>
           </div>
@@ -59,9 +69,30 @@ export default function AboutPage() {
           <p>Reach out for collaborations, opportunities or just a chat about products, AI and engineering.</p>
         </Reveal>
         <div className="contact-grid">
-          <Reveal><a className="contact-card" href={portfolioContact.mailto}><Mail aria-hidden="true" /><ArrowUpRight className="contact-card-arrow" aria-hidden="true" /><strong>Email</strong><span>{portfolioContact.email}</span></a></Reveal>
-          <Reveal delay={50}><a className="contact-card" href={portfolioContact.githubUrl} target="_blank" rel="noreferrer"><Github aria-hidden="true" /><ArrowUpRight className="contact-card-arrow" aria-hidden="true" /><strong>GitHub</strong><span>{portfolioContact.githubLabel}</span></a></Reveal>
-          <Reveal delay={100}><a className="contact-card" href={portfolioContact.linkedinUrl} target="_blank" rel="noreferrer"><Linkedin aria-hidden="true" /><ArrowUpRight className="contact-card-arrow" aria-hidden="true" /><strong>LinkedIn</strong><span>{portfolioContact.linkedinLabel}</span></a></Reveal>
+          <Reveal>
+            <a className="contact-card" href={portfolioContact.mailto}>
+              <Mail aria-hidden="true" />
+              <ArrowUpRight className="contact-card-arrow" aria-hidden="true" />
+              <strong>Email</strong>
+              <span>{portfolioContact.email}</span>
+            </a>
+          </Reveal>
+          <Reveal delay={50}>
+            <a className="contact-card" href={portfolioContact.githubUrl} target="_blank" rel="noreferrer">
+              <BrandIcon className="contact-brand-icon" brand="github" size={23} />
+              <ArrowUpRight className="contact-card-arrow" aria-hidden="true" />
+              <strong>GitHub</strong>
+              <span>{portfolioContact.githubLabel}</span>
+            </a>
+          </Reveal>
+          <Reveal delay={100}>
+            <a className="contact-card" href={portfolioContact.linkedinUrl} target="_blank" rel="noreferrer">
+              <BrandIcon className="contact-brand-icon" brand="linkedin" size={23} />
+              <ArrowUpRight className="contact-card-arrow" aria-hidden="true" />
+              <strong>LinkedIn</strong>
+              <span>{portfolioContact.linkedinLabel}</span>
+            </a>
+          </Reveal>
           <Reveal delay={150}>
             <div className="contact-cta-card">
               <h3>Let’s build something thoughtful.</h3>

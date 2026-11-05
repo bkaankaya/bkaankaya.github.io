@@ -1,44 +1,78 @@
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowRight, ArrowUpRight, Github, Linkedin, Mail } from "lucide-react"
+import type { CSSProperties } from "react"
+import { ArrowRight, ArrowUpRight, Mail } from "lucide-react"
+import { BrandIcon } from "@/components/portfolio/brand-icon"
 import { ProjectCard } from "@/components/portfolio/project-card"
 import { Reveal } from "@/components/portfolio/reveal"
 import { SectionHeading } from "@/components/portfolio/section-heading"
 import { processSteps, projects, technologies } from "@/lib/portfolio-data"
 import { portfolioContact, portfolioMailto } from "@/lib/portfolio-contact"
 
-const portraitSource = "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-EopK6L1jOreIYg5r738E7f63cWJs4z.png"
+const portraitSource = "/portrait-kaan.webp"
 
 export function HomePage() {
   return (
     <main id="main-content" className="portfolio-main home-main">
       <section className="hero-section" aria-labelledby="hero-title">
         <div className="hero-grid">
-          <Reveal className="hero-copy">
-            <p className="eyebrow"><span className="eyebrow-dot" />SOFTWARE ENGINEER</p>
-            <h1 id="hero-title">Hi, I’m B. Kaan Kaya.</h1>
-            <p className="hero-description">I build end-to-end products that combine software, <span className="accent-text">AI</span> and real-world impact.</p>
-            <div className="hero-actions">
+          <div className="hero-copy">
+            <div className="hero-stagger-item" style={{ "--hero-step": 0 } as CSSProperties}>
+              <p className="eyebrow"><span className="eyebrow-dot" />SOFTWARE ENGINEER</p>
+              <h1 id="hero-title">Hi, I’m B. Kaan Kaya.</h1>
+            </div>
+            <p
+              className="hero-description hero-stagger-item"
+              style={{ "--hero-step": 1 } as CSSProperties}
+            >
+              I build end-to-end products that combine software, <span className="accent-text">AI</span> and real-world impact.
+            </p>
+            <div
+              className="hero-actions hero-stagger-item"
+              style={{ "--hero-step": 2 } as CSSProperties}
+            >
               <Link className="button button-primary" href="/projects">View Projects <ArrowRight aria-hidden="true" /></Link>
               <Link className="button button-outline" href="/about#contact">Get in Touch</Link>
             </div>
-            <div className="social-links" aria-label="Social links">
-              <a href={portfolioContact.githubUrl} target="_blank" rel="noreferrer" aria-label="GitHub profile"><Github aria-hidden="true" /></a>
-              <a href={portfolioContact.linkedinUrl} target="_blank" rel="noreferrer" aria-label="LinkedIn profile"><Linkedin aria-hidden="true" /></a>
-              <a href={portfolioContact.mailto} aria-label="Email B. Kaan Kaya"><Mail aria-hidden="true" /></a>
+            <div
+              className="social-links hero-stagger-item"
+              style={{ "--hero-step": 3 } as CSSProperties}
+              aria-label="Social links"
+            >
+              <a href={portfolioContact.githubUrl} target="_blank" rel="noreferrer" aria-label="GitHub profile" title="GitHub">
+                <BrandIcon brand="github" size={20} />
+              </a>
+              <a href={portfolioContact.linkedinUrl} target="_blank" rel="noreferrer" aria-label="LinkedIn profile" title="LinkedIn">
+                <BrandIcon brand="linkedin" size={20} />
+              </a>
+              <a href={portfolioContact.mailto} aria-label="Email B. Kaan Kaya" title="Email">
+                <Mail aria-hidden="true" />
+              </a>
             </div>
-          </Reveal>
+          </div>
 
-          <Reveal className="hero-visual" delay={90}>
+          <div className="hero-visual">
             <div className="portrait-frame">
-              <Image className="profile-photo" src={portraitSource} alt="Portrait of B. Kaan Kaya" width={1536} height={1024} priority unoptimized />
+              <Image
+                className="profile-photo"
+                src={portraitSource}
+                alt="Portrait of B. Kaan Kaya"
+                width={520}
+                height={520}
+                priority
+                fetchPriority="high"
+                unoptimized
+              />
             </div>
             <a className="availability-card" href={portfolioMailto("Let’s work together")}>
               <span className="availability-dot" />
-              <span className="availability-copy"><strong>Open to Opportunities</strong><small>{portfolioContact.availability}</small></span>
+              <span className="availability-copy">
+                <strong>Open to Opportunities</strong>
+                <small>{portfolioContact.availability}</small>
+              </span>
               <ArrowUpRight className="availability-arrow" aria-hidden="true" />
             </a>
-          </Reveal>
+          </div>
         </div>
 
         <div className="process-strip" aria-label="How I work">
@@ -68,11 +102,16 @@ export function HomePage() {
             <p className="eyebrow"><span className="eyebrow-dot" />TECH STACK</p>
             <h2 className="section-title" id="technologies-title">Technologies</h2>
           </Reveal>
-          <div className="technology-grid">
-            {technologies.map(({ name, detail, icon: Icon }, index) => (
+          <div className="technology-grid" role="list" aria-label="Core technologies">
+            {technologies.map(({ name, detail, brand }, index) => (
               <Reveal key={name} className="h-full" delay={index * 35}>
-                <div className="technology-card" title={`${name} — ${detail}`}>
-                  <Icon aria-hidden="true" />
+                <div
+                  className="technology-card"
+                  role="listitem"
+                  title={`${name} — ${detail}`}
+                  aria-label={`${name} (${detail})`}
+                >
+                  <BrandIcon brand={brand} size={24} />
                   <span>{name}</span>
                 </div>
               </Reveal>

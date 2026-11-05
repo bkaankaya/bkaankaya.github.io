@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 import { ArrowUpRight, CalendarDays, Code2, GraduationCap, Layers, Rocket } from "lucide-react"
 import { PageIntro } from "@/components/portfolio/section-heading"
 import { Reveal } from "@/components/portfolio/reveal"
@@ -22,8 +23,8 @@ export default function ExperiencePage() {
             <div><strong>15+</strong><h2>Hands-on Projects</h2><p>Product, AI, web and embedded</p></div>
           </Reveal>
           <Reveal className="experience-quick-links" delay={80}>
-            <a href="/about"><span className="quick-link-icon"><Layers aria-hidden="true" /></span><span><strong>Cross-disciplinary Work</strong><small>Software × Hardware × Product</small></span><ArrowUpRight aria-hidden="true" /></a>
-            <a href="/education"><span className="quick-link-icon"><GraduationCap aria-hidden="true" /></span><span><strong>International Study</strong><small>Engineering studies abroad</small></span><ArrowUpRight aria-hidden="true" /></a>
+            <Link href="/about"><span className="quick-link-icon"><Layers aria-hidden="true" /></span><span><strong>Cross-disciplinary Work</strong><small>Software × Hardware × Product</small></span><ArrowUpRight aria-hidden="true" /></Link>
+            <Link href="/education"><span className="quick-link-icon"><GraduationCap aria-hidden="true" /></span><span><strong>International Study</strong><small>Engineering studies abroad</small></span><ArrowUpRight aria-hidden="true" /></Link>
           </Reveal>
         </div>
       </div>

@@ -1,0 +1,52 @@
+# B. Kaan Kaya — Software Engineer Portfolio
+
+Production personal portfolio for **B. Kaan Kaya** (`https://bkaankaya.github.io/`), built with **Next.js 16 (App Router)**, **React 19**, **Tailwind CSS 4**, and **TypeScript**, and deployed as a static export (`out/`) to **GitHub Pages**.
+
+---
+
+## Architecture & Route Map
+
+All active routes live under `app/(portfolio)/` and share the persistent shell in `components/portfolio/portfolio-shell.tsx`:
+
+| Route | Source File | Purpose |
+|---|---|---|
+| `/` | `app/(portfolio)/page.tsx` (`components/portfolio/home-page.tsx`) | Hero, circular portrait (`public/portrait-kaan.webp`), availability card, process strip, featured projects, and technology stack |
+| `/projects/` | `app/(portfolio)/projects/page.tsx` (`components/portfolio/project-archive.tsx`) | Filterable project archive (`All`, `AI`, `Web`, `Hardware`) with View Transitions and accessible `<dialog>` project modals |
+| `/experience/` | `app/(portfolio)/experience/page.tsx` | Career timeline, hands-on project highlights, and core engineering skills |
+| `/education/` | `app/(portfolio)/education/page.tsx` | Academic background, focus areas, languages, and continuous learning |
+| `/about/` | `app/(portfolio)/about/page.tsx` | Engineering philosophy, location & relocation status (`Based in Turkey, Ankara · Open to relocating to Europe`), core values, and contact cards |
+
+---
+
+## Core Components & Data Modules
+
+- `components/portfolio/portfolio-shell.tsx`: Theme state (`dark` default, persisted under `localStorage["bk-portfolio-theme"]` and synced with `document.documentElement`), skip link, header, and footer wrapper.
+- `components/portfolio/site-header.tsx`: Sticky header with custom `BK.` monogram, trailing-slash-normalized active route detection, compositor-friendly sliding active nav indicator, theme toggle, and accessible mobile menu (`Escape` + outside-click close with focus restoration).
+- `components/portfolio/project-card.tsx`: Project card with accessible trigger (`button` on title + open icon button) and native `<dialog>` modal with `@starting-style` / `[data-closing]` top-layer entry/exit transitions and focus restoration.
+- `components/portfolio/project-archive.tsx`: Category filter bar progressively enhanced with the View Transitions API (`document.startViewTransition`).
+- `components/portfolio/reveal.tsx`: IntersectionObserver scroll reveal component that keeps initial-viewport content immediately visible (no hydration flash) and respects `prefers-reduced-motion: reduce` and `navigator.connection.saveData`.
+- `components/portfolio/brand-icon.tsx`: Renders official local SVG brand marks from `public/brands/` with automatic dark/light theme adaptation.
+- `lib/portfolio-contact.ts`: Single source of truth for verified contact details (`kaankaya928@gmail.com`, `https://github.com/bkaankaya`, `https://www.linkedin.com/in/kaan-kaya-9890812b0/`, `Full-time · Contract · Remote`), enforced in CI by `scripts/verify-portfolio-contacts.mjs`.
+- `lib/portfolio-data.ts`: Structured data for projects, process steps, technologies, experience, education, and values.
+
+---
+
+## Brand Icons & Visual Assets
+
+- **Custom Monogram Favicon**: `public/icon.svg`, `public/icon-dark-32x32.png`, `public/icon-light-32x32.png`, and `public/apple-icon.png` feature a custom geometric `BK.` monogram on `#080a16` dark navy with a `#a77aff` violet accent dot.
+- **Optimized Local Portrait**: `public/portrait-kaan.webp` (`520×520`, 1:1 square, ~40 KB WebP) centered on the face inside circular frames across all breakpoints.
+- **Official Brand SVGs**: Stored locally in `public/brands/` (`react.svg`, `nextjs.svg`, `python.svg`, `java.svg`, `docker.svg`, `postgresql.svg`, `aws.svg`, `aws-light.svg`, `github.svg`, `linkedin.svg`). Full provenance and trademark notes are documented in [`docs/BRAND_ASSETS.md`](docs/BRAND_ASSETS.md).
+
+---
+
+## Verification & Build Commands
+
+```bash
+pnpm install --frozen-lockfile
+node scripts/verify-portfolio-contacts.mjs
+pnpm exec tsc --noEmit
+pnpm run build
+```
+
+Static output is generated in `out/` (`output: 'export'`, `trailingSlash: true`, `images.unoptimized: true`) and deployed automatically via `.github/workflows/deploy-next-pages.yml`.
+

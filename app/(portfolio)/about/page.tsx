@@ -3,6 +3,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight, ArrowUpRight, Github, Linkedin, Mail, MapPin, Layers, Activity, Code2 } from "lucide-react"
 import { Reveal } from "@/components/portfolio/reveal"
+import { portfolioContact } from "@/lib/portfolio-contact"
 
 const portraitSource = "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-EopK6L1jOreIYg5r738E7f63cWJs4z.png"
 
@@ -58,13 +59,13 @@ export default function AboutPage() {
           <p>Reach out for collaborations, opportunities or just a chat about products, AI and engineering.</p>
         </Reveal>
         <div className="contact-grid">
-          <Reveal><a className="contact-card" href="mailto:bk@kaankaya.dev"><Mail aria-hidden="true" /><ArrowUpRight className="contact-card-arrow" aria-hidden="true" /><strong>Email</strong><span>bk@kaankaya.dev</span></a></Reveal>
-          <Reveal delay={50}><a className="contact-card" href="https://github.com/kaankaya" target="_blank" rel="noreferrer"><Github aria-hidden="true" /><ArrowUpRight className="contact-card-arrow" aria-hidden="true" /><strong>GitHub</strong><span>github.com/kaankaya</span></a></Reveal>
-          <Reveal delay={100}><a className="contact-card" href="https://linkedin.com/in/kaankaya" target="_blank" rel="noreferrer"><Linkedin aria-hidden="true" /><ArrowUpRight className="contact-card-arrow" aria-hidden="true" /><strong>LinkedIn</strong><span>linkedin.com/in/kaankaya</span></a></Reveal>
+          <Reveal><a className="contact-card" href={portfolioContact.mailto}><Mail aria-hidden="true" /><ArrowUpRight className="contact-card-arrow" aria-hidden="true" /><strong>Email</strong><span>{portfolioContact.email}</span></a></Reveal>
+          <Reveal delay={50}><a className="contact-card" href={portfolioContact.githubUrl} target="_blank" rel="noreferrer"><Github aria-hidden="true" /><ArrowUpRight className="contact-card-arrow" aria-hidden="true" /><strong>GitHub</strong><span>{portfolioContact.githubLabel}</span></a></Reveal>
+          <Reveal delay={100}><a className="contact-card" href={portfolioContact.linkedinUrl} target="_blank" rel="noreferrer"><Linkedin aria-hidden="true" /><ArrowUpRight className="contact-card-arrow" aria-hidden="true" /><strong>LinkedIn</strong><span>{portfolioContact.linkedinLabel}</span></a></Reveal>
           <Reveal delay={150}>
             <div className="contact-cta-card">
               <h3>Let’s build something thoughtful.</h3>
-              <Link className="button button-primary" href="mailto:bk@kaankaya.dev">Get in Touch <ArrowRight aria-hidden="true" /></Link>
+              <Link className="button button-primary" href={portfolioContact.mailto}>Get in Touch <ArrowRight aria-hidden="true" /></Link>
             </div>
           </Reveal>
         </div>

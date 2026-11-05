@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { ArrowUpRight, ExternalLink, X } from "lucide-react"
 import { projects } from "@/lib/portfolio-data"
+import { portfolioMailto } from "@/lib/portfolio-contact"
 
 export function ProjectCard({ slug }: { slug: string }) {
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -50,7 +51,7 @@ export function ProjectCard({ slug }: { slug: string }) {
           <ul className="tag-list" aria-label="Project technologies">
             {project.tags.map((tag) => <li className="tag-pill" key={tag}>{tag}</li>)}
           </ul>
-          <a className="button button-primary dialog-contact-link" href={`mailto:bk@kaankaya.dev?subject=${encodeURIComponent(`Let’s talk about ${project.title}`)}`}>
+          <a className="button button-primary dialog-contact-link" href={portfolioMailto(`Let’s talk about ${project.title}`)}>
             Discuss a similar project <ArrowUpRight aria-hidden="true" />
           </a>
         </div>

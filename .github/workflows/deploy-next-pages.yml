@@ -32,6 +32,8 @@ jobs:
           run_install: false
       - name: Install without updating dependencies
         run: pnpm install --frozen-lockfile
+      - name: Check verified public portfolio contact links
+        run: node scripts/verify-portfolio-contacts.mjs
       - name: Build static GitHub Pages output
         run: pnpm run build
       - name: Verify the actual routes before publishing

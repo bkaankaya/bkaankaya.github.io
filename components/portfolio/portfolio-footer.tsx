@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { ArrowUpRight, Github, Linkedin, Mail } from "lucide-react"
+import { portfolioContact } from "@/lib/portfolio-contact"
 
 export function PortfolioFooter() {
   return (
@@ -17,9 +18,9 @@ export function PortfolioFooter() {
         </div>
         <div className="footer-links footer-socials">
           <p className="footer-label">FIND ME ONLINE</p>
-          <a href="https://github.com/kaankaya" target="_blank" rel="noreferrer"><Github aria-hidden="true" /> GitHub <ArrowUpRight aria-hidden="true" /></a>
-          <a href="https://linkedin.com/in/kaankaya" target="_blank" rel="noreferrer"><Linkedin aria-hidden="true" /> LinkedIn <ArrowUpRight aria-hidden="true" /></a>
-          <a href="mailto:bk@kaankaya.dev"><Mail aria-hidden="true" /> Email <ArrowUpRight aria-hidden="true" /></a>
+          <a href={portfolioContact.githubUrl} target="_blank" rel="noreferrer"><Github aria-hidden="true" /> GitHub <ArrowUpRight aria-hidden="true" /></a>
+          <a href={portfolioContact.linkedinUrl} target="_blank" rel="noreferrer"><Linkedin aria-hidden="true" /> LinkedIn <ArrowUpRight aria-hidden="true" /></a>
+          <a href={portfolioContact.mailto}><Mail aria-hidden="true" /> Email <ArrowUpRight aria-hidden="true" /></a>
         </div>
       </div>
       <div className="portfolio-container footer-bottom">

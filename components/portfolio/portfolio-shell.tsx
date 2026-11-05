@@ -12,6 +12,9 @@ export function PortfolioShell({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<PortfolioTheme>("dark")
 
   useEffect(() => {
+    // Browser Network Information API is optional. Content never depends on it.
+    const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection
+    document.documentElement.toggleAttribute("data-save-data", connection?.saveData === true)
     try {
       const saved = window.localStorage.getItem(STORAGE_KEY)
       if (saved === "light" || saved === "dark") {

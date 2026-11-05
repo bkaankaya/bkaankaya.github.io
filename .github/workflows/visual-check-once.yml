@@ -1,5 +1,5 @@
 name: One-time browser visual verification
-# Final contrast and mobile CTA review
+# Final contrast, mobile CTA, and theme hydration review
 
 on:
   push:

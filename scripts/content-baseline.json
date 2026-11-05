@@ -1,0 +1,19 @@
+{
+  "source": "Original published site before visual refactor; update only on user-approved copy changes",
+  "algorithm": "sha256 normalized visible body text",
+  "pages": {
+    "index.html": "819aeff711e982d47dd765669c36432b6e495d8c6dbb40bbff0310a632e739f1",
+    "projects/cineembed/index.html": "4fa69642417f8274cb826af36c5147eee79e0d9363b0ff9430446ba4e93dcfbb",
+    "projects/dnn/index.html": "b1b3555db29e85f31631ef86f57241a6693754812b477189ec4b27e4e4e47a25",
+    "projects/doravoice/index.html": "9f9686b39ac016c8ec2c8b6c47df43d26768a46d8d1766649feb9a0f35b90816",
+    "projects/hospital/index.html": "66f1877271747262c003a473107873e82863bfc8aeb228baf48a45dc16cdca41",
+    "projects/image-processing/index.html": "0b83f60ac012725f275bece3814b6519a67313765b3ff3b54e595f6e5db2e658",
+    "projects/quickscan/index.html": "5a6597236e4a93799adba764d36f7fa354776d182e53e027ca5fd1e41adc2091",
+    "projects/rezero/index.html": "9096d0cbe373b1ceefbf84bdf881089047f41a81341958c5456367224107c501",
+    "projects/stm32/index.html": "6054247993ad5d73c965ebe70e0791e87e686d20d4ab030a1e4d74de5b509cd3",
+    "projects/t2-leave/index.html": "9ae2b066599d1277078e859925312e1ca9794a4c7d80a0fc05e7b99560a28c33",
+    "projects/vague/index.html": "c7d522dd448b1aab3a38e28a2d2e3e4b79a9ecb0905b9b713fdf4c3319776056",
+    "projects/white-wine/index.html": "2167a67e1c1abb0f1334722b08ab02800c3e11c7fe41b3fe495be98e0b1f6479",
+    "projects/yemeksepeti/index.html": "bab349c0a9fca0e5d2c4f92472b6896af20ca5993cab16cdcf25a4bbd579a927"
+  }
+}

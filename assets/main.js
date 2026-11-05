@@ -1,176 +1,167 @@
-/* Portfolio interactions: progressively enhanced, framework-free. */
+/*
+ * Portfolio behavior — navigation, theme, filters, and section state.
+ * Framework-free progressive enhancement; no layout measurement in render paths.
+ * Scroll animation lives in motion.js and is only loaded when appropriate.
+ */
 (() => {
   'use strict';
   const root = document.documentElement;
-  const themeButton = document.querySelector('.theme-button');
-  const themeMeta = document.querySelector('meta[name="theme-color"]');
-  const storageKey = 'bkk-theme';
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-  function storedTheme() {
-    try { return localStorage.getItem(storageKey); } catch { return null; }
+  function initTheme() {
+    const button = document.querySelector('.theme-button');
+    const meta = document.querySelector('meta[name="theme-color"]');
+    const darkMode = window.matchMedia('(prefers-color-scheme: dark)');
+    const key = 'bkk-theme';
+    let preference = null;
+    try { preference = window.localStorage.getItem(key); } catch { /* storage blocked */ }
+    if (preference !== 'dark' && preference !== 'light') preference = null;
+
+    const setTheme = theme => {
+      root.dataset.theme = theme;
+      if (meta) meta.content = theme === 'dark' ? '#0d1523' : '#f7f8f7';
+      if (button) {
+        button.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+        button.setAttribute('aria-pressed', String(theme === 'dark'));
+        button.textContent = theme === 'dark' ? '☀' : '◐';
+      }
+    };
+
+    setTheme(preference || (darkMode.matches ? 'dark' : 'light'));
+    let themeTransition;
+    button?.addEventListener('click', () => {
+      preference = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      if (!reducedMotion.matches) {
+        root.classList.add('theme-switching');
+        clearTimeout(themeTransition);
+        themeTransition = setTimeout(() => root.classList.remove('theme-switching'), 260);
+      }
+      setTheme(preference);
+      try { window.localStorage.setItem(key, preference); } catch { /* private mode */ }
+    });
+    darkMode.addEventListener?.('change', event => {
+      if (!preference) setTheme(event.matches ? 'dark' : 'light');
+    });
   }
-  let preference = storedTheme();
-  const systemDark = window.matchMedia?.('(prefers-color-scheme: dark)');
-  function setTheme(theme) {
-    root.dataset.theme = theme;
-    if (themeMeta) themeMeta.content = theme === 'dark' ? '#151c19' : '#f6f5f0';
-    if (themeButton) {
-      themeButton.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
-      themeButton.setAttribute('aria-pressed', String(theme === 'dark'));
-      themeButton.textContent = theme === 'dark' ? '☀' : '◐';
-    }
-  }
-  setTheme(preference === 'dark' || preference === 'light'
-    ? preference : systemDark?.matches ? 'dark' : 'light');
 
-  themeButton?.addEventListener('click', () => {
-    const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
-    preference = next;
-    setTheme(next);
-    try { localStorage.setItem(storageKey, next); } catch { /* private browsing */ }
-  });
-  systemDark?.addEventListener?.('change', event => {
-    if (preference !== 'dark' && preference !== 'light') {
-      setTheme(event.matches ? 'dark' : 'light');
-    }
-  });
+  function initNavigation() {
+    const nav = document.querySelector('.topnav');
+    const tools = document.querySelector('.nav-tools');
+    if (!nav || !tools) return;
 
-  // The source HTML remains usable without JavaScript. A compact toggle
-  // replaces the wrapping navigation only once enhancement is available.
-  const nav = document.querySelector('.topnav');
-  const tools = document.querySelector('.nav-tools');
-  if (nav && tools) {
     nav.id = 'site-navigation';
     const toggle = document.createElement('button');
     toggle.type = 'button';
     toggle.className = 'menu-toggle';
     toggle.textContent = 'Menu';
-    toggle.setAttribute('aria-label', 'Open navigation');
     toggle.setAttribute('aria-controls', nav.id);
-    toggle.setAttribute('aria-expanded', 'false');
     tools.prepend(toggle);
-    const closeMenu = (returnFocus = false) => {
-      root.classList.remove('nav-open');
-      toggle.setAttribute('aria-expanded', 'false');
-      toggle.setAttribute('aria-label', 'Open navigation');
-      if (returnFocus) toggle.focus();
+
+    const setOpen = (open, restoreFocus = false) => {
+      root.classList.toggle('nav-open', open);
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+      if (!open && restoreFocus) toggle.focus({ preventScroll: true });
     };
-    toggle.addEventListener('click', () => {
+    setOpen(false);
+    toggle.addEventListener('click', event => {
       const opening = !root.classList.contains('nav-open');
-      root.classList.toggle('nav-open', opening);
-      toggle.setAttribute('aria-expanded', String(opening));
-      toggle.setAttribute('aria-label', opening ? 'Close navigation' : 'Open navigation');
-      if (opening) nav.querySelector('a')?.focus();
+      setOpen(opening);
+      if (opening && event.detail === 0) nav.querySelector('a')?.focus();
     });
     nav.addEventListener('click', event => {
-      if (event.target.closest('a')) closeMenu();
+      if (event.target instanceof Element && event.target.closest('a')) setOpen(false);
     });
     document.addEventListener('keydown', event => {
-      if (event.key === 'Escape' && root.classList.contains('nav-open')) closeMenu(true);
+      if (event.key === 'Escape' && root.classList.contains('nav-open')) setOpen(false, true);
     });
     document.addEventListener('pointerdown', event => {
-      if (root.classList.contains('nav-open') && !event.target.closest('.site-header')) closeMenu();
+      if (root.classList.contains('nav-open') && event.target instanceof Element && !event.target.closest('.site-header')) setOpen(false);
     });
-    const desktop = window.matchMedia?.('(min-width: 861px)');
-    desktop?.addEventListener?.('change', event => { if (event.matches) closeMenu(); });
+    window.matchMedia('(min-width: 861px)').addEventListener?.('change', event => {
+      if (event.matches) setOpen(false);
+    });
     root.classList.add('js-enhanced');
   }
 
-  // Filter state belongs in the URL: links can be shared, and Back/Forward works.
-  const filters = [...document.querySelectorAll('button[data-filter]')];
-  const cards = [...document.querySelectorAll('.project-grid [data-category-card]')];
-  const result = document.getElementById('filter-count');
-  if (filters.length && cards.length) {
-    const categories = new Set(filters.map(button => button.dataset.filter));
-    const currentFilter = () => {
-      const value = new URL(window.location.href).searchParams.get('filter');
-      return value && categories.has(value) ? value : 'All';
+  function initStickyHeader() {
+    const header = document.querySelector('.site-header');
+    if (!header) return;
+    let requested = false;
+    const update = () => {
+      requested = false;
+      header.classList.toggle('is-scrolled', window.scrollY > 8);
+    };
+    update();
+    window.addEventListener('scroll', () => {
+      if (requested) return;
+      requested = true;
+      requestAnimationFrame(update);
+    }, { passive: true });
+
+    const navLinks = [...document.querySelectorAll('.topnav a[href^="/#"]')];
+    if (!navLinks.length || !('IntersectionObserver' in window)) return;
+    const sections = navLinks.map(link => ({ link, section: document.getElementById(link.hash.slice(1)) })).filter(entry => entry.section);
+    if (!sections.length) return;
+    const observer = new IntersectionObserver(entries => {
+      const active = entries.filter(entry => entry.isIntersecting).sort((a,b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+      if (!active) return;
+      for (const item of sections) {
+        if (item.section === active.target) item.link.setAttribute('aria-current', 'location');
+        else item.link.removeAttribute('aria-current');
+      }
+    }, { rootMargin: '-16% 0px -56% 0px', threshold: 0 });
+    sections.forEach(item => observer.observe(item.section));
+  }
+
+  function initFilters() {
+    const buttons = [...document.querySelectorAll('button[data-filter]')];
+    const cards = [...document.querySelectorAll('.project-grid [data-category-card]')];
+    const countLabel = document.getElementById('filter-count');
+    if (!buttons.length || !cards.length) return;
+    const allowed = new Set(buttons.map(button => button.dataset.filter));
+    const current = () => {
+      const filter = new URL(window.location.href).searchParams.get('filter');
+      return allowed.has(filter) ? filter : 'All';
     };
     const render = filter => {
       let count = 0;
-      for (const button of filters) {
-        button.setAttribute('aria-pressed', String(button.dataset.filter === filter));
-      }
+      for (const button of buttons) button.setAttribute('aria-pressed', String(button.dataset.filter === filter));
       for (const card of cards) {
         const visible = filter === 'All' || card.dataset.categoryCard === filter;
         card.classList.toggle('hide', !visible);
         if (visible) count++;
       }
-      if (result) result.textContent = 'Showing ' + count + ' ' + (count === 1 ? 'project' : 'projects');
+      if (countLabel) countLabel.textContent = `Showing ${count} ${count === 1 ? 'project' : 'projects'}`;
     };
-    for (const button of filters) {
-      button.addEventListener('click', () => {
-        const filter = button.dataset.filter;
-        if (!categories.has(filter) || filter === currentFilter()) return;
-        const url = new URL(window.location.href);
-        if (filter === 'All') url.searchParams.delete('filter');
-        else url.searchParams.set('filter', filter);
-        history.pushState({ portfolioFilter: filter }, '', url.pathname + url.search + url.hash);
-        render(filter);
-      });
-    }
-    window.addEventListener('popstate', () => render(currentFilter()));
-    render(currentFilter());
+    const transition = filter => {
+      if ('startViewTransition' in document && !reducedMotion.matches) {
+        document.startViewTransition(() => render(filter));
+      } else render(filter);
+    };
+    buttons.forEach(button => button.addEventListener('click', () => {
+      const filter = button.dataset.filter;
+      if (!allowed.has(filter) || filter === current()) return;
+      const url = new URL(window.location.href);
+      if (filter === 'All') url.searchParams.delete('filter');
+      else url.searchParams.set('filter', filter);
+      window.history.pushState({ portfolioFilter: filter }, '', url.pathname + url.search + url.hash);
+      transition(filter);
+      window.dispatchEvent(new CustomEvent('portfolio:filter-change'));
+    }));
+    window.addEventListener('popstate', () => render(current()));
+    render(current());
   }
-})();
 
+  function initMotion() {
+    if (reducedMotion.matches || navigator.connection?.saveData) return;
+    // Browser-native motion. Dynamic loading saves bytes on reduced-motion devices.
+    import('/assets/motion.js').catch(() => { /* All content is readable without animation. */ });
+  }
 
-/* Motion enhancements modeled on Vague/DoraVoice; readable content by default. */
-(() => {
-  'use strict';
-  const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)');
-  const canAnimate = () => !reduced?.matches && !navigator.connection?.saveData && !document.hidden;
-  if (!('animate' in Element.prototype) || !('IntersectionObserver' in window) || !canAnimate()) return;
-  const easing = 'cubic-bezier(.16,1,.3,1)';
-  const active = new Set();
-  const run = (element, delay = 0, distance = 20, duration = 650) => {
-    if (!canAnimate() || !element.isConnected) return;
-    const animation = element.animate([
-      { opacity: .65, transform: 'translate3d(0, ' + distance + 'px, 0)' },
-      { opacity: 1, transform: 'translate3d(0, 0, 0)' }
-    ], { duration, delay, easing, fill: 'none' });
-    active.add(animation);
-    animation.addEventListener('finish', () => active.delete(animation), { once: true });
-    animation.addEventListener('cancel', () => active.delete(animation), { once: true });
-  };
-  const stop = () => {
-    for (const animation of active) animation.cancel();
-    active.clear();
-  };
-  const observer = new IntersectionObserver(entries => {
-    for (const entry of entries) {
-      if (!entry.isIntersecting) continue;
-      observer.unobserve(entry.target);
-      const order = Number(entry.target.dataset.motionOrder || '0');
-      run(entry.target, Math.min(order * 65, 195), 21, 660);
-    }
-  }, { rootMargin: '0px 0px -8% 0px', threshold: .09 });
-  reduced?.addEventListener?.('change', event => {
-    if (event.matches) { observer.disconnect(); stop(); }
-  });
-  document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); });
-
-  const hero = document.querySelector('.cinematic-hero');
-  if (hero) requestAnimationFrame(() => {
-    hero.querySelectorAll('.hero-status, h1, .hero-copy > p, .buttons, .facts')
-      .forEach((element, index) => run(element, Math.min(index * 85, 340), 13, 720));
-  });
-
-  document.querySelectorAll(
-    '.section-head, .featured-grid .card, .project-grid .card, .timeline-row, ' +
-    '.skill-row, .contact-box, .case-hero, .case-article section'
-  ).forEach((element, index) => {
-    element.dataset.motionOrder = String(index % 4);
-    observer.observe(element);
-  });
-
-  // Filtered cards communicate the updated results without animating layout.
-  const filterBar = document.querySelector('.filters');
-  filterBar?.addEventListener('click', event => {
-    if (!(event.target instanceof Element) || !event.target.closest('button[data-filter]')) return;
-    requestAnimationFrame(() => {
-      document.querySelectorAll('.project-grid .card:not(.hide)')
-        .forEach((element, index) => run(element, Math.min(index * 28, 140), 12, 380));
-    });
-  });
+  initTheme();
+  initNavigation();
+  initStickyHeader();
+  initFilters();
+  initMotion();
 })();

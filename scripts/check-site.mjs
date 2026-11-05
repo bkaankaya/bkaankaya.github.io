@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { join } from 'node:path';
 
 const root = process.cwd();
@@ -7,14 +8,15 @@ const read = file => readFileSync(join(root, file), 'utf8');
 const page = read('index.html');
 const css = read('assets/styles.css');
 const js = read('assets/main.js');
-const cinematic = read('assets/cinematic.css');
+const motion = read('assets/motion.js');
+const baseline = JSON.parse(read('scripts/content-baseline.json'));
 const projectNames = readdirSync(join(root, 'projects'), { withFileTypes: true })
   .filter(entry => entry.isDirectory()).map(entry => entry.name).sort();
 
 assert.equal(projectNames.length, 12, 'All 12 existing project directories must be present');
 assert.match(page, /TED University/, 'Do not rewrite the published education claim');
 assert.match(page, /minor in Business Administration/, 'Preserve the existing education context');
-assert.match(page, /<img[^>]+class="portrait-photo"[^>]+width="280"[^>]+height="350"/, 'Reserve hero image aspect ratio');
+assert.match(page, /<img[^>]+class="portrait-photo"[^>]+width="325"[^>]+height="325"/, 'Reserve hero image aspect ratio');
 assert.match(page, /<meta name="viewport" content="width=device-width, initial-scale=1">/);
 assert.match(page, /id="filter-count"[^>]+aria-live="polite"/);
 assert.equal((page.match(/data-category-card=/g) || []).length, 16,
@@ -22,6 +24,13 @@ assert.equal((page.match(/data-category-card=/g) || []).length, 16,
 
 function checkPage(relativePath) {
   const html = read(relativePath);
+  // Guard factual copy against accidental design-refactor rewriting.
+  const visibleCopy = html
+    .replace(/<head[^>]*>[\s\S]*?<\/head>/gi, '')
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  const digest = createHash('sha256').update(visibleCopy).digest('hex');
+  assert.equal(digest, baseline.pages[relativePath], relativePath + ': published text changed unexpectedly');
   assert.match(html, /<html lang="en">/, relativePath + ': language declaration missing');
   assert.match(html, /<main id="main">/, relativePath + ': main landmark missing');
   assert.match(html, /href="#main" class="skip"/, relativePath + ': skip link missing');
@@ -43,9 +52,9 @@ for (const slug of projectNames) {
 }
 
 for (const marker of [
-  ':root[data-theme="dark"]', 'prefers-reduced-motion', 'focus-visible',
+  " :root[data-theme='dark']".trim(), 'prefers-reduced-motion', 'focus-visible',
   '.menu-toggle', '.topnav', '.project-grid', '.case-article',
-  '.portrait-photo', '--space-4', 'max-width: 600px',
+  '.portrait-photo', '--hero-bg', 'max-width: 600px',
 ]) assert.ok(css.includes(marker), 'Missing design-system contract: ' + marker);
 
 for (const marker of [
@@ -53,18 +62,26 @@ for (const marker of [
   'history.pushState', 'popstate', 'aria-pressed', 'localStorage',
 ]) assert.ok(js.includes(marker), 'Missing behavior contract: ' + marker);
 
-assert.match(page, /class="shell hero cinematic-hero"/, 'Home hero must have photographic composition class');
-assert.match(page, /href="\/assets\/cinematic.css"/, 'Cinematic layer must load on the homepage');
+assert.match(page, /class="hero"/, 'Use the single canonical hero composition');
+assert.ok(!page.includes('cinematic.css'), 'Old cinema layer must be removed');
+assert.ok(!existsSync(join(root, 'assets', 'cinematic.css')), 'Remove dead cinematic override file');
+assert.ok(existsSync(join(root, 'assets', 'portrait-kaan.webp')), 'Hero portrait must exist');
+assert.ok(existsSync(join(root, 'assets', 'motion.js')), 'Motion entrypoint must exist');
 for (const marker of [
-  '.cinematic-hero', 'prefers-reduced-motion:reduce', 'portfolio-scroll-meter',
-  '.portrait-photo', '.pipeline', 'max-width:600px'
-]) assert.ok(cinematic.includes(marker), 'Missing cinematic motion contract: ' + marker);
-assert.ok(!/transition:\s*all\b/i.test(cinematic), 'Motion layer must not animate all properties');
-for (const marker of ['IntersectionObserver', '.animate(', 'visibilitychange', 'prefers-reduced-motion', 'requestAnimationFrame']) {
-  assert.ok(js.includes(marker), 'Missing progressive enhancement: ' + marker);
+  '.hero', '.portrait-photo', '.pipeline', 'prefers-reduced-motion: reduce',
+  'view-transition-name', '.topnav a[aria-current', 'max-width: 600px'
+]) assert.ok(css.includes(marker), 'Missing unified design contract: ' + marker);
+for (const marker of ['IntersectionObserver', '.animate(', 'visibilitychange', 'prefers-reduced-motion']) {
+  assert.ok(motion.includes(marker), 'Missing motion enhancement: ' + marker);
 }
+for (const marker of ['initNavigation', 'initTheme', 'initFilters', 'initStickyHeader', "import('/assets/motion.js')"]) {
+  assert.ok(js.includes(marker), 'Missing structured UI behavior: ' + marker);
+}
+assert.ok(!/transition:\s*all\b/i.test(motion), 'Motion must never animate all CSS properties');
 assert.ok(!/<script[^>]+src="https?:\/\//i.test(page), 'No external script/CDN is needed');
 assert.ok(!/transition:\s*all\b/i.test(css), 'Do not animate every CSS property');
+assert.ok(css.includes('.hero { width: min(1360px'), 'Single canonical hero layout missing');
+assert.ok(!css.includes('.cinematic-hero'), 'Legacy hero selectors must be removed');
 
 let braces = 0;
 const styles = css.replace(/\/\*[\s\S]*?\*\//g, '');

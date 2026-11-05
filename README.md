@@ -1,22 +1,38 @@
 # Bertan Kaan Kaya — Engineering Portfolio
 
-Source of **https://bkaankaya.github.io/** — a lightweight, responsive portfolio covering AI, machine learning, backend products, embedded systems, blockchain and interactive software.
+The source for **https://bkaankaya.github.io/**, a GitHub Pages portfolio of applied AI, machine learning, backend products, full-stack systems, embedded engineering and research work.
 
-## Project structure
-- `index.html` — landing, featured projects, filterable catalog, experience and contact
-- `projects/*/index.html` — individual project overviews with explicit scope notes
-- `assets/styles.css` — design tokens, responsive components, accessibility styles
-- `assets/main.js` — theme switching and project filtering (progressive enhancement)
-- `assets/favicon.svg` — site logo
-- `sitemap.xml`, `robots.txt`, `404.html` and `.nojekyll` — deployment and navigation
+## Architecture
+
+| Path | Responsibility |
+| --- | --- |
+| `index.html` | Portfolio introduction, featured projects, filterable catalog, experience, education and contact |
+| `projects/*/index.html` | Twelve existing project case studies and scope notes |
+| `assets/styles.css` | Single tokenized CSS system, accessible responsive layouts, states and dark mode |
+| `assets/main.js` | Theme, menu, sticky header, active nav and URL-backed project filters |
+| `assets/motion.js` | Lazily loaded IntersectionObserver + native Web Animations API; no mandatory animation dependency |
+| `assets/portrait-kaan.webp` | High-quality crop from the original 640×640 author photograph; circle via CSS |
+| `design.md`, `AGENTS.md` | Design rationale and change constraints |
+| `scripts/content-baseline.json` | Hashes guarding all 13 pages' existing visible copy |
+| `scripts/check-site.mjs` | Zero-dependency route, semantics, content and architecture checks |
+| `.github/workflows/portfolio-quality.yml` | Automated quality gate on `main` |
+
+No frontend build pipeline, runtime server, JavaScript framework, paid service or external tracking is required.
+
+## Verify locally
+
+```bash
+node --check assets/main.js
+node --check assets/motion.js
+node scripts/check-site.mjs
+```
+
+For a local preview, serve the repository root using any static HTTP server. Test on a real browser with keyboard, touch, 200% zoom, reduced motion, dark mode and all project routes. The static gate does not certify Core Web Vitals or WCAG compliance.
 
 ## GitHub Pages
-This is a GitHub Pages user-site repository. If Pages is not publishing yet, go to **Settings → Pages → Build and deployment → Deploy from a branch**, choose **main / (root)** and save. No build or runtime server is required. The deployment URL is https://bkaankaya.github.io/.
 
-## Content policy
-No private source code, private research datasets or personal customer/student information is published. Metrics are explicitly attributed to project documents, where present. Private repositories have explanatory portfolio pages without inaccessible source links. Project names, technical findings and ownership should be kept accurate when editing.
+The repository uses **main / (root)** on GitHub Pages. Pushing to `main` triggers both deployment and `Portfolio quality` checks. The public URL is https://bkaankaya.github.io/.
 
-## Licensing
-MIT covers the source of this website only. Linked projects are independently licensed and may remain private.
+## Content, privacy and licensing
 
-© 2026 Bertan Kaan Kaya.
+The original education/employment copy and every project description remain unchanged. No private source code, credentials, unpublished research or customer data are published. The website's code uses the MIT license; linked repositories retain their own licenses and access rules.

@@ -1,13 +1,13 @@
-# Contributor instructions — Engineering portfolio
+# Contributor guidelines — personal portfolio
 
-Review design.md before changing UI.
+Read `design.md` before modifying UI. Favor clear, limited changes over ornamental complexity.
 
-1. Keep the site's educational claims, project titles and descriptions, employment history and personal details verbatim unless explicitly instructed to modify them. The TED University wording is deliberate and must not be replaced.
-2. Preserve all twelve /projects/*/ routes and respect visibility of private repositories.
-3. Work on the current main HEAD only: no new or backup branches and no force pushes. Do not change dependencies, tool versions, frameworks or GitHub Actions versions without permission.
-4. Preserve lightweight GitHub Pages hosting with static HTML/CSS and progressive JS enhancement. No unnecessary CDN, font dependency, UI framework or analytics.
-5. Use native HTML anchors and buttons, visible keyboard focus, accessible labels, a skip link, touch-sized controls, and reasonable contrast in both themes.
-6. Support reduced motion and OS themes. Keep project filters shareable in URL and usable with Back/Forward.
-7. Manually review 320/375/430/768/1024/1440/1920px widths, 200% zoom, long labels, open mobile menu, keyboard Escape, and no-JS behavior.
-8. Run the zero-dependency site verification script and JS syntax check after changes, and verify GitHub Pages deployment. A green deployment alone does not establish Lighthouse or WCAG compliance.
-9. Keep changes small and record their test evidence and design rationale.
+1. **Preserve all factual page copy** unless explicitly authorized, especially **TED University**, B.Sc. details, existing internships, dates and twelve project descriptions. `scripts/content-baseline.json` enforces this.
+2. Use `assets/styles.css` as the only canonical stylesheet for visual/layout components; do not introduce an overriding `cinematic.css`, duplicated selector bundles or inline style soup.
+3. Keep `assets/main.js` for user interaction state and `assets/motion.js` for optional reveal behavior. Content must remain readable without JS or animations.
+4. Respect reduced motion and save-data modes; avoid perpetual animations and browser layout thrash. Animate `opacity` and `transform` when needed.
+5. Use native semantic buttons, links, landmarks, accessible labels, `aria-pressed`, `aria-expanded`, visible focus and keyboard/Escape support; maintain 44px target sizing where possible.
+6. Work directly on the **latest** `main` with no new/backup branch or force push. Do not upgrade dependency versions, install a framework, disclose private source, or change project endpoints without approval.
+7. Use the author's **original** photo; never replace it with a regenerated/different face. Preserve image provenance and only perform conservative edits from the original.
+8. Run `node --check assets/main.js`, `node --check assets/motion.js`, and `node scripts/check-site.mjs`; inspect mobile, desktop, dark, reduced-motion, no-JS and keyboard behavior before deploying. A green Pages run is not equivalent to field performance or WCAG certification.
+9. Update `design.md` for intentional design decisions, not temporary iterations.

@@ -1,105 +1,66 @@
-# Portfolio Design Engineering
+# Design engineering — Bertan Kaan Kaya portfolio
 
-**Intent:** An evidence-led personal engineering portfolio for recruiters, collaborators and technical reviewers—not a SaaS dashboard or a clone of Vercel's brand.
+Updated: **5 November 2026**. The design is original and references approaches, not other brands' code or visual identities.
 
-This repository keeps the reasons behind design decisions near the implementation, following Vercel's 2026 published product-design guidance. The site remains static HTML, CSS and vanilla JS on GitHub Pages with no extra dependencies.
+## Product intent
 
-## Visitors, tasks, hierarchy
+A precise, technically credible personal portfolio for hiring managers, engineering reviewers and collaborators. The first reading order is **identity → selected work → full project library → experience → about → contact**. Do not turn it into a dashboard, invented product demo or decorative animation showcase.
 
-1. Identity: clarify who the engineer is and what work they do using the **existing approved site copy**.
-2. Evidence: featured projects link to substantive case studies; all twelve project routes remain accessible.
-3. Context: distinguish AI, product, software, embedded and research work without inventing results.
-4. Trust: education, experience and tooling get intentional reading order.
-5. Next steps: every card has a native anchor, case studies link back, and contact uses standard links.
+**Content is immutable by default:** TED University, academic credentials, existing location, projects, descriptions, dates, employers, URLs and private-source boundaries are not to be altered. `scripts/content-baseline.json` records SHA-256 hashes of all 13 published pages' visible body copy. An intentional copy change requires authorization and an explicit snapshot update.
 
-## Design language and primitives
+## Visual system
 
-- Direction: restrained, technical-editorial design with off-white paper, graphite-green ink, terracotta emphasis and authentic portrait photography.
-- Use shared CSS custom properties for surfaces, text, borders, spacing, radii, focus and motion. The spacing scale is 4, 8, 12, 16, 24, 32, 48, 64 and 96 CSS pixels.
-- System sans-serif for hierarchy, a serif only for editorial emphasis, restrained monospace for metadata. No external font CDN.
-- Cards: subtle borders, nested radii, light two-layer shadows and differentiated category tints; no generic gradient wallpaper or heavy animations.
-- Use semantic links for navigation and semantic buttons for actions. No fake interactive divs.
-- Preserve the portrait's identity, reserve its aspect ratio and preload only the hero image.
+- Palette: midnight navy (`#0c1626`) and off-white (`#f7f8f7`) with restrained warm-gold accents (`#dbb982` on the hero). Body copy uses accessible slate-blue neutrals. Dark mode uses the same hue family, not an unrelated color set.
+- Type: system sans-serif for legible hierarchy, serif italics only for second-line editorial emphasis, monospace only for a small amount of metadata. No external font request or font-swap layout shift.
+- Primary hero: wide navy surface and intentional negative space, headline and action links on the left, **small authentic circular original photograph** and existing research → intelligence → delivery process on the right. The photo is sourced directly from the user's original 640 × 640 photograph: native 325 × 325 crop, gentle tonal color correction and selective sharpening, WebP quality 96. It is not a face-regenerated replacement; the original cannot be given details it never recorded.
+- Cards: consistent surface/border radii, soft two-layer shadow, quiet category-specific artwork, hover elevation up to 3 px. Never display fake product outcomes, ratings, or capabilities.
+- Layout: intrinsic CSS Grid/Flexbox, one shared stylesheet `assets/styles.css`, single source of truth for tokens and sections. Mobile stepper flows into readable rows.
 
-## Interaction contract
+## Motion grammar (short, deliberate, cancelable)
 
-- The static HTML navigation stays usable without JavaScript. At 860px or smaller, enhancement adds a toggle with aria-expanded, Escape-to-close, outside click and focus restoration.
-- Prefer controls 44px high on mobile; visible focus-visible styling must not be clipped or obscured by sticky UI.
-- Project filters use native buttons, aria-pressed, a polite live result count and a shareable filter URL parameter; browser Back/Forward restores selection.
-- Theme follows saved user choice, otherwise OS preference, and updates browser theme-color.
-- Prefer CSS grid/flex/intrinsic dimensions over JS layout measurement. Limit transitions to intentional properties; honor reduced-motion settings.
-- Keyboard Tab, Enter, Space and Escape should work, alongside touch and pointer use.
+| Pattern | Driver | Target and duration | Fallback |
+| --- | --- | --- | --- |
+| Hero entrance | `motion.js` + Web Animations API | Staggered heading, copy, actions and portrait; **530ms**, **65ms** stagger | Fully visible static DOM |
+| Scroll reveal | `IntersectionObserver` + Web Animations API | On-first-entry opacity/translateY, **455ms**; ≤165ms stagger | All content visible; no animation gating |
+| Card / CTA feedback | CSS `transform`, color, border, shadow | 160–450ms depending on target | No motion for reduced-motion users |
+| Active navigation | IntersectionObserver + CSS underline | 190ms underline transform | Native links usable even without JS |
+| Filter state | Native View Transition API if available | ~120–190ms subtle crossfade (only project grid) | Immediate filter with `aria-pressed` and polite count |
+| Reading indicator | CSS `animation-timeline:scroll()` | 2px header progress | No progress line if unsupported |
+| Sticky header | Passive scroll event + requestAnimationFrame | 180ms border/shadow feedback | Sticky header remains functional |
 
-## Responsive contract
+### Performance and accessibility rules
 
-- Desktop shell maximum width: 1160px.
-- Wide screens: two-column hero; asymmetric featured grid; three-column project library.
-- 601–860px: single-column hero, two-column cards, compact navigation.
-- Up to 600px: single-column cards, wrapping filter controls, readable content and no horizontal overflow.
-- Manual QA breakpoints: 320, 375, 430, 768, 1024, 1440 and 1920px, with 200% browser zoom and long text.
+1. Prefer opacity and transforms; avoid continuous mouse listeners, canvas, 3D, scroll-position reads for animation, forced reflow and `transition: all`. Never hide meaningful content before JavaScript hydration.
+2. `prefers-reduced-motion: reduce` disables nonessential animations. Motion JS is loaded on demand via dynamic `import('/assets/motion.js')` only when appropriate; `saveData` skips it.
+3. All controls use native link/button semantics. Menu state is reflected in `aria-expanded`, has Escape, outside-pointer close and keyboard focus return. Project filters preserve URL and Back/Forward history.
+4. Touch controls have a 44px preferred minimum; use visible keyboard focus, semantic landmarks, correct alt text, skip link and live filter count.
+5. Media has explicit intrinsic dimensions, aspect ratio, no layout JS, and the portrait is optimized for its actual display diameter.
+6. Test mobile **320/375/430px**, tablet **768px**, laptop **1024px**, desktop **1440/1920px**, dark mode, reduced motion, no JS and project detail pages. Verify Chrome/Firefox/Safari before asserting cross-browser certification.
+7. Web Vitals targets at the 75th percentile are **LCP ≤2.5s, INP ≤200ms, CLS ≤0.1**. Browser screenshots and static CI do not prove those field thresholds.
 
-## Accessibility and performance
+## Architecture after refactor
 
-- WCAG 2.2 AA is the design target, not a certification claim. Preserve heading semantics, alt text, keyboard access, skip links, visual focus, contrast and reduced motion.
-- On mobile use 44px hit targets where practical. WCAG 2.2 AA's normative target-size minimum has its own 24px rules and exceptions.
-- Reserve media dimensions, use system fonts and avoid layout jumps.
-- Measurable field goals at the 75th percentile: LCP at most 2.5 seconds, INP at most 200ms, CLS at most 0.1. These are goals, not measured results.
-- Run Lighthouse and manual cross-browser checks before claiming compliance.
+- `index.html` and `projects/*/index.html`: semantic content, unmodified text.
+- `assets/styles.css`: **one canonical token and component system**, including the hero and responsive layout. The previous override-based `cinematic.css` is deleted.
+- `assets/main.js`: short, named controllers for theme, accessible nav, sticky/active header, filter/history, conditional motion import.
+- `assets/motion.js`: isolated progressive motion implementation; no build or dependencies.
+- `assets/portrait-kaan.webp`: original-photo crop, high-quality compression, circular via CSS only.
+- `scripts/content-baseline.json`: content lock for published text.
+- `scripts/check-site.mjs`: dependency-free route, content and design-contract checks.
+- `.github/workflows/portfolio-quality.yml`: existing pinned CI workflow, now automatically running extended checks.
 
-## Non-negotiable maintenance rules
+No new package, dependency version, branch, CSS framework, tracking service or runtime bundle was introduced. Existing project URLs stay unchanged.
 
-- **Preserve all factual content, especially the existing TED University wording. Do not substitute another institution.**
-- Do not invent work, metrics, degrees or employers; keep all twelve case-study URLs and titles intact.
-- Do not publish private code, credentials, unpublished research or customer data.
-- No new branch, dependency upgrade, framework change, force push or action-version change without permission.
-- The project should work with GitHub Pages and without a runtime server.
+## Technical source cross-checks
 
-## Cross-checked sources (reviewed November 5, 2026)
-
-Vercel:
-- https://vercel.com/design/engineer
-- https://vercel.com/design/guidelines
-- https://vercel.com/geist/introduction
-- https://vercel.com/blog/design-engineering-at-vercel
-- https://vercel.com/blog/teaching-agents-product-design-at-vercel (June 2026)
-- https://vercel.com/blog/how-our-agents-build-on-brand-pages-with-design-md (August 2026)
-
-Independent:
-- https://primer.style/accessibility/tools-and-resources/checklists/engineering-checklist/
-- https://primer.style/accessibility/design-guidance/text-resize-and-spacing/
-- https://shopify.dev/docs/api/polaris/using-polaris-web-components
-- https://www.carbondesignsystem.com/building-blocks/foundations/2x-grid/overview
-- https://www.w3.org/TR/WCAG22/
-- https://web.dev/articles/vitals
-
-Vendor design systems are comparative references, while W3C WCAG is the normative accessibility standard; Core Web Vitals are field-measurable performance metrics.
-
-
-## Cinematic motion study — 5 November 2026
-
-### Verified inputs and constraints
-- **Scale AI careers:** https://scale.com/careers. The supplied screenshot and public page show a restrained header, near-full-width photographic hero with rounded corners, a dark readability overlay, a dominant white headline and a clear CTA. The page HTML confirms the headline and call to action. **The exact proprietary source, transition durations and animation implementation were not available for verification; do not claim our animations are copied from their runtime.**
-- **Vague- (own repository):** `frontend/src/components/sections/HeroSection.tsx` uses a photographic hero, dark horizontal overlay and simple CTA transition. `frontend/src/app/page.tsx` uses Framer Motion's `motion.div`, `AnimatePresence`, opacity/y/scale entry and exit states, and staggered spring transitions for product cards. Its motion logic was studied, not transplanted or used as a dependency.
-- **AI-Receptionist / DoraVoice (own repository):** `apps/web/src/components/marketing-site/MarketingMotion.tsx` uses `IntersectionObserver`, no-motion fallback and progressive enhancement. `apps/web/src/components/ui/Reveal.tsx` preserves visible SSR content and triggers a one-time transform/opacity reveal. `ScrollText.tsx` evaluates native view timelines and reduction settings. The portfolio follows the visibility-first and observer-once concepts.
-
-### Applied design translation
-- `assets/cinematic.css` provides a wide photo-led hero, gradient readability layers, original engineering text and a three-stage process strip. This is an original composition using the existing author photo, not an impersonation of Scale AI.
-- `assets/main.js` adds a short, once-only hero text entrance and viewport-triggered section/card reveals with the browser's Web Animations API and `IntersectionObserver`. The document remains visible before JS and with JS disabled.
-- Filter interactions use a subtle entrance without animating grid sizes or positions. Hover states are reduced to modest transforms; there is no high-frequency pointer-tracking or perpetual animation.
-- CSS scroll progress is opt-in via `@supports(animation-timeline:scroll())`, with no JS/polyfill fallback for this decorative cue.
-- If `prefers-reduced-motion:reduce` is active, page-reveal movement is omitted and CSS image/menu movement is disabled. A change while animations are playing cancels active animations.
-- No version changes, React runtime, Framer Motion or third-party assets were introduced. Preserve all homepage bio facts, the TED University credential, and every project detail page.
-
-### Release checklist
-1. GitHub Pages deploy succeeds at the exact updated `main` SHA.
-2. Run `node --check assets/main.js` and `node scripts/check-site.mjs` (12 project pages plus homepage, routes, design invariants and semantics).
-3. Manual viewport tests: 320, 390, 768, 1024, 1440 and 1920 pixels; verify no clipping or overlap in hero process strip and statistics, visible focus, open mobile menu and dark mode.
-4. Check JavaScript disabled and `prefers-reduced-motion` states. Confirm the hero remains readable without animations.
-5. Use actual Lighthouse/real-user measurements for Core Web Vitals. Neither a successful deployment nor a smooth local screenshot establishes field performance.
-6. The original portrait asset is 280 × 350px; a larger photographic placement can expose pixelation. Replacing the image with a higher-resolution, approved image asset is a separate media improvement and should be checked for LCP bytes.
-
-References:
-- https://vercel.com/design/guidelines
-- https://motion.dev/docs/performance
-- https://motion.dev/docs/react-accessibility
-- https://developer.chrome.com/docs/modern-web-guidance/guides/ui-atoms/shrinking-header-on-scroll
+- Vercel Web Interface Guidelines: https://vercel.com/design/guidelines — motion principles, transform/opacity, accessibility, focus and layout.
+- Vercel Geist design system: https://vercel.com/geist/introduction — cohesive component systems.
+- Scale AI careers: https://scale.com/careers — reference **visual** hierarchy and restraint. Its proprietary animation timing/implementation has not been inspected or copied.
+- Vague (private repo): `frontend/src/app/page.tsx` uses Framer Motion spring-stagger and `AnimatePresence`; `frontend/src/components/sections/HeroSection.tsx` uses layered photography and simple CSS CTA transitions.
+- DoraVoice (private repo): `apps/web/src/components/marketing-site/MarketingMotion.tsx` uses `IntersectionObserver`, graceful reduced-motion, and progressive visibility; `ScrollText.tsx` avoids interrupting LCP headings; `apps/web/src/components/ui/Reveal.tsx` preserves SSR text and animates without hiding content.
+- Motion technical guide: https://motion.dev/docs/inview — intersection-based reveal and off-main-thread intersection calculation.
+- MDN native scroll timeline: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Properties/animation-timeline/view — native `view()` support with fallbacks.
+- MDN `prefers-reduced-motion`: https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/At-rules/%40media/prefers-reduced-motion.
+- W3C WCAG 2.2: https://www.w3.org/TR/WCAG22/ — normative accessibility requirements.
+- GitHub Primer accessibility engineering checklist: https://primer.style/accessibility/tools-and-resources/checklists/engineering-checklist/.
+- Google Core Web Vitals: https://web.dev/articles/vitals.

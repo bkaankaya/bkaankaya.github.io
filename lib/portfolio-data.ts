@@ -145,7 +145,7 @@ export const experienceItems: { title: string; description: string; date: string
     accent: "violet",
   },
   {
-    title: "AI Receptionist / DoraVoice Work",
+    title: "DoraVoice Project Work",
     description: "Contributed to frontend, product polish and engineering quality across a modern AI assistant product.",
     date: "2024",
     icon: Activity,

@@ -85,6 +85,11 @@
   height: auto;
   min-height: 209px;
   padding: 17px 20px 21px;
+  /* Keep technical dots in the ambient space, not behind readable copy. */
+  background: linear-gradient(145deg, rgba(27, 31, 54, .99), rgba(19, 23, 42, .99));
+}
+.portfolio-app[data-theme="light"] .project-card-content {
+  background: rgba(253, 253, 255, .98);
 }
 .project-card-top { margin-bottom: 10px; }
 .project-card h3 { font-size: clamp(1rem, 1.32vw, 1.18rem); }

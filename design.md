@@ -62,3 +62,5 @@ A page-spanning `ambient-dot-field` adds a fine static stipple pattern and a poi
 Visual QA contract: normal/reduced motion, pointer fine/coarse, dark/light, 320px–1920px, no lateral overflow, 7 distinct images present in static `out/projects/`, modal accessible via keyboard, focus return after Escape, data fact checks, no dangerous SVG content.
 
 References: https://vercel.com/design/guidelines , https://web.dev/articles/animations-guide , https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame .
+
+Final visual QA refinement: card artwork remains fully illustrated while project text sits on a near-opaque theme-matched paper surface to prevent the global stipple effect from lowering legibility. `DoraVoice` is the canonical product name on project and experience headings.

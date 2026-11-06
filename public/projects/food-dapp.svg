@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-label="Decentralized food ordering editorial project illustration">
+ <defs>
+  <linearGradient id="bg" x1=".08" y1=".02" x2=".95" y2=".94"><stop stop-color="#2b183b"/><stop offset=".62" stop-color="#54284f"/><stop offset="1" stop-color="#a73e7b"/></linearGradient>
+  <radialGradient id="glow"><stop stop-color="#ffffff" stop-opacity=".26"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient>
+  <pattern id="grid" width="36" height="36" patternUnits="userSpaceOnUse"><path d="M36 0H0V36" fill="none" stroke="#ffffff" stroke-opacity=".075"/></pattern>
+  <filter id="soft"><feGaussianBlur stdDeviation="30"/></filter>
+ </defs>
+ <rect width="960" height="540" fill="url(#bg)"/>
+ <rect width="960" height="540" fill="url(#grid)"/>
+ <circle cx="795" cy="92" r="280" fill="url(#glow)" opacity=".7"/>
+ <circle cx="112" cy="465" r="200" fill="#7e64ff" opacity=".1" filter="url(#soft)"/>
+ <rect x="94" y="74" width="776" height="386" rx="24" fill="#251b39" stroke="#fa9ccd" stroke-opacity=".4"/>
+ <rect x="119" y="99" width="734" height="42" rx="11" fill="#382648" /><text x="144" y="127" font-family="Arial,system-ui,sans-serif" font-size="16" font-weight="700" fill="#ffdbef">FOOD / WEB3 ORDER FLOW</text>
+ <rect x="146" y="166" width="248" height="250" rx="18" fill="#362946" />
+ <text x="174" y="201" font-family="Arial,system-ui,sans-serif" font-size="17" font-weight="700" fill="#ffc6e5">MENU</text>
+ <rect x="171" y="223" width="197" height="47" rx="11" fill="#4e345b" /><circle cx="198" cy="246" r="15" fill="#ffb37b"/><rect x="229" y="235" width="108" height="8" rx="4" fill="#9e7eac" /><rect x="229" y="251" width="65" height="6" rx="3" fill="#715982" /><rect x="171" y="283" width="197" height="47" rx="11" fill="#4e345b" /><circle cx="198" cy="306" r="15" fill="#ff7d9c"/><rect x="229" y="295" width="108" height="8" rx="4" fill="#9e7eac" /><rect x="229" y="311" width="65" height="6" rx="3" fill="#715982" /><rect x="171" y="343" width="197" height="47" rx="11" fill="#4e345b" /><circle cx="198" cy="366" r="15" fill="#dbb0fa"/><rect x="229" y="355" width="108" height="8" rx="4" fill="#9e7eac" /><rect x="229" y="371" width="65" height="6" rx="3" fill="#715982" />
+ <rect x="452" y="181" width="347" height="214" rx="19" fill="#40294a" stroke="#e39bc8" stroke-opacity=".36"/>
+ <text x="480" y="219" font-family="Arial,system-ui,sans-serif" font-size="17" font-weight="700" fill="#f7c4e7">TRANSACTION PATH</text>
+ <circle cx="508" cy="291" r="33" fill="#6c456d" stroke="#ffcaea" stroke-opacity=".5"/><text x="496" y="297" font-family="Arial,system-ui,sans-serif" font-size="16" font-weight="700" fill="#ffffff">01</text><circle cx="622" cy="291" r="33" fill="#bd639b" stroke="#ffcaea" stroke-opacity=".5"/><text x="610" y="297" font-family="Arial,system-ui,sans-serif" font-size="16" font-weight="700" fill="#ffffff">02</text><circle cx="736" cy="291" r="33" fill="#6c456d" stroke="#ffcaea" stroke-opacity=".5"/><text x="724" y="297" font-family="Arial,system-ui,sans-serif" font-size="16" font-weight="700" fill="#ffffff">03</text>
+ <path d="M546 291L588 291" stroke="#ff9ecc" stroke-width="4" stroke-linecap="round" opacity="1"/><path d="M657 291L702 291" stroke="#ff9ecc" stroke-width="4" stroke-linecap="round" opacity="1"/>
+ <text x="490" y="356" font-family="Arial,system-ui,sans-serif" font-size="12" font-weight="600" fill="#d4a6d4">ORDER</text><text x="603" y="356" font-family="Arial,system-ui,sans-serif" font-size="12" font-weight="600" fill="#d4a6d4">VERIFY</text><text x="719" y="356" font-family="Arial,system-ui,sans-serif" font-size="12" font-weight="600" fill="#d4a6d4">RECORD</text>
+ 
+ </svg>

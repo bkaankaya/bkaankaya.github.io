@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-label="Vague sports-commerce editorial project illustration">
+ <defs>
+  <linearGradient id="bg" x1=".08" y1=".02" x2=".95" y2=".94"><stop stop-color="#0b2b34"/><stop offset=".62" stop-color="#0f5260"/><stop offset="1" stop-color="#0c6e67"/></linearGradient>
+  <radialGradient id="glow"><stop stop-color="#ffffff" stop-opacity=".26"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient>
+  <pattern id="grid" width="36" height="36" patternUnits="userSpaceOnUse"><path d="M36 0H0V36" fill="none" stroke="#ffffff" stroke-opacity=".075"/></pattern>
+  <filter id="soft"><feGaussianBlur stdDeviation="30"/></filter>
+ </defs>
+ <rect width="960" height="540" fill="url(#bg)"/>
+ <rect width="960" height="540" fill="url(#grid)"/>
+ <circle cx="795" cy="92" r="280" fill="url(#glow)" opacity=".7"/>
+ <circle cx="112" cy="465" r="200" fill="#7e64ff" opacity=".1" filter="url(#soft)"/>
+ <rect x="80" y="85" width="810" height="373" rx="24" fill="#101f29" stroke="#4cb3ae" stroke-opacity=".42" stroke-width="2"/><rect x="80" y="85" width="810" height="51" rx="24" fill="#172f39" /><text x="111" y="117" font-family="Arial,system-ui,sans-serif" font-size="16" font-weight="700" fill="#daffff">VAGUE / SPORTS COMMERCE</text><rect x="107" y="174" width="206" height="251" rx="18" fill="#1b3640" />
+ <text x="132" y="208" font-family="Arial,system-ui,sans-serif" font-size="16" font-weight="700" fill="#85ded1">STORE FRONT</text>
+ <text x="131" y="248" font-family="Arial,system-ui,sans-serif" font-size="23" font-weight="700" fill="#efffff">Shop / Orders</text>
+ <rect x="132" y="274" width="132" height="8" rx="4" fill="#82d9c5" /><rect x="132" y="309" width="132" height="8" rx="4" fill="#456b74" /><rect x="132" y="344" width="132" height="8" rx="4" fill="#456b74" /><rect x="132" y="379" width="132" height="8" rx="4" fill="#456b74" />
+ <rect x="344" y="180" width="142" height="186" rx="14" fill="#edf3f4" /><rect x="356" y="192" width="118" height="95" rx="12" fill="#e3c29d" /><path d="M414 211l-27 9 8 32 18-7 0 33h22v-33l18 7 7-32-29-9-9 14h-10z" fill="#ffffff" fill-opacity=".8" stroke="#375158" stroke-opacity=".18"/><text x="359" y="312" font-family="Arial,system-ui,sans-serif" font-size="12" font-weight="700" fill="#33565a">JERSEY</text><rect x="359" y="327" width="86" height="8" rx="4" fill="#b6c6c8" /><rect x="502" y="180" width="142" height="186" rx="14" fill="#edf3f4" /><rect x="514" y="192" width="118" height="95" rx="12" fill="#b5e7cf" /><path d="M572 211l-27 9 8 32 18-7 0 33h22v-33l18 7 7-32-29-9-9 14h-10z" fill="#ffffff" fill-opacity=".8" stroke="#375158" stroke-opacity=".18"/><text x="517" y="312" font-family="Arial,system-ui,sans-serif" font-size="12" font-weight="700" fill="#33565a">RUNNING</text><rect x="517" y="327" width="86" height="8" rx="4" fill="#b6c6c8" /><rect x="660" y="180" width="142" height="186" rx="14" fill="#edf3f4" /><rect x="672" y="192" width="118" height="95" rx="12" fill="#9cc7ee" /><path d="M730 211l-27 9 8 32 18-7 0 33h22v-33l18 7 7-32-29-9-9 14h-10z" fill="#ffffff" fill-opacity=".8" stroke="#375158" stroke-opacity=".18"/><text x="675" y="312" font-family="Arial,system-ui,sans-serif" font-size="12" font-weight="700" fill="#33565a">TRAINING</text><rect x="675" y="327" width="86" height="8" rx="4" fill="#b6c6c8" /><rect x="345" y="390" width="436" height="27" rx="13" fill="#244a50" /><text x="487" y="408" font-family="Arial,system-ui,sans-serif" font-size="12" font-weight="700" fill="#bce9e1">SECURE CHECKOUT FLOW</text>
+ 
+ </svg>

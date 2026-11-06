@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
+import Image from "next/image"
 import { ArrowUpRight, ExternalLink, X } from "lucide-react"
 import { projects } from "@/lib/portfolio-data"
 import { portfolioMailto } from "@/lib/portfolio-contact"
@@ -87,6 +88,30 @@ export function ProjectCard({ slug }: { slug: string }) {
   return (
     <>
       <article className="project-card" data-accent={project.accent}>
+        <button
+          className="project-art-trigger"
+          type="button"
+          aria-label={`Explore ${project.title} project`}
+          aria-haspopup="dialog"
+          onClick={(event) => {
+            triggerRef.current = event.currentTarget
+            setDialogOpen(true)
+          }}
+        >
+          <Image
+            src={project.image}
+            alt=""
+            fill
+            unoptimized
+            sizes="(max-width: 640px) 100vw, (max-width: 820px) 50vw, 33vw"
+            className="project-art-image"
+          />
+          <span className="project-art-overlay" aria-hidden="true" />
+          <span className="project-art-caption" aria-hidden="true">
+            <span>Selected work <span className="project-art-sparkle">✦</span></span>
+            <span>Explore <ArrowUpRight /></span>
+          </span>
+        </button>
         <div className="project-card-content">
           <div className="project-card-top">
             <span className="project-icon">
@@ -149,6 +174,9 @@ export function ProjectCard({ slug }: { slug: string }) {
         }}
       >
         <div className="project-dialog-content">
+          <div className="project-dialog-visual">
+            <Image src={project.image} alt="" fill unoptimized sizes="(max-width: 600px) 100vw, 520px" />
+          </div>
           <button
             className="dialog-close-button"
             type="button"

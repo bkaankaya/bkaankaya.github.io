@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-label="Hospital management editorial project illustration">
+ <defs>
+  <linearGradient id="bg" x1=".08" y1=".02" x2=".95" y2=".94"><stop stop-color="#0e2845"/><stop offset=".62" stop-color="#205079"/><stop offset="1" stop-color="#4972a0"/></linearGradient>
+  <radialGradient id="glow"><stop stop-color="#ffffff" stop-opacity=".26"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient>
+  <pattern id="grid" width="36" height="36" patternUnits="userSpaceOnUse"><path d="M36 0H0V36" fill="none" stroke="#ffffff" stroke-opacity=".075"/></pattern>
+  <filter id="soft"><feGaussianBlur stdDeviation="30"/></filter>
+ </defs>
+ <rect width="960" height="540" fill="url(#bg)"/>
+ <rect width="960" height="540" fill="url(#grid)"/>
+ <circle cx="795" cy="92" r="280" fill="url(#glow)" opacity=".7"/>
+ <circle cx="112" cy="465" r="200" fill="#7e64ff" opacity=".1" filter="url(#soft)"/>
+ <rect x="97" y="92" width="775" height="349" rx="23" fill="#162b41" stroke="#78b8fb" stroke-opacity=".43"/>
+ <rect x="121" y="113" width="731" height="43" rx="11" fill="#23405b" /><text x="148" y="141" font-family="Arial,system-ui,sans-serif" font-size="16" font-weight="700" fill="#d2e7ff">HOSPITAL / OPERATIONS</text>
+ <rect x="132" y="177" width="195" height="239" rx="16" fill="#23435f" /><text x="155" y="210" font-family="Arial,system-ui,sans-serif" font-size="15" font-weight="600" fill="#cceaff">OVERVIEW</text>
+ <rect x="151" y="230" width="154" height="29" rx="8" fill="#2c516c" /><text x="164" y="250" font-family="Arial,system-ui,sans-serif" font-size="13" font-weight="600" fill="#e4f5ff">Appointments</text><rect x="151" y="271" width="154" height="29" rx="8" fill="#436c93" /><text x="164" y="291" font-family="Arial,system-ui,sans-serif" font-size="13" font-weight="600" fill="#e4f5ff">Staff</text><rect x="151" y="312" width="154" height="29" rx="8" fill="#2c516c" /><text x="164" y="332" font-family="Arial,system-ui,sans-serif" font-size="13" font-weight="600" fill="#e4f5ff">Scheduling</text><rect x="151" y="353" width="154" height="29" rx="8" fill="#2c516c" /><text x="164" y="373" font-family="Arial,system-ui,sans-serif" font-size="13" font-weight="600" fill="#e4f5ff">Records</text>
+ <rect x="350" y="180" width="468" height="238" rx="15" fill="#f1f7ff" />
+ <text x="374" y="211" font-family="Arial,system-ui,sans-serif" font-size="18" font-weight="700" fill="#2c5576">SCHEDULING</text>
+ <rect x="372" y="230" width="421" height="29" rx="8" fill="#dfebf7" />
+ <text x="383" y="249" font-family="Arial,system-ui,sans-serif" font-size="12" font-weight="600" fill="#53738c">TIME</text><text x="514" y="249" font-family="Arial,system-ui,sans-serif" font-size="12" font-weight="600" fill="#53738c">DEPARTMENT</text><text x="706" y="249" font-family="Arial,system-ui,sans-serif" font-size="12" font-weight="600" fill="#53738c">STATUS</text>
+ <rect x="374" y="268" width="416" height="39" rx="7" fill="#f9fcff" /><text x="388" y="294" font-family="Arial,system-ui,sans-serif" font-size="14" font-weight="600" fill="#41617c">08:30</text><rect x="512" y="281" width="130" height="9" rx="5" fill="#b0c4db" /><rect x="693" y="276" width="79" height="20" rx="10" fill="#a9dfd5" /><rect x="374" y="315" width="416" height="39" rx="7" fill="#e7f0f9" /><text x="388" y="341" font-family="Arial,system-ui,sans-serif" font-size="14" font-weight="600" fill="#41617c">10:00</text><rect x="512" y="328" width="130" height="9" rx="5" fill="#b0c4db" /><rect x="693" y="323" width="79" height="20" rx="10" fill="#a9dfd5" /><rect x="374" y="362" width="416" height="39" rx="7" fill="#f9fcff" /><text x="388" y="388" font-family="Arial,system-ui,sans-serif" font-size="14" font-weight="600" fill="#41617c">13:15</text><rect x="512" y="375" width="130" height="9" rx="5" fill="#b0c4db" /><rect x="693" y="370" width="79" height="20" rx="10" fill="#a9dfd5" />
+ 
+ </svg>

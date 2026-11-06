@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-label="QuickScan OCR exam processing editorial project illustration">
+ <defs>
+  <linearGradient id="bg" x1=".08" y1=".02" x2=".95" y2=".94"><stop stop-color="#0b2638"/><stop offset=".62" stop-color="#0b4d5a"/><stop offset="1" stop-color="#168f87"/></linearGradient>
+  <radialGradient id="glow"><stop stop-color="#ffffff" stop-opacity=".26"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient>
+  <pattern id="grid" width="36" height="36" patternUnits="userSpaceOnUse"><path d="M36 0H0V36" fill="none" stroke="#ffffff" stroke-opacity=".075"/></pattern>
+  <filter id="soft"><feGaussianBlur stdDeviation="30"/></filter>
+ </defs>
+ <rect width="960" height="540" fill="url(#bg)"/>
+ <rect width="960" height="540" fill="url(#grid)"/>
+ <circle cx="795" cy="92" r="280" fill="url(#glow)" opacity=".7"/>
+ <circle cx="112" cy="465" r="200" fill="#7e64ff" opacity=".1" filter="url(#soft)"/>
+ <rect x="124" y="67" width="720" height="403" rx="23" fill="#0e2834" stroke="#8aded7" stroke-opacity=".5"/>
+ <rect x="151" y="88" width="664" height="39" rx="10" fill="#1d4650" /><text x="175" y="114" font-family="Arial,system-ui,sans-serif" font-size="16" font-weight="700" fill="#c3fbf7">QUICKSCAN / EXAM REVIEW</text>
+ <rect x="178" y="154" width="292" height="267" rx="12" fill="#f1f7f8" />
+ <text x="201" y="184" font-family="Arial,system-ui,sans-serif" font-size="13" font-weight="700" fill="#47666e">ANSWER SHEET</text>
+ <circle cx="214" cy="208" r="9" stroke="#8dabb2" stroke-width="2" fill="none"/><rect x="239" y="202" width="164" height="8" rx="4" fill="#a9bfc4" /><rect x="409" y="202" width="36" height="8" rx="4" fill="#d0dce0" /><circle cx="214" cy="244" r="9" stroke="#8dabb2" stroke-width="2" fill="none"/><rect x="239" y="238" width="164" height="8" rx="4" fill="#a9bfc4" /><rect x="409" y="238" width="36" height="8" rx="4" fill="#d0dce0" /><circle cx="214" cy="280" r="9" stroke="#8dabb2" stroke-width="2" fill="none"/><rect x="239" y="274" width="164" height="8" rx="4" fill="#a9bfc4" /><rect x="409" y="274" width="36" height="8" rx="4" fill="#d0dce0" /><circle cx="214" cy="316" r="9" stroke="#8dabb2" stroke-width="2" fill="none"/><rect x="239" y="310" width="164" height="8" rx="4" fill="#a9bfc4" /><rect x="409" y="310" width="36" height="8" rx="4" fill="#d0dce0" /><circle cx="214" cy="352" r="9" stroke="#8dabb2" stroke-width="2" fill="none"/><rect x="239" y="346" width="164" height="8" rx="4" fill="#a9bfc4" /><rect x="409" y="346" width="36" height="8" rx="4" fill="#d0dce0" />
+ <path d="M166 174v-25h39M451 174v-25h-39M166 400v25h39M451 400v25h-39" fill="none" stroke="#45eedb" stroke-width="7" stroke-linecap="round"/>
+ <rect x="498" y="174" width="276" height="225" rx="18" fill="#163b4b" stroke="#67c8bd" stroke-opacity=".5"/>
+ <text x="525" y="207" font-family="Arial,system-ui,sans-serif" font-size="17" font-weight="700" fill="#caffef">OCR PIPELINE</text>
+ <rect x="526" y="230" width="208" height="27" rx="9" fill="#2b6269" /><text x="536" y="249" font-family="Arial,system-ui,sans-serif" font-size="12" font-weight="600" fill="#e6e9ff">CAPTURE</text>
+ <rect x="526" y="270" width="178" height="27" rx="9" fill="#376878" /><text x="536" y="289" font-family="Arial,system-ui,sans-serif" font-size="12" font-weight="600" fill="#e6e9ff">EXTRACT</text>
+ <rect x="526" y="311" width="224" height="27" rx="9" fill="#2e7483" /><text x="536" y="330" font-family="Arial,system-ui,sans-serif" font-size="12" font-weight="600" fill="#e6e9ff">REVIEW</text>
+ <path d="M465 285H500" stroke="#7ae7d8" stroke-width="5" stroke-dasharray="8 7"/>
+ 
+ </svg>

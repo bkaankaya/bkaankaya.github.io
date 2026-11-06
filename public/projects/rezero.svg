@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 540" role="img" aria-label="ReZero 2D Game conceptual arena editorial project illustration">
+ <defs>
+  <linearGradient id="bg" x1=".08" y1=".02" x2=".95" y2=".94"><stop stop-color="#101229"/><stop offset=".62" stop-color="#1c1c46"/><stop offset="1" stop-color="#4e285c"/></linearGradient>
+  <radialGradient id="glow"><stop stop-color="#ffffff" stop-opacity=".26"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/></radialGradient>
+  <pattern id="grid" width="36" height="36" patternUnits="userSpaceOnUse"><path d="M36 0H0V36" fill="none" stroke="#ffffff" stroke-opacity=".075"/></pattern>
+  <filter id="soft"><feGaussianBlur stdDeviation="30"/></filter>
+ </defs>
+ <rect width="960" height="540" fill="url(#bg)"/>
+ <rect width="960" height="540" fill="url(#grid)"/>
+ <circle cx="795" cy="92" r="280" fill="url(#glow)" opacity=".7"/>
+ <circle cx="112" cy="465" r="200" fill="#7e64ff" opacity=".1" filter="url(#soft)"/>
+ <rect x="53" y="66" width="854" height="396" rx="20" fill="#0b122d" stroke="#9682e7" stroke-opacity=".5" stroke-width="2"/>
+ <rect x="0" y="95" width="5" height="3" fill="#9b9ce3" opacity=".65"/><rect x="37" y="142" width="3" height="3" fill="#d8c8ff" opacity=".65"/><rect x="74" y="189" width="3" height="3" fill="#9b9ce3" opacity=".65"/><rect x="111" y="236" width="3" height="3" fill="#d8c8ff" opacity=".65"/><rect x="148" y="283" width="5" height="3" fill="#9b9ce3" opacity=".65"/><rect x="185" y="330" width="3" height="3" fill="#d8c8ff" opacity=".65"/><rect x="222" y="137" width="3" height="3" fill="#9b9ce3" opacity=".65"/><rect x="259" y="184" width="3" height="3" fill="#d8c8ff" opacity=".65"/><rect x="296" y="231" width="5" height="3" fill="#9b9ce3" opacity=".65"/><rect x="333" y="278" width="3" height="3" fill="#d8c8ff" opacity=".65"/><rect x="370" y="325" width="3" height="3" fill="#9b9ce3" opacity=".65"/><rect x="407" y="132" width="3" height="3" fill="#d8c8ff" opacity=".65"/><rect x="444" y="179" width="5" height="3" fill="#9b9ce3" opacity=".65"/><rect x="481" y="226" width="3" height="3" fill="#d8c8ff" opacity=".65"/><rect x="518" y="273" width="3" height="3" fill="#9b9ce3" opacity=".65"/><rect x="555" y="320" width="3" height="3" fill="#d8c8ff" opacity=".65"/><rect x="592" y="127" width="5" height="3" fill="#9b9ce3" opacity=".65"/><rect x="629" y="174" width="3" height="3" fill="#d8c8ff" opacity=".65"/><rect x="666" y="221" width="3" height="3" fill="#9b9ce3" opacity=".65"/><rect x="703" y="268" width="3" height="3" fill="#d8c8ff" opacity=".65"/><rect x="740" y="315" width="5" height="3" fill="#9b9ce3" opacity=".65"/><rect x="777" y="122" width="3" height="3" fill="#d8c8ff" opacity=".65"/><rect x="814" y="169" width="3" height="3" fill="#9b9ce3" opacity=".65"/><rect x="851" y="216" width="3" height="3" fill="#d8c8ff" opacity=".65"/><rect x="888" y="263" width="5" height="3" fill="#9b9ce3" opacity=".65"/><rect x="925" y="310" width="3" height="3" fill="#d8c8ff" opacity=".65"/><rect x="27" y="117" width="3" height="3" fill="#9b9ce3" opacity=".65"/><rect x="64" y="164" width="3" height="3" fill="#d8c8ff" opacity=".65"/><circle cx="762" cy="180" r="73" fill="#5347a8" opacity=".35" /><circle cx="762" cy="180" r="57" fill="#a4a3e4" opacity=".55"/>
+ <path d="M80 368Q195 290 308 346T530 339T880 309V448H80Z" fill="#283254" />
+ <path d="M80 397l92-24 82 12 91-53 81 21 87-37 97 52 109-32 103 18v93H80z" fill="#17213d" />
+ <path d="M80 435H881" stroke="#7e6aac" stroke-width="4"/>
+ <g stroke="#d4c6ff" stroke-width="6" fill="#5965ad"><path d="M300 371l-30-34-23 42-12 52h104l-19-55z"/><path d="M285 329l-12-28 23-20 21 24-7 23z"/></g>
+ <g stroke="#f3bce2" stroke-width="5" fill="#a44f91"><path d="M634 378l-24-48-36 47-13 54h126l-19-55z"/><path d="M628 329l-10-26 21-24 26 22-14 28z"/></g>
+ <path d="M328 342Q456 214 612 329" stroke="#cc8cff" stroke-width="8" fill="none" stroke-linecap="round"/>
+ <path d="M338 347Q456 290 605 340" stroke="#fff0fa" stroke-width="3" fill="none" opacity=".75"/>
+ <text x="97" y="112" font-family="Arial,system-ui,sans-serif" font-size="16" font-weight="700" fill="#e4d7ff">2D BATTLE / ANIMATION SYSTEM</text>
+ <path d="M129 153H438" stroke="#ae97ff" stroke-width="10" stroke-linecap="round"/><path d="M530 153H829" stroke="#dd7daa" stroke-width="10" stroke-linecap="round"/>
+ <text x="438" y="153" font-family="Arial,system-ui,sans-serif" font-size="20" font-weight="700" fill="#fcf3ff">VS</text>
+ 
+ </svg>

@@ -4,6 +4,7 @@ import {
   Code2,
   Cpu,
   GraduationCap,
+  Gamepad2,
   Layers,
   Link2,
   ScanLine,
@@ -11,7 +12,7 @@ import {
 } from "lucide-react"
 import type { BrandId } from "@/components/portfolio/brand-icon"
 
-export type ProjectCategory = "AI" | "Full-stack" | "Embedded" | "Research" | "Blockchain"
+export type ProjectCategory = "AI" | "Full-stack" | "Embedded" | "Research" | "Blockchain" | "Games"
 export type ProjectAccent = "violet" | "teal" | "orange" | "blue" | "pink"
 
 export type PortfolioProject = {
@@ -22,78 +23,98 @@ export type PortfolioProject = {
   category: ProjectCategory
   categories: ProjectCategory[]
   tags: string[]
+  /** Original, locally hosted editorial illustration; not an app screenshot. */
+  image: string
   accent: ProjectAccent
   icon: LucideIcon
 }
 
-export const projectFilters = ["All", "AI", "Full-stack", "Embedded", "Research", "Blockchain"] as const
+export const projectFilters = ["All", "AI", "Full-stack", "Embedded", "Research", "Blockchain", "Games"] as const
 
 export const projects: PortfolioProject[] = [
   {
     slug: "dora-voice",
-    title: "AI Receptionist (DoraVoice)",
-    description: "AI-powered receptionist that automates business calls, scheduling and customer interactions.",
-    details: "A product-focused AI receptionist experience built to make voice-driven customer support feel natural, dependable and easy for businesses to manage.",
+    title: "DoraVoice",
+    description: "Voice AI receptionist for business calls, appointments and customer support workflows.",
+    details: "DoraVoice combines a Java / Spring Boot backend, PostgreSQL and AI-assisted voice workflows with a business-focused web experience. The visual shown here is a bespoke editorial illustration, not a live product screenshot.",
     category: "AI",
     categories: ["AI", "Full-stack"],
-    tags: ["Next.js", "TypeScript", "PostgreSQL", "AI"],
+    tags: ["Spring Boot", "Next.js", "PostgreSQL", "AI"],
+    image: "/projects/doravoice.svg",
     accent: "violet",
     icon: Activity,
   },
   {
     slug: "vague",
     title: "Vague",
-    description: "A modern platform for building, managing and scaling AI workflows.",
-    details: "A modern product platform with an emphasis on clear customer journeys, thoughtful interfaces and practical AI-powered workflows.",
+    description: "Full-stack sports e-commerce with product management, order workflows and payments.",
+    details: "A sports-commerce platform built using Next.js, Spring Boot, PostgreSQL, Redis and integrations for checkout and order processing. The artwork is an illustrative composition, not a screenshot of an order or customer account.",
     category: "Full-stack",
-    categories: ["Full-stack", "AI"],
-    tags: ["Next.js", "Tailwind CSS", "Prisma", "AI"],
+    categories: ["Full-stack"],
+    tags: ["Next.js", "Spring Boot", "PostgreSQL", "Stripe"],
+    image: "/projects/vague.svg",
     accent: "teal",
     icon: Layers,
   },
   {
     slug: "embedded-systems-suite",
     title: "Embedded Systems Suite",
-    description: "A collection of embedded projects including real-time and IoT systems.",
-    details: "A collection of hands-on embedded experiments exploring real-time systems, connected devices and the relationship between hardware and software.",
+    description: "Embedded engineering projects covering microcontrollers, sensors and real-time systems.",
+    details: "A collection of hardware/software explorations including C/C++, STM32 development and communication between devices and monitoring interfaces.",
     category: "Embedded",
     categories: ["Embedded"],
-    tags: ["C/C++", "FreeRTOS", "STM32", "IoT"],
+    tags: ["C/C++", "STM32", "UART", "IoT"],
+    image: "/projects/embedded.svg",
     accent: "orange",
     icon: Cpu,
   },
   {
     slug: "quickscan",
     title: "QuickScan",
-    description: "A document-scanning and information-extraction tool with OCR and AI-powered analysis.",
-    details: "A document workflow concept combining scanning, OCR and AI-assisted analysis to turn unstructured information into useful results.",
+    description: "Exam processing and evaluation workflows using OCR and AI-assisted extraction.",
+    details: "A team-built exam management project connecting document recognition with backend workflows and web/mobile interfaces. Visual is conceptual and contains no student records or confidential sample documents.",
     category: "AI",
     categories: ["AI", "Research"],
-    tags: ["Java", "Spring", "OCR", "AI"],
+    tags: ["Spring Boot", "OCR", "FastAPI", "Flutter"],
+    image: "/projects/quickscan.svg",
     accent: "teal",
     icon: ScanLine,
   },
   {
     slug: "hospital-management-system",
     title: "Hospital Management System",
-    description: "A full-stack hospital management platform for patients, staff and appointments.",
-    details: "A full-stack management system concept focused on coordinating patient records, staff workflows and appointment information in one place.",
+    description: "Java-based healthcare administration for staff, patient workflows and appointments.",
+    details: "A hospital-management software project focused on structured records, appointments and staff operations. The illustration uses synthetic interface placeholders, not patient information.",
     category: "Full-stack",
-    categories: ["Full-stack", "Research"],
-    tags: ["Java", "SQL", "Security"],
+    categories: ["Full-stack"],
+    tags: ["Java", "SQL", "Management"],
+    image: "/projects/hospital.svg",
     accent: "blue",
     icon: Building2,
   },
   {
     slug: "yemeksepeti-dapp",
     title: "Yemeksepeti DApp",
-    description: "A decentralized food-ordering platform prototype built with Web3 technologies.",
-    details: "A decentralized product prototype exploring how Web3 technologies could support a transparent food-ordering experience.",
+    description: "A decentralized food-ordering platform prototype exploring Web3 transactions.",
+    details: "An experimental food-ordering interface combining consumer flows with blockchain-oriented prototype concepts. The image is editorial concept art, not a live external brand interface.",
     category: "Blockchain",
     categories: ["Blockchain", "Full-stack"],
     tags: ["React", "Web3", "Solidity"],
+    image: "/projects/food-dapp.svg",
     accent: "pink",
     icon: Link2,
+  },
+  {
+    slug: "rezero-2d-game",
+    title: "ReZero 2D Game",
+    description: "A 2D battle-game experiment with a custom combat and animation pipeline.",
+    details: "An experimental JavaScript / HTML5 Canvas and Electron game centered on a one-on-one boss battle. Work includes sprite animation configuration, combat logic and effects. The illustration is original portfolio concept art—not a gameplay screenshot—and private source assets are not published.",
+    category: "Games",
+    categories: ["Games"],
+    tags: ["JavaScript", "Canvas", "Electron", "2D Combat"],
+    image: "/projects/rezero.svg",
+    accent: "violet",
+    icon: Gamepad2,
   },
 ]
 

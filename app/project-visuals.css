@@ -167,8 +167,6 @@
   --dot-active: rgba(89, 54, 196, .79);
   --dot-halo: rgba(120, 92, 211, .12);
 }
-.portfolio-app[data-motion="paused"] .ambient-dot-field__highlight,
-.portfolio-app[data-motion="paused"] .ambient-dot-field__halo { opacity: 0 !important; }
 
 /* The visual language extends to non-project pages without painting fake imagery. */
 .experience-entry,
@@ -230,3 +228,84 @@
 }
 html[data-save-data] .ambient-dot-field__highlight,
 html[data-save-data] .ambient-dot-field__halo { display: none; }
+
+/* Authentic assets and measured gallery motion for local, static project cards. */
+.project-card[data-visual="brand"] .project-art-trigger,
+.project-dialog[data-visual="brand"] .project-dialog-visual {
+  background: radial-gradient(ellipse at 50% 45%, rgba(105,118,255,.19), transparent 63%), linear-gradient(130deg,#121934,#13172c 50%,#21173c);
+}
+.project-card[data-project="vague"] .project-art-trigger,
+.project-dialog[data-project="vague"] .project-dialog-visual {
+  background: radial-gradient(ellipse at 65% 35%,rgba(65,185,169,.17),transparent 61%),linear-gradient(130deg,#101b27,#131a2f 54%,#172b32);
+}
+.project-card[data-project="quickscan"] .project-art-trigger,
+.project-dialog[data-project="quickscan"] .project-dialog-visual {
+  background: radial-gradient(ellipse at center,rgba(31,132,252,.2),transparent 65%),linear-gradient(130deg,#0b1932,#111a37 53%,#17264b);
+}
+.project-card[data-visual="brand"] .project-art-overlay { background: linear-gradient(180deg, transparent 58%, rgba(7,11,27,.68)); }
+.project-card[data-project="vague"] .project-art-image {
+  object-fit: contain;
+  object-position: center;
+  padding: 30px 42px 43px;
+  filter: drop-shadow(0 8px 18px rgba(0,0,0,.18));
+}
+.project-card[data-project="quickscan"] .project-art-image {
+  object-fit: cover;
+  object-position: center;
+  transform: scale(1.30);
+}
+.project-card[data-project="quickscan"]:hover .project-art-image,
+.project-card[data-project="quickscan"]:focus-within .project-art-image { transform: scale(1.36); }
+.project-card[data-project="rezero-2d-game"] .project-art-image {
+  object-fit: cover;
+  object-position: center 10%;
+}
+.project-gallery { position:absolute; inset:0; display:block; overflow:hidden; isolation:isolate; }
+.project-gallery .project-gallery-frame {
+  opacity:0;
+  transition: opacity 560ms ease-in-out,transform 760ms cubic-bezier(.2,.8,.2,1);
+}
+.project-gallery .project-gallery-frame.is-active { opacity:1; }
+.project-gallery .project-gallery-frame:not(.is-active) { pointer-events:none; }
+.project-art-trigger:focus-visible,.project-open-button:focus-visible,
+.project-title-trigger:focus-visible,.dialog-close-button:focus-visible {
+  outline:2px solid #c7a9ff; outline-offset:-3px;
+}
+.project-dialog {
+  width:min(660px,calc(100% - 28px));
+  max-height:calc(100dvh - 28px);
+  overflow-x:hidden;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+}
+.project-dialog-visual { height:clamp(190px,31vw,285px); border-radius:14px; }
+.project-dialog[data-project="rezero-2d-game"] .project-dialog-visual img {
+  object-fit:cover; object-position:center 8%;
+}
+.project-dialog[data-project="vague"] .project-dialog-visual img {
+  object-fit:contain; padding:clamp(24px,5vw,50px) clamp(36px,7vw,86px);
+}
+.project-dialog[data-project="quickscan"] .project-dialog-visual img {
+  object-fit:cover; object-position:center; transform:scale(1.33);
+}
+.project-dialog-content .dialog-close-button {
+  width:42px; height:42px;
+  border:1px solid rgba(210,209,243,.30);
+  background:rgba(17,20,41,.92);
+  color:#fff; border-radius:12px;
+  box-shadow:0 3px 14px rgba(0,0,0,.22);
+}
+@media (max-width:480px) {
+  .project-dialog { width:calc(100% - 20px); max-height:calc(100dvh - 18px); }
+  .project-dialog-content { padding:20px 17px 24px; }
+  .project-dialog-visual { height:clamp(172px,49vw,224px); margin-bottom:20px; }
+  .project-dialog-content h2 { font-size:clamp(23px,6vw,28px); }
+  .project-card[data-project="vague"] .project-art-image { padding-inline:30px; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .project-gallery .project-gallery-frame { transition:none !important; }
+  .project-card[data-project="quickscan"] .project-art-image,
+  .project-card[data-project="quickscan"]:hover .project-art-image {
+    transform:scale(1.30) !important;
+  }
+}

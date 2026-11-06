@@ -7,12 +7,12 @@ import { useEffect, useRef } from "react"
  * and not a canvas animation loop. Pointer sampling is coalesced with rAF.
  * The artwork is decorative and never participates in focus or pointer targets.
  */
-export function AmbientDotField({ motionPaused }: { motionPaused: boolean }) {
+export function AmbientDotField() {
   const fieldRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const field = fieldRef.current
-    if (!field || motionPaused) return
+    if (!field) return
 
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)")
     const fineQuery = window.matchMedia("(hover: hover) and (pointer: fine)")
@@ -47,7 +47,7 @@ export function AmbientDotField({ motionPaused }: { motionPaused: boolean }) {
       if (frame) window.cancelAnimationFrame(frame)
       hide()
     }
-  }, [motionPaused])
+  }, [])
 
   return (
     <div ref={fieldRef} className="ambient-dot-field" aria-hidden="true" data-active="false">

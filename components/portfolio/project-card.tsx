@@ -29,9 +29,12 @@ function supportsTopLayerExit(): boolean {
 
 export function ProjectCard({ slug }: { slug: string }) {
   const [dialogOpen, setDialogOpen] = useState(false)
+  const [galleryHover, setGalleryHover] = useState(false)
+  const [galleryIndex, setGalleryIndex] = useState(0)
   const dialogRef = useRef<HTMLDialogElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const project = projects.find((item) => item.slug === slug)
+  const images = project?.gallery ?? (project ? [project.image] : [])
 
   const closeDialog = useCallback(async () => {
     const dialog = dialogRef.current
@@ -82,12 +85,57 @@ export function ProjectCard({ slug }: { slug: string }) {
     }
   }, [dialogOpen])
 
+  useEffect(() => {
+    if (!galleryHover || dialogOpen || images.length < 2 || document.hidden) return
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)")
+    const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)")
+    const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection
+    if (reducedMotion.matches || !finePointer.matches || connection?.saveData) return
+
+    const resetGallery = () => {
+      setGalleryHover(false)
+      setGalleryIndex(0)
+    }
+    const onVisibilityChange = () => {
+      if (document.hidden) resetGallery()
+    }
+    const onPreferenceChange = () => {
+      if (reducedMotion.matches || !finePointer.matches) resetGallery()
+    }
+    const interval = window.setInterval(() => {
+      setGalleryIndex((current) => (current + 1) % images.length)
+    }, 5000)
+    document.addEventListener("visibilitychange", onVisibilityChange)
+    reducedMotion.addEventListener("change", onPreferenceChange)
+    finePointer.addEventListener("change", onPreferenceChange)
+    return () => {
+      window.clearInterval(interval)
+      document.removeEventListener("visibilitychange", onVisibilityChange)
+      reducedMotion.removeEventListener("change", onPreferenceChange)
+      finePointer.removeEventListener("change", onPreferenceChange)
+    }
+  }, [galleryHover, dialogOpen, images.length])
+
   if (!project) return null
   const ProjectIcon = project.icon
 
   return (
     <>
-      <article className="project-card" data-accent={project.accent} data-project={project.slug} data-visual={project.visualType ?? "illustration"}>
+      <article
+        className="project-card"
+        data-accent={project.accent}
+        data-project={project.slug}
+        data-visual={project.visualType ?? "illustration"}
+        onPointerEnter={(event) => {
+          if (event.pointerType !== "mouse" || images.length < 2) return
+          setGalleryIndex(0)
+          setGalleryHover(true)
+        }}
+        onPointerLeave={() => {
+          setGalleryHover(false)
+          setGalleryIndex(0)
+        }}
+      >
         <button
           className="project-art-trigger"
           type="button"
@@ -98,17 +146,34 @@ export function ProjectCard({ slug }: { slug: string }) {
             setDialogOpen(true)
           }}
         >
-          <Image
-            src={project.image}
-            alt=""
-            fill
-            unoptimized
-            sizes="(max-width: 640px) 100vw, (max-width: 820px) 50vw, 33vw"
-            className="project-art-image"
-          />
+          {images.length > 1 ? (
+            <span className="project-gallery" aria-hidden="true">
+              {images.map((src, index) => (
+                <Image
+                  key={src}
+                  src={src}
+                  alt=""
+                  fill
+                  unoptimized
+                  loading="lazy"
+                  sizes="(max-width: 640px) 100vw, (max-width: 820px) 50vw, 33vw"
+                  className={`project-art-image project-gallery-frame${galleryIndex === index ? " is-active" : ""}`}
+                />
+              ))}
+            </span>
+          ) : (
+            <Image
+              src={project.image}
+              alt=""
+              fill
+              unoptimized
+              sizes="(max-width: 640px) 100vw, (max-width: 820px) 50vw, 33vw"
+              className="project-art-image"
+            />
+          )
           <span className="project-art-overlay" aria-hidden="true" />
           <span className="project-art-caption" aria-hidden="true">
-            <span>{project.visualType === "screenshot" ? "Actual project UI" : "Editorial visual"} <span className="project-art-sparkle">✦</span></span>
+            <span>{project.visualType === "screenshot" ? "Actual project UI" : project.visualType === "brand" ? "Branded visual" : "Editorial visual"} <span className="project-art-sparkle">✦</span></span>
             <span>Explore <ArrowUpRight /></span>
           </span>
         </button>

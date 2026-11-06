@@ -43,23 +43,18 @@ test("ambient scene uses only compositor-friendly transform and opacity animatio
   assert.match(ambient, /@media \(prefers-reduced-motion: reduce\)/)
   assert.match(ambient, /html\[data-save-data\] \.ambient-scene__orb/)
 })
-test("continuous ambience can be paused and resumed through a named button", () => {
-  assert.match(shell, /data-motion=\{motionPaused \? "paused" : "playing"\}/)
-  assert.match(shell, /MOTION_STORAGE_KEY/)
-  assert.match(header, /aria-label=\{motionPaused \? "Resume ambient background motion" : "Pause ambient background motion"\}/)
-  assert.match(header, /aria-pressed=\{motionPaused\}/)
-  assert.match(ambient, /\.portfolio-app\[data-motion="paused"\] \.ambient-scene__orb/)
+test("ambient animation runs without a user pause control", () => {
+  assert.match(shell, /<AmbientDotField \/>/)
+  assert.doesNotMatch(shell, /MOTION_STORAGE_KEY|motionPaused|data-motion/)
+  assert.doesNotMatch(header, /motion-toggle|onToggleMotion|Pause ambient background motion/)
+  assert.doesNotMatch(ambient, /data-motion|\.motion-toggle/)
+  assert.match(ambient, /prefers-reduced-motion: reduce/)
+  assert.match(ambient, /html\[data-save-data\]/)
 })
 test("responsive devices retain an obvious mobile route to contact", () => {
   assert.match(header, /mobile-contact-link/)
   assert.match(ambient, /@media \(max-width: 430px\)/)
   assert.match(ambient, /\.portfolio-app \.header-contact \{ display: none; \}/)
-})
-
-test("motion button is absent where background animation is intentionally disabled", () => {
-  assert.match(ambient, /@media \(max-width: 640px\)[\s\S]*?\.motion-toggle \{ display: none; \}/)
-  assert.match(ambient, /@media \(prefers-reduced-motion: reduce\)[\s\S]*?\.motion-toggle \{ display: none; \}/)
-  assert.match(ambient, /html\[data-save-data\] \.motion-toggle \{ display: none; \}/)
 })
 
 test("light actions retain visible contrast independently of the base button rule", () => {

@@ -23,9 +23,10 @@ export type PortfolioProject = {
   category: ProjectCategory
   categories: ProjectCategory[]
   tags: string[]
-  /** Original, locally hosted editorial illustration; not an app screenshot. */
+  /** Local visual; distinguish screenshots, verified branding and editorial compositions. */
   image: string
-  visualType?: "screenshot" | "illustration"
+  gallery?: readonly string[]
+  visualType?: "screenshot" | "illustration" | "brand"
   accent: ProjectAccent
   icon: LucideIcon
 }
@@ -37,7 +38,7 @@ export const projects: PortfolioProject[] = [
     slug: "dora-voice",
     title: "DoraVoice",
     description: "Voice AI receptionist for business calls, appointments and customer support workflows.",
-    details: "DoraVoice combines a Java / Spring Boot backend, PostgreSQL and AI-assisted voice workflows with a business-focused web experience. The visual shown here is a bespoke editorial illustration, not a live product screenshot.",
+    details: "DoraVoice combines a Java / Spring Boot backend, PostgreSQL and AI-assisted voice workflows with a business-focused web experience. The editorial visual is a concept illustration, not a verified DoraVoice logo or a live product screenshot.",
     category: "AI",
     categories: ["AI", "Full-stack"],
     tags: ["Spring Boot", "Next.js", "PostgreSQL", "AI"],
@@ -49,22 +50,23 @@ export const projects: PortfolioProject[] = [
     slug: "vague",
     title: "Vague",
     description: "Full-stack sports e-commerce with product management, order workflows and payments.",
-    details: "A sports-commerce platform built using Next.js, Spring Boot, PostgreSQL, Redis and integrations for checkout and order processing. The artwork is an illustrative composition, not a screenshot of an order or customer account.",
+    details: "A sports-commerce platform built using Next.js, Spring Boot, PostgreSQL, Redis and integrations for checkout and order processing. The cover uses the original white Vague wordmark from the project repository on a custom dark backdrop.",
     category: "Full-stack",
     categories: ["Full-stack"],
     tags: ["Next.js", "Spring Boot", "PostgreSQL", "Stripe"],
-    image: "/projects/vague.svg",
+    image: "/projects/vague-brand.svg",
+    visualType: "brand",
     accent: "teal",
     icon: Layers,
   },
   {
     slug: "embedded-systems-suite",
-    title: "Embedded Systems Suite",
-    description: "Embedded engineering projects covering microcontrollers, sensors and real-time systems.",
-    details: "A collection of hardware/software explorations including C/C++, STM32 development and communication between devices and monitoring interfaces.",
+    title: "Embedded Software",
+    description: "STM32 firmware and Qt monitoring software communicating over UART using Modbus RTU.",
+    details: "An STM32F407 firmware and Qt/C++ desktop project: polling ADC and button values, responding to Modbus RTU-style holding-register reads over UART4, and validating CRC16. This is a documented internship learning project, not a production-certified system.",
     category: "Embedded",
     categories: ["Embedded"],
-    tags: ["C/C++", "STM32", "UART", "IoT"],
+    tags: ["C/C++", "STM32", "Modbus RTU", "Qt"],
     image: "/projects/embedded.svg",
     accent: "orange",
     icon: Cpu,
@@ -73,12 +75,12 @@ export const projects: PortfolioProject[] = [
     slug: "quickscan",
     title: "QuickScan",
     description: "Exam processing and evaluation workflows using OCR and AI-assisted extraction.",
-    details: "A team-built exam management project connecting document recognition with backend workflows and web/mobile interfaces. The preview is a genuine login-screen capture from the mobile app; no student records or personal data are shown.",
+    details: "A team-built exam management project connecting document recognition with backend workflows and web/mobile interfaces. The cover features the original QuickScan brand artwork from the mobile application. It is a branded identity visual, not an application screenshot.",
     category: "AI",
     categories: ["AI", "Research"],
     tags: ["Spring Boot", "OCR", "FastAPI", "Flutter"],
-    image: "/projects/quickscan-login.png",
-    visualType: "screenshot",
+    image: "/projects/quickscan-logo.png",
+    visualType: "brand",
     accent: "teal",
     icon: ScanLine,
   },
@@ -115,6 +117,7 @@ export const projects: PortfolioProject[] = [
     categories: ["Games"],
     tags: ["JavaScript", "Canvas", "Electron", "2D Combat"],
     image: "/projects/rezero-gameplay.png",
+    gallery: ["/projects/rezero-gameplay.png", "/projects/rezero-attack.png", "/projects/rezero-shockwave.png", "/projects/rezero-menu.png"],
     visualType: "screenshot",
     accent: "violet",
     icon: Gamepad2,

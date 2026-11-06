@@ -40,7 +40,7 @@ test("the seven local visuals are unique, safe and do not expose private repo sc
 })
 
 test("pointer-dot feedback is RAF-coalesced, passive and not a React render loop", () => {
-  assert.match(shell, /<AmbientDotField motionPaused=\{motionPaused\} \/>/)
+  assert.match(shell, /<AmbientDotField \/>/)
   assert.match(dots, /requestAnimationFrame/)
   assert.match(dots, /cancelAnimationFrame/)
   assert.match(dots, /addEventListener\("pointermove", onMove, \{ passive: true \}\)/)
@@ -50,4 +50,20 @@ test("pointer-dot feedback is RAF-coalesced, passive and not a React render loop
   assert.match(styles, /mask-image: radial-gradient/)
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/)
   assert.match(styles, /html\[data-save-data\]/)
+})
+
+test("the verified ReZero gallery is controlled, accessible and local", () => {
+  for (const name of ["rezero-gameplay.png","rezero-attack.png","rezero-shockwave.png","rezero-menu.png"]) {
+    assert.ok(data.includes(`/projects/${name}`), name + " missing")
+    assert.ok(existsSync(`public/projects/${name}`), name + " missing from assets")
+  }
+  assert.match(card,/onPointerEnter/)
+  assert.match(card,/setInterval/)
+  assert.match(card,/5000/)
+  assert.match(card,/clearInterval/)
+  assert.match(card,/prefers-reduced-motion: reduce/)
+  assert.match(card,/hover: hover/)
+  assert.match(card,/visibilitychange/)
+  assert.match(styles,/project-gallery-frame\.is-active/)
+  assert.match(data,/visualType: "brand"/)
 })

@@ -108,39 +108,8 @@
   .portfolio-app:has(.about-main) .ambient-scene__orb--violet { right: -23rem; top: 4rem; }
 }
 
-/* Optional visitor control (WCAG 2.2.2): pause and resume in-place. */
-.motion-toggle {
-  display: inline-grid;
-  place-items: center;
-  flex: none;
-  width: 44px;
-  height: 44px;
-  border: 1px solid var(--site-border);
-  border-radius: 11px;
-  background: var(--site-panel);
-  color: var(--site-text);
-  cursor: pointer;
-  transition: border-color 180ms ease, background-color 180ms ease, transform 180ms ease;
-}
-.motion-toggle svg { width: 18px; height: 18px; }
-.motion-toggle:hover {
-  border-color: var(--site-border-strong);
-  background: var(--site-panel-strong);
-  transform: translateY(-2px);
-}
-.motion-toggle[aria-pressed="true"] {
-  border-color: var(--site-accent);
-  background: var(--site-panel-strong);
-}
-.portfolio-app[data-motion="paused"] .ambient-scene__orb {
-  animation-play-state: paused;
-}
-.portfolio-app[data-motion="paused"] .hero-section::before {
-  animation-play-state: paused;
-}
 @media (max-width: 640px) {
   /* Small screens run a static composition, so no inert pause control. */
-  .motion-toggle { display: none; }
   .ambient-scene__orb--violet {
     width: 120vw;
     height: 70vw;
@@ -165,7 +134,5 @@
 /* Honor OS setting and the user's browser's optional data-saving preference. */
 @media (prefers-reduced-motion: reduce) {
   .ambient-scene__orb { animation: none !important; }
-  .motion-toggle { display: none; }
 }
 html[data-save-data] .ambient-scene__orb { animation: none !important; }
-html[data-save-data] .motion-toggle { display: none; }

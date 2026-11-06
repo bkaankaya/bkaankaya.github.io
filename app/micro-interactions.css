@@ -102,33 +102,12 @@
 .project-card[data-visual="screenshot"] .project-art-trigger {
   background: #10192e;
 }
-.project-card[data-project="quickscan"] .project-art-trigger {
-  background:
-    radial-gradient(ellipse at 50% 60%, rgba(98,128,247,.27), transparent 75%),
-    linear-gradient(125deg, #192350, #12172e 64%, #29214d);
-}
-.project-card[data-project="quickscan"] .project-art-image {
-  object-fit: cover;
-  object-position: center 22%;
-}
-.project-card[data-project="rezero-2d-game"] .project-art-image {
-  object-position: center 18%;
-}
 .project-card[data-visual="screenshot"] .project-art-overlay {
   background: linear-gradient(180deg, transparent 52%, rgba(5,8,25,.78));
 }
 .project-card[data-visual="screenshot"]:hover .project-art-overlay,
 .project-card[data-visual="screenshot"]:focus-within .project-art-overlay { opacity: .87; }
 .project-dialog[data-visual="screenshot"] .project-dialog-visual { background: #111831; }
-.project-dialog[data-project="quickscan"] .project-dialog-visual {
-  height: clamp(290px, 52vw, 470px);
-  background: linear-gradient(125deg, #1c2550, #121b36);
-}
-.project-dialog[data-project="quickscan"] .project-dialog-visual img {
-  object-fit: contain;
-  object-position: center;
-}
-.project-dialog[data-project="rezero-2d-game"] .project-dialog-visual img { object-position: center 13%; }
 .project-card .project-open-button {
   transition: color 210ms ease, background-color 210ms ease, transform 220ms cubic-bezier(.2,.8,.2,1);
 }

@@ -25,6 +25,7 @@ export type PortfolioProject = {
   tags: string[]
   /** Original, locally hosted editorial illustration; not an app screenshot. */
   image: string
+  visualType?: "screenshot" | "illustration"
   accent: ProjectAccent
   icon: LucideIcon
 }
@@ -72,11 +73,12 @@ export const projects: PortfolioProject[] = [
     slug: "quickscan",
     title: "QuickScan",
     description: "Exam processing and evaluation workflows using OCR and AI-assisted extraction.",
-    details: "A team-built exam management project connecting document recognition with backend workflows and web/mobile interfaces. Visual is conceptual and contains no student records or confidential sample documents.",
+    details: "A team-built exam management project connecting document recognition with backend workflows and web/mobile interfaces. The preview is a genuine login-screen capture from the mobile app; no student records or personal data are shown.",
     category: "AI",
     categories: ["AI", "Research"],
     tags: ["Spring Boot", "OCR", "FastAPI", "Flutter"],
-    image: "/projects/quickscan.svg",
+    image: "/projects/quickscan-login.png",
+    visualType: "screenshot",
     accent: "teal",
     icon: ScanLine,
   },
@@ -108,11 +110,12 @@ export const projects: PortfolioProject[] = [
     slug: "rezero-2d-game",
     title: "ReZero 2D Game",
     description: "A 2D battle-game experiment with a custom combat and animation pipeline.",
-    details: "An experimental JavaScript / HTML5 Canvas and Electron game centered on a one-on-one boss battle. Work includes sprite animation configuration, combat logic and effects. The illustration is original portfolio concept art—not a gameplay screenshot—and private source assets are not published.",
+    details: "An experimental JavaScript / HTML5 Canvas and Electron game centered on a one-on-one boss battle. Work includes sprite animation configuration, combat logic and effects. The preview is an authentic gameplay screenshot from the game’s visual QA evidence, showing the arena and HUD.",
     category: "Games",
     categories: ["Games"],
     tags: ["JavaScript", "Canvas", "Electron", "2D Combat"],
-    image: "/projects/rezero.svg",
+    image: "/projects/rezero-gameplay.png",
+    visualType: "screenshot",
     accent: "violet",
     icon: Gamepad2,
   },

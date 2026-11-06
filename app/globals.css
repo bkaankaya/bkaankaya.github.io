@@ -2,6 +2,7 @@
 @import 'tw-animate-css';
 @import './ambient.css';
 @import './project-visuals.css';
+@import './micro-interactions.css';
 
 @custom-variant dark (&:is(.dark *));
 

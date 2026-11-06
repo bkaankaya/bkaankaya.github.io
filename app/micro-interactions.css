@@ -1,0 +1,174 @@
+/* Vague-inspired micro-interactions, adapted to BK's restrained violet design system.
+   CSS-only: no extra JS, runtime deps, reflow-heavy animation or hover-only affordances. */
+:root { scroll-behavior: smooth; scroll-padding-top: 86px; }
+
+.desktop-navigation .navigation-link {
+  transform-origin: center;
+  transition: color 220ms ease, transform 240ms cubic-bezier(.2,.8,.2,1), text-shadow 220ms ease;
+}
+.desktop-navigation .navigation-link::before {
+  content: "";
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  bottom: 16px;
+  height: 2px;
+  border-radius: 9px;
+  background: linear-gradient(90deg, transparent, var(--site-accent) 18%, var(--site-accent) 82%, transparent);
+  opacity: 0;
+  transform: scaleX(.2);
+  transform-origin: center;
+  transition: opacity 190ms ease, transform 260ms cubic-bezier(.2,.8,.2,1);
+  pointer-events: none;
+}
+.desktop-navigation .navigation-link:is(:hover, :focus-visible) {
+  color: var(--site-text);
+  text-shadow: 0 0 .45px currentColor;
+}
+.desktop-navigation .navigation-link:is(:hover, :focus-visible)::before {
+  transform: scaleX(1);
+  opacity: 1;
+}
+.desktop-navigation .navigation-link.is-active::before {
+  transform: scaleX(.64);
+  opacity: .54;
+}
+.desktop-navigation .navigation-link.is-active:is(:hover, :focus-visible)::before {
+  transform: scaleX(1);
+  opacity: 1;
+}
+@media (hover: hover) and (pointer: fine) {
+  .desktop-navigation .navigation-link:hover {
+    transform: translateY(-1px) scale(1.045);
+  }
+}
+.mobile-navigation .navigation-link {
+  transition: color 200ms ease, transform 220ms cubic-bezier(.2,.8,.2,1), background-color 200ms ease;
+  border-radius: 9px;
+}
+.mobile-navigation .navigation-link:is(:hover, :focus-visible) {
+  color: var(--site-text);
+  background: color-mix(in srgb, var(--site-accent) 9%, transparent);
+  transform: translateX(3px);
+}
+
+/* Underlined links with a subtle optical weight increase, no font reflow. */
+.footer-links > a {
+  position: relative;
+  transform-origin: left center;
+  transition: color 210ms ease, transform 230ms cubic-bezier(.2,.8,.2,1), text-shadow 210ms ease;
+}
+.footer-links > a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--site-accent), color-mix(in srgb, var(--site-accent) 45%, transparent));
+  transform: scaleX(0);
+  transform-origin: left center;
+  opacity: 0;
+  transition: transform 250ms cubic-bezier(.2,.8,.2,1), opacity 210ms ease;
+  pointer-events: none;
+}
+.footer-links > a:is(:hover, :focus-visible) {
+  color: var(--site-text);
+  text-shadow: 0 0 .45px currentColor;
+}
+.footer-links > a:is(:hover, :focus-visible)::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+@media (hover: hover) and (pointer: fine) {
+  .footer-links > a:hover { transform: translateX(2px) scale(1.035); }
+  .footer-socials > a:hover svg:last-child { transform: translate(2px, -2px); }
+}
+.footer-socials > a svg:last-child {
+  transition: transform 220ms cubic-bezier(.2,.8,.2,1);
+}
+.footer-brand {
+  display: inline-flex;
+  width: fit-content;
+  transform-origin: left center;
+  transition: transform 230ms cubic-bezier(.2,.8,.2,1), filter 230ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .footer-brand:hover { transform: translateY(-2px) scale(1.035); filter: drop-shadow(0 3px 10px rgba(137,98,242,.16)); }
+}
+
+/* Make original app captures distinct from editorial concepts. */
+.project-card[data-visual="screenshot"] .project-art-trigger {
+  background: #10192e;
+}
+.project-card[data-project="quickscan"] .project-art-trigger {
+  background:
+    radial-gradient(ellipse at 50% 60%, rgba(98,128,247,.27), transparent 75%),
+    linear-gradient(125deg, #192350, #12172e 64%, #29214d);
+}
+.project-card[data-project="quickscan"] .project-art-image {
+  object-fit: cover;
+  object-position: center 22%;
+}
+.project-card[data-project="rezero-2d-game"] .project-art-image {
+  object-position: center 18%;
+}
+.project-card[data-visual="screenshot"] .project-art-overlay {
+  background: linear-gradient(180deg, transparent 52%, rgba(5,8,25,.78));
+}
+.project-card[data-visual="screenshot"]:hover .project-art-overlay,
+.project-card[data-visual="screenshot"]:focus-within .project-art-overlay { opacity: .87; }
+.project-dialog[data-visual="screenshot"] .project-dialog-visual { background: #111831; }
+.project-dialog[data-project="quickscan"] .project-dialog-visual {
+  height: clamp(290px, 52vw, 470px);
+  background: linear-gradient(125deg, #1c2550, #121b36);
+}
+.project-dialog[data-project="quickscan"] .project-dialog-visual img {
+  object-fit: contain;
+  object-position: center;
+}
+.project-dialog[data-project="rezero-2d-game"] .project-dialog-visual img { object-position: center 13%; }
+.project-card .project-open-button {
+  transition: color 210ms ease, background-color 210ms ease, transform 220ms cubic-bezier(.2,.8,.2,1);
+}
+.project-card .project-open-button:is(:hover, :focus-visible) {
+  transform: translate(2px, -2px);
+  background: color-mix(in srgb, var(--card-accent) 14%, transparent);
+  color: var(--site-text);
+}
+.filter-button {
+  transition: transform 230ms cubic-bezier(.2,.8,.2,1), color 220ms ease, background-color 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+}
+.filter-button:is(:hover, :focus-visible) {
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--site-accent) 12%, transparent);
+}
+.filter-button.is-active { box-shadow: 0 4px 16px rgba(132,92,240,.14); }
+.portfolio-app .button:focus-visible,
+.portfolio-app .navigation-link:focus-visible,
+.portfolio-app .footer-links > a:focus-visible {
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { scroll-behavior: auto; }
+  .desktop-navigation .navigation-link,
+  .desktop-navigation .navigation-link::before,
+  .mobile-navigation .navigation-link,
+  .footer-links > a,
+  .footer-links > a::after,
+  .footer-socials > a svg:last-child,
+  .footer-brand,
+  .project-card .project-open-button,
+  .filter-button {
+    transition: none !important;
+  }
+  .desktop-navigation .navigation-link:hover,
+  .mobile-navigation .navigation-link:is(:hover, :focus-visible),
+  .footer-links > a:hover,
+  .footer-socials > a:hover svg:last-child,
+  .footer-brand:hover,
+  .project-card .project-open-button:is(:hover, :focus-visible) {
+    transform: none !important;
+  }
+}

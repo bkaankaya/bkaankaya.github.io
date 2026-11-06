@@ -87,7 +87,7 @@ export function ProjectCard({ slug }: { slug: string }) {
 
   return (
     <>
-      <article className="project-card" data-accent={project.accent}>
+      <article className="project-card" data-accent={project.accent} data-project={project.slug} data-visual={project.visualType ?? "illustration"}>
         <button
           className="project-art-trigger"
           type="button"
@@ -108,7 +108,7 @@ export function ProjectCard({ slug }: { slug: string }) {
           />
           <span className="project-art-overlay" aria-hidden="true" />
           <span className="project-art-caption" aria-hidden="true">
-            <span>Selected work <span className="project-art-sparkle">✦</span></span>
+            <span>{project.visualType === "screenshot" ? "Actual project UI" : "Editorial visual"} <span className="project-art-sparkle">✦</span></span>
             <span>Explore <ArrowUpRight /></span>
           </span>
         </button>
@@ -159,6 +159,8 @@ export function ProjectCard({ slug }: { slug: string }) {
       <dialog
         ref={dialogRef}
         className="project-dialog"
+        data-project={project.slug}
+        data-visual={project.visualType ?? "illustration"}
         aria-labelledby={`dialog-title-${project.slug}`}
         onCancel={(event) => {
           event.preventDefault()

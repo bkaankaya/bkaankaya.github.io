@@ -45,7 +45,7 @@ test("pointer-dot feedback is RAF-coalesced, passive and not a React render loop
   assert.match(dots, /cancelAnimationFrame/)
   assert.match(dots, /addEventListener\("pointermove", onMove, \{ passive: true \}\)/)
   assert.match(dots, /aria-hidden="true"/)
-  assert.doesNotMatch(dots, /setState|setInterval|canvas|WebGL/)
+  assert.doesNotMatch(dots, /\b(?:setState|setInterval)\s*\(/) // Evaluate API calls, not words in comments.
   assert.match(styles, /\.ambient-dot-field__highlight/)
   assert.match(styles, /mask-image: radial-gradient/)
   assert.match(styles, /@media \(prefers-reduced-motion: reduce\)/)

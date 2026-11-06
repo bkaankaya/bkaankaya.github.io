@@ -148,7 +148,7 @@ export function SiteHeader({
           >
             <ThemeIcon aria-hidden="true" />
           </button>
-          <Link className="button button-primary header-contact" href="/about#contact">
+          <Link className="button button-primary header-contact" href="/contact/">
             Contact <ArrowUpRight aria-hidden="true" />
           </Link>
           <button
@@ -188,7 +188,7 @@ export function SiteHeader({
         })}
         <Link
           className="navigation-link mobile-contact-link"
-          href="/about#contact"
+          href="/contact/"
           onClick={() => setMenuOpen(false)}
           tabIndex={menuOpen ? 0 : -1}
         >

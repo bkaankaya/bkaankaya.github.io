@@ -10,21 +10,21 @@ export const metadata: Metadata = {
   description: "Career path, product work and engineering experience of B. Kaan Kaya.",
 }
 
-const skillHighlights = ["Frontend", "Design Engineering", "AI Products", "Embedded Systems", "Technical Communication", "Problem Solving"]
+const skillHighlights = ["Frontend", "Backend Development", "AI Products", "Embedded Systems", "Data Analysis", "Problem Solving"]
 
 export default function ExperiencePage() {
   return (
     <main id="main-content" className="portfolio-main interior-main">
       <div className="experience-intro-layout">
-        <PageIntro eyebrow="CAREER PATH" title="Experience" description="From engineering studies to product-building internships and AI-focused work." />
+        <PageIntro eyebrow="CAREER PATH" title="Experience" description="Internship experience across software development, data analysis, embedded systems and blockchain." />
         <div className="experience-highlights">
           <Reveal className="experience-stat-card">
             <span className="stat-icon"><Code2 aria-hidden="true" /></span>
-            <div><strong>15+</strong><h2>Hands-on Projects</h2><p>Product, AI, web and embedded</p></div>
+            <div><strong>{experienceItems.length}</strong><h2>Internship Experiences</h2><p>Software, data, embedded and blockchain</p></div>
           </Reveal>
           <Reveal className="experience-quick-links" delay={80}>
             <Link href="/about"><span className="quick-link-icon"><Layers aria-hidden="true" /></span><span><strong>Cross-disciplinary Work</strong><small>Software × Hardware × Product</small></span><ArrowUpRight aria-hidden="true" /></Link>
-            <Link href="/education"><span className="quick-link-icon"><GraduationCap aria-hidden="true" /></span><span><strong>International Study</strong><small>Engineering studies abroad</small></span><ArrowUpRight aria-hidden="true" /></Link>
+            <Link href="/education"><span className="quick-link-icon"><GraduationCap aria-hidden="true" /></span><span><strong>Academic Background</strong><small>TED University · Cambridge A Levels</small></span><ArrowUpRight aria-hidden="true" /></Link>
           </Reveal>
         </div>
       </div>

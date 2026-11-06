@@ -8,7 +8,7 @@ import { Reveal } from "@/components/portfolio/reveal"
 import { TechnologyStack } from "@/components/portfolio/technology-stack"
 import { SectionHeading } from "@/components/portfolio/section-heading"
 import { processSteps, projects } from "@/lib/portfolio-data"
-import { portfolioContact, portfolioMailto } from "@/lib/portfolio-contact"
+import { portfolioContact } from "@/lib/portfolio-contact"
 
 const portraitSource = "/portrait-kaan.webp"
 
@@ -33,7 +33,7 @@ export function HomePage() {
               style={{ "--hero-step": 2 } as CSSProperties}
             >
               <Link className="button button-primary" href="/projects">View Projects <ArrowRight aria-hidden="true" /></Link>
-              <Link className="button button-outline" href="/about#contact">Get in Touch</Link>
+              <Link className="button button-outline" href="/contact/">Get in Touch</Link>
             </div>
             <div
               className="social-links hero-stagger-item"
@@ -65,14 +65,14 @@ export function HomePage() {
                 unoptimized
               />
             </div>
-            <a className="availability-card" href={portfolioMailto("Let’s work together")}>
+            <Link className="availability-card" href="/contact/">
               <span className="availability-dot" />
               <span className="availability-copy">
                 <strong>Open to Opportunities</strong>
                 <small>{portfolioContact.availability}</small>
               </span>
               <ArrowUpRight className="availability-arrow" aria-hidden="true" />
-            </a>
+            </Link>
           </div>
         </div>
 

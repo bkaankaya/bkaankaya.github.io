@@ -1,10 +1,8 @@
 import type { Metadata } from "next"
 import Image from "next/image"
-import Link from "next/link"
-import { ArrowRight, ArrowUpRight, Mail, MapPin, Layers, Activity, Code2 } from "lucide-react"
-import { BrandIcon } from "@/components/portfolio/brand-icon"
+import { MapPin, Layers, Activity, Code2 } from "lucide-react"
 import { Reveal } from "@/components/portfolio/reveal"
-import { portfolioContact } from "@/lib/portfolio-contact"
+import { ContactPanel } from "@/components/portfolio/contact-panel"
 
 const portraitSource = "/portrait-kaan.webp"
 
@@ -26,8 +24,8 @@ export default function AboutPage() {
         <Reveal className="about-copy">
           <p className="eyebrow"><span className="eyebrow-dot" />ABOUT ME</p>
           <h1 id="about-title">Design-minded engineering with a focus on clarity, systems and impact.</h1>
-          <p>I’m B. Kaan Kaya, a software engineer who builds products at the intersection of software, <span className="accent-text">AI</span> and engineering. I turn ideas into reliable, user-focused systems — from early exploration to scalable, real-world products.</p>
-          <p>I care about thoughtful design, clean and maintainable code, and delivering practical impact. Whether it’s a new product, an AI-powered experience or a complex system, I focus on clarity, execution and long-term value.</p>
+          <p>I’m B. Kaan Kaya, a TED University Computer Engineering graduate with a minor in Business Administration. I build products that combine software and <span className="accent-text">AI</span>, including DoraVoice, an AI phone receptionist for small businesses.</p>
+          <p>My internship and project experience spans web development, backend software, embedded systems and blockchain applications. I enjoy turning ideas into practical tools, from exam-grading workflows to interactive games.</p>
         </Reveal>
         <Reveal className="about-profile-panel" delay={100}>
           <div className="about-portrait-frame">
@@ -43,7 +41,7 @@ export default function AboutPage() {
             />
           </div>
           <div className="about-status-card">
-            <span><MapPin aria-hidden="true" />Based in Turkey, Ankara · Open to relocating to Europe</span>
+            <span><MapPin aria-hidden="true" />Ankara, Turkey · Open to international relocation</span>
             <span><i className="availability-dot" />Open to collaboration</span>
             <span><Layers aria-hidden="true" />Interested in product, frontend and AI experiences</span>
           </div>
@@ -62,45 +60,7 @@ export default function AboutPage() {
         ))}
       </section>
 
-      <section className="contact-section" id="contact" aria-labelledby="contact-title">
-        <Reveal className="contact-intro">
-          <p className="eyebrow"><span className="eyebrow-dot" />GET IN TOUCH</p>
-          <h2 id="contact-title">Let’s connect.</h2>
-          <p>Reach out for collaborations, opportunities or just a chat about products, AI and engineering.</p>
-        </Reveal>
-        <div className="contact-grid">
-          <Reveal>
-            <a className="contact-card" href={portfolioContact.mailto}>
-              <Mail aria-hidden="true" />
-              <ArrowUpRight className="contact-card-arrow" aria-hidden="true" />
-              <strong>Email</strong>
-              <span>{portfolioContact.email}</span>
-            </a>
-          </Reveal>
-          <Reveal delay={50}>
-            <a className="contact-card" href={portfolioContact.githubUrl} target="_blank" rel="noopener noreferrer">
-              <BrandIcon className="contact-brand-icon" brand="github" size={23} />
-              <ArrowUpRight className="contact-card-arrow" aria-hidden="true" />
-              <strong>GitHub</strong>
-              <span>{portfolioContact.githubLabel}</span>
-            </a>
-          </Reveal>
-          <Reveal delay={100}>
-            <a className="contact-card" href={portfolioContact.linkedinUrl} target="_blank" rel="noopener noreferrer">
-              <BrandIcon className="contact-brand-icon" brand="linkedin" size={23} />
-              <ArrowUpRight className="contact-card-arrow" aria-hidden="true" />
-              <strong>LinkedIn</strong>
-              <span>{portfolioContact.linkedinLabel}</span>
-            </a>
-          </Reveal>
-          <Reveal delay={150}>
-            <div className="contact-cta-card">
-              <h3>Let’s build something thoughtful.</h3>
-              <Link className="button button-primary" href={portfolioContact.mailto}>Get in Touch <ArrowRight aria-hidden="true" /></Link>
-            </div>
-          </Reveal>
-        </div>
-      </section>
+      <ContactPanel />
     </main>
   )
 }

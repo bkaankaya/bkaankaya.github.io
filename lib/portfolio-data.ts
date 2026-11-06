@@ -163,59 +163,7 @@ export const additionalTechnologies: { name: string; detail: string; brand: Bran
   { name: "Solidity", detail: "Smart contracts", brand: "solidity" },
 ]
 
-export const experienceItems: { title: string; description: string; date: string; icon: LucideIcon; accent: ProjectAccent }[] = [
-  {
-    title: "Independent Product & Software Projects",
-    description: "Built end-to-end portfolio, AI, embedded and web projects with a focus on design, delivery and iteration.",
-    date: "2024 – Present",
-    icon: Layers,
-    accent: "violet",
-  },
-  {
-    title: "DoraVoice Project Work",
-    description: "Contributed to frontend, product polish and engineering quality across a modern AI assistant product.",
-    date: "2024",
-    icon: Activity,
-    accent: "violet",
-  },
-  {
-    title: "Mechanical Engineering Studies & Technical Projects",
-    description: "Applied structured problem solving, analytical thinking and systems design across academic and technical work.",
-    date: "2020 – 2024",
-    icon: GraduationCap,
-    accent: "teal",
-  },
-  {
-    title: "Early Engineering & Embedded Exploration",
-    description: "Worked on embedded systems, IoT experiments and practical implementation-focused projects.",
-    date: "2019 – 2020",
-    icon: Cpu,
-    accent: "orange",
-  },
-]
-
-export const educationItems = [
-  {
-    school: "University of Rome Tor Vergata",
-    program: "Master’s studies in Mechanical Engineering",
-    description: "Advanced, research-oriented studies in mechanical engineering, with a focus on modeling, design and real-world engineering applications.",
-    degree: "Master’s",
-    status: "Ongoing",
-    location: "Rome, Italy",
-    accent: "violet" as const,
-    icon: GraduationCap,
-  },
-  {
-    school: "Politecnico di Torino",
-    program: "Bachelor’s in Mechanical Engineering",
-    description: "An English-medium engineering education, building a strong foundation in mechanics, design and systems engineering.",
-    degree: "Bachelor’s",
-    status: "Graduated",
-    location: "Turin, Italy",
-    accent: "teal" as const,
-    icon: Building2,
-  },
-]
+export { educationItems, experienceItems, focusAreas, languages } from "./portfolio-profile"
 
 export const learningAreas = [
   { title: "Frontend Design", description: "Building modern, user-centered interfaces and experiences.", icon: Code2, accent: "violet" as const },
@@ -224,4 +172,4 @@ export const learningAreas = [
   { title: "Technical Communication", description: "Communicating complex ideas clearly and effectively.", icon: Link2, accent: "orange" as const },
 ]
 
-export const focusAreas = ["Mechanics", "Systems Thinking", "AI Interest", "Design Engineering", "Problem Solving"]
+

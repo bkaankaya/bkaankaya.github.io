@@ -21,7 +21,8 @@ function walk(dir, filter = () => true, acc = []) {
 
 const sourceFiles = ["app", "components", "lib"].flatMap((d) => walk(join(root, d), (f) => /\.(tsx?|jsx?|css)$/.test(f)))
 const contact = readFileSync(join(root, "lib/portfolio-contact.ts"), "utf8")
-const unis = ["https://web.uniroma2.it/en/", "https://www.polito.it/en"]
+const profile = readFileSync(join(root, "lib/portfolio-profile.ts"), "utf8")
+const unis = [...profile.matchAll(/https:\/\/[^"'`\s]+/g)].map((m) => m[0])
 
 // Allowed outbound origins are derived from the concrete public URLs, not a blanket "https:".
 const allowedHosts = new Set(
@@ -118,7 +119,7 @@ outTest("published out/ artifact: routes, no secrets/source maps/debug files, no
   assert.ok(existsSync(outDir), "out/ is missing")
   const files = walk(outDir)
   const rel = files.map((f) => relative(outDir, f).split("\\").join("/"))
-  for (const route of ["index.html", "projects/index.html", "experience/index.html", "education/index.html", "about/index.html"]) {
+  for (const route of ["index.html", "projects/index.html", "experience/index.html", "education/index.html", "about/index.html", "contact/index.html"]) {
     assert.ok(rel.includes(route) && lstatSync(join(outDir, route)).size > 1000, `route missing or empty: ${route}`)
   }
   const forbidden = /(^|\/)\.env|\.(map|pem|key|p12|pfx|log|csv|sarif)$|(^|\/)(debug|build)[^/]*\.json$/i

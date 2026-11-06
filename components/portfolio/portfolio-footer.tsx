@@ -15,7 +15,7 @@ export function PortfolioFooter() {
           <p className="footer-label">EXPLORE</p>
           <Link href="/projects">Selected projects</Link>
           <Link href="/experience">Experience</Link>
-          <Link href="/about#contact">Get in touch</Link>
+          <Link href="/contact/">Get in touch</Link>
         </div>
         <div className="footer-links footer-socials">
           <p className="footer-label">FIND ME ONLINE</p>

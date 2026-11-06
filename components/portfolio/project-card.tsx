@@ -1,10 +1,10 @@
 "use client"
 
 import Image from "next/image"
+import Link from "next/link"
 import { useCallback, useEffect, useRef, useState } from "react"
 import { ArrowUpRight, X } from "lucide-react"
 import { projects, type PortfolioProject } from "@/lib/portfolio-data"
-import { portfolioMailto } from "@/lib/portfolio-contact"
 import { ProjectMedia } from "@/components/portfolio/project-media"
 
 function ProjectIdentity({ project }: { project: PortfolioProject }) {
@@ -23,6 +23,24 @@ export function ProjectCard({ slug }: { slug: string }) {
   const closing = useRef(false)
   const closeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
+  const previousOverflow = useRef<string | null>(null)
+  const releaseScroll = useCallback(() => {
+    if (previousOverflow.current === null) return
+    document.documentElement.style.overflow = previousOverflow.current
+    previousOverflow.current = null
+  }, [])
+
+  // Release synchronously before route navigation; cached pages need not unmount immediately.
+  function dismissForNavigation() {
+    if (closeTimer.current) clearTimeout(closeTimer.current)
+    dialogRef.current?.close()
+    dialogRef.current?.removeAttribute("data-closing")
+    closing.current = false
+    releaseScroll()
+    setHovering(false)
+    setDialogOpen(false)
+  }
+
   const closeDialog = useCallback(() => {
     const dialog = dialogRef.current
     if (!dialog?.open || closing.current) return
@@ -31,6 +49,7 @@ export function ProjectCard({ slug }: { slug: string }) {
       dialog.close()
       dialog.removeAttribute("data-closing")
       closing.current = false
+      releaseScroll()
       setDialogOpen(false)
       triggerRef.current?.focus({ preventScroll: true })
     }
@@ -39,22 +58,22 @@ export function ProjectCard({ slug }: { slug: string }) {
       dialog.setAttribute("data-closing", "")
       closeTimer.current = setTimeout(finish, 180)
     }
-  }, [])
+  }, [releaseScroll])
 
   useEffect(() => {
     if (!dialogOpen || !dialogRef.current) return
     const dialog = dialogRef.current
     dialog.removeAttribute("data-closing")
     if (!dialog.open) dialog.showModal()
-    const previous = document.documentElement.style.overflow
+    previousOverflow.current = document.documentElement.style.overflow
     document.documentElement.style.overflow = "hidden"
     return () => {
-      document.documentElement.style.overflow = previous
+      releaseScroll()
       if (closeTimer.current) clearTimeout(closeTimer.current)
       closing.current = false
       if (dialog.open) dialog.close()
     }
-  }, [dialogOpen])
+  }, [dialogOpen, releaseScroll])
 
   if (!project) return null
   const visualLabel = project.visualType === "screenshot" ? "Product screenshot" : project.visualType === "concept" ? "Design preview" : "Interface study"
@@ -97,7 +116,7 @@ export function ProjectCard({ slug }: { slug: string }) {
           <h2 id={`dialog-title-${project.slug}`}>{project.title}</h2>
           <p className="dialog-description" id={`dialog-description-${project.slug}`}>{project.details}</p>
           <ul className="tag-list" aria-label="Project technologies">{project.tags.map(tag => <li className="tag-pill" key={tag}>{tag}</li>)}</ul>
-          <a className="button button-primary dialog-contact-link" href={portfolioMailto(`Let’s talk about ${project.title}`)}>Discuss a similar project <ArrowUpRight aria-hidden="true" /></a>
+          <Link className="button button-primary dialog-contact-link" href="/contact/" onNavigate={dismissForNavigation}>Discuss a similar project <ArrowUpRight aria-hidden="true" /></Link>
         </div>
       </div> : null}
     </dialog>

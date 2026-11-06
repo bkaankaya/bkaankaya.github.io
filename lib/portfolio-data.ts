@@ -25,8 +25,12 @@ export type PortfolioProject = {
   tags: string[]
   /** Local visual; distinguish screenshots, verified branding and editorial compositions. */
   image: string
+  /** Verified identity asset; rendered only in the small project badge. */
+  logo?: string
+  imageAlt?: string
+  mediaFit?: "landscape" | "mobile"
   gallery?: readonly string[]
-  visualType?: "screenshot" | "illustration" | "brand"
+  visualType?: "screenshot" | "illustration"
   accent: ProjectAccent
   icon: LucideIcon
 }
@@ -50,12 +54,13 @@ export const projects: PortfolioProject[] = [
     slug: "vague",
     title: "Vague",
     description: "Full-stack sports e-commerce with product management, order workflows and payments.",
-    details: "A sports-commerce platform built using Next.js, Spring Boot, PostgreSQL, Redis and integrations for checkout and order processing. The cover uses the original white Vague wordmark from the project repository on a custom dark backdrop.",
+    details: "A sports-commerce platform built using Next.js, Spring Boot, PostgreSQL, Redis and integrations for checkout and order processing. The project badge uses the original Vague wordmark. The large preview is an editorial interface study, not a captured customer account.",
     category: "Full-stack",
     categories: ["Full-stack"],
     tags: ["Next.js", "Spring Boot", "PostgreSQL", "Stripe"],
-    image: "/projects/vague-brand.svg",
-    visualType: "brand",
+    image: "/projects/vague.svg",
+    logo: "/projects/vague-brand.svg",
+    visualType: "illustration",
     accent: "teal",
     icon: Layers,
   },
@@ -75,12 +80,15 @@ export const projects: PortfolioProject[] = [
     slug: "quickscan",
     title: "QuickScan",
     description: "Exam processing and evaluation workflows using OCR and AI-assisted extraction.",
-    details: "A team-built exam management project connecting document recognition with backend workflows and web/mobile interfaces. The cover features the original QuickScan brand artwork from the mobile application. It is a branded identity visual, not an application screenshot.",
+    details: "A team-built exam management project connecting document recognition with backend workflows and web/mobile interfaces. The preview shows the real mobile sign-in interface without student records or personal data. The original QuickScan logo is used separately in the project badge.",
     category: "AI",
     categories: ["AI", "Research"],
     tags: ["Spring Boot", "OCR", "FastAPI", "Flutter"],
-    image: "/projects/quickscan-logo.png",
-    visualType: "brand",
+    image: "/projects/optimized/quickscan-screen.webp",
+    logo: "/projects/optimized/quickscan-mark.webp",
+    imageAlt: "QuickScan mobile application sign-in screen",
+    mediaFit: "mobile",
+    visualType: "screenshot",
     accent: "teal",
     icon: ScanLine,
   },
@@ -116,8 +124,8 @@ export const projects: PortfolioProject[] = [
     category: "Games",
     categories: ["Games"],
     tags: ["JavaScript", "Canvas", "Electron", "2D Combat"],
-    image: "/projects/rezero-gameplay.png",
-    gallery: ["/projects/rezero-gameplay.png", "/projects/rezero-attack.png", "/projects/rezero-shockwave.png", "/projects/rezero-menu.png"],
+    image: "/projects/optimized/rezero-gameplay.webp",
+    gallery: ["/projects/optimized/rezero-gameplay.webp", "/projects/optimized/rezero-attack.webp", "/projects/optimized/rezero-shockwave.webp", "/projects/optimized/rezero-menu.webp"],
     visualType: "screenshot",
     accent: "violet",
     icon: Gamepad2,

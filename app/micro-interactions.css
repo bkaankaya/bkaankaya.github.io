@@ -98,24 +98,6 @@
   .footer-brand:hover { transform: translateY(-2px) scale(1.035); filter: drop-shadow(0 3px 10px rgba(137,98,242,.16)); }
 }
 
-/* Make original app captures distinct from editorial concepts. */
-.project-card[data-visual="screenshot"] .project-art-trigger {
-  background: #10192e;
-}
-.project-card[data-visual="screenshot"] .project-art-overlay {
-  background: linear-gradient(180deg, transparent 52%, rgba(5,8,25,.78));
-}
-.project-card[data-visual="screenshot"]:hover .project-art-overlay,
-.project-card[data-visual="screenshot"]:focus-within .project-art-overlay { opacity: .87; }
-.project-dialog[data-visual="screenshot"] .project-dialog-visual { background: #111831; }
-.project-card .project-open-button {
-  transition: color 210ms ease, background-color 210ms ease, transform 220ms cubic-bezier(.2,.8,.2,1);
-}
-.project-card .project-open-button:is(:hover, :focus-visible) {
-  transform: translate(2px, -2px);
-  background: color-mix(in srgb, var(--card-accent) 14%, transparent);
-  color: var(--site-text);
-}
 .filter-button {
   transition: transform 230ms cubic-bezier(.2,.8,.2,1), color 220ms ease, background-color 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
 }
@@ -138,7 +120,6 @@
   .footer-links > a::after,
   .footer-socials > a svg:last-child,
   .footer-brand,
-  .project-card .project-open-button,
   .filter-button {
     transition: none !important;
   }
@@ -147,7 +128,7 @@
   .footer-links > a:hover,
   .footer-socials > a:hover svg:last-child,
   .footer-brand:hover,
-  .project-card .project-open-button:is(:hover, :focus-visible) {
+  .footer-brand:hover {
     transform: none !important;
   }
 }

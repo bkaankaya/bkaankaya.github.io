@@ -7,7 +7,9 @@
     "build": "next build",
     "postbuild": "node scripts/flatten-rsc-export.mjs",
     "start": "next start",
-    "check": "pnpm exec tsc --noEmit && node --test scripts/*.test.mjs"
+    "check": "pnpm exec tsc --noEmit && node --test scripts/*.test.mjs",
+    "prebuild": "node scripts/prepare-project-media.mjs",
+    "predev": "node scripts/prepare-project-media.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.564.0",

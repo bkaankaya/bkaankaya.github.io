@@ -1,278 +1,105 @@
 "use client"
 
-import { useCallback, useEffect, useRef, useState } from "react"
 import Image from "next/image"
-import { ArrowUpRight, ExternalLink, X } from "lucide-react"
-import { projects } from "@/lib/portfolio-data"
+import { useCallback, useEffect, useRef, useState } from "react"
+import { ArrowUpRight, X } from "lucide-react"
+import { projects, type PortfolioProject } from "@/lib/portfolio-data"
 import { portfolioMailto } from "@/lib/portfolio-contact"
+import { ProjectMedia } from "@/components/portfolio/project-media"
 
-let cachedSupportsDisplayTransition: boolean | undefined
-
-function canTransitionDisplay(): boolean {
-  if (cachedSupportsDisplayTransition !== undefined) return cachedSupportsDisplayTransition
-  if (typeof window === "undefined" || !window.CSS?.supports?.("transition-behavior", "allow-discrete") || !document.body) {
-    return false
-  }
-  const probe = document.createElement("div")
-  probe.style.cssText = "transition: display 1s allow-discrete !important; display: block;"
-  document.body.appendChild(probe)
-  getComputedStyle(probe).display
-  probe.style.display = "none"
-  cachedSupportsDisplayTransition = getComputedStyle(probe).display === "block"
-  probe.remove()
-  return cachedSupportsDisplayTransition
-}
-
-function supportsTopLayerExit(): boolean {
-  return typeof window !== "undefined" && Boolean(window.CSS?.supports?.("overlay", "auto")) && canTransitionDisplay()
+function ProjectIdentity({ project }: { project: PortfolioProject }) {
+  const Icon = project.icon
+  return <span className={`project-icon${project.logo ? " project-brand" : ""}`} data-brand={project.slug}>
+    {project.logo ? <Image src={project.logo} alt={`${project.title} logo`} width={48} height={48} unoptimized /> : <Icon aria-hidden="true" />}
+  </span>
 }
 
 export function ProjectCard({ slug }: { slug: string }) {
+  const project = projects.find(item => item.slug === slug)
   const [dialogOpen, setDialogOpen] = useState(false)
-  const [galleryHover, setGalleryHover] = useState(false)
-  const [galleryIndex, setGalleryIndex] = useState(0)
+  const [hovering, setHovering] = useState(false)
   const dialogRef = useRef<HTMLDialogElement>(null)
-  const triggerRef = useRef<HTMLButtonElement>(null)
-  const project = projects.find((item) => item.slug === slug)
-  const images = project?.gallery ?? (project ? [project.image] : [])
+  const triggerRef = useRef<HTMLButtonElement | null>(null)
+  const closing = useRef(false)
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
-  const closeDialog = useCallback(async () => {
+  const closeDialog = useCallback(() => {
     const dialog = dialogRef.current
-    if (!dialog || !dialog.open) {
-      setDialogOpen(false)
-      return
-    }
-
-    const prefersReducedMotion =
-      typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches
-
-    if (!prefersReducedMotion && !supportsTopLayerExit()) {
-      dialog.setAttribute("data-closing", "")
-      const animations = dialog.getAnimations({ subtree: true })
-      if (animations.length > 0) {
-        await Promise.race([
-          Promise.allSettled(animations.map((a) => a.finished)),
-          new Promise((resolve) => window.setTimeout(resolve, 260)),
-        ])
-      }
-      dialog.removeAttribute("data-closing")
-    }
-
-    if (dialog.open) {
+    if (!dialog?.open || closing.current) return
+    closing.current = true
+    const finish = () => {
       dialog.close()
+      dialog.removeAttribute("data-closing")
+      closing.current = false
+      setDialogOpen(false)
+      triggerRef.current?.focus({ preventScroll: true })
     }
-    setDialogOpen(false)
-    triggerRef.current?.focus()
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) finish()
+    else {
+      dialog.setAttribute("data-closing", "")
+      closeTimer.current = setTimeout(finish, 180)
+    }
   }, [])
 
   useEffect(() => {
+    if (!dialogOpen || !dialogRef.current) return
     const dialog = dialogRef.current
-    if (!dialog) return
-
-    if (dialogOpen) {
-      if (!dialog.open) {
-        dialog.removeAttribute("data-closing")
-        dialog.showModal()
-      }
-      const prevHtmlOverflow = document.documentElement.style.overflow
-      const prevBodyOverflow = document.body.style.overflow
-      document.documentElement.style.overflow = "hidden"
-      document.body.style.overflow = "hidden"
-      return () => {
-        document.documentElement.style.overflow = prevHtmlOverflow
-        document.body.style.overflow = prevBodyOverflow
-      }
+    dialog.removeAttribute("data-closing")
+    if (!dialog.open) dialog.showModal()
+    const previous = document.documentElement.style.overflow
+    document.documentElement.style.overflow = "hidden"
+    return () => {
+      document.documentElement.style.overflow = previous
+      if (closeTimer.current) clearTimeout(closeTimer.current)
+      closing.current = false
+      if (dialog.open) dialog.close()
     }
   }, [dialogOpen])
 
-  useEffect(() => {
-    if (!galleryHover || dialogOpen || images.length < 2 || document.hidden) return
-    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)")
-    const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)")
-    const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection
-    if (reducedMotion.matches || !finePointer.matches || connection?.saveData) return
-
-    const resetGallery = () => {
-      setGalleryHover(false)
-      setGalleryIndex(0)
-    }
-    const onVisibilityChange = () => {
-      if (document.hidden) resetGallery()
-    }
-    const onPreferenceChange = () => {
-      if (reducedMotion.matches || !finePointer.matches) resetGallery()
-    }
-    const interval = window.setInterval(() => {
-      setGalleryIndex((current) => (current + 1) % images.length)
-    }, 5000)
-    document.addEventListener("visibilitychange", onVisibilityChange)
-    reducedMotion.addEventListener("change", onPreferenceChange)
-    finePointer.addEventListener("change", onPreferenceChange)
-    return () => {
-      window.clearInterval(interval)
-      document.removeEventListener("visibilitychange", onVisibilityChange)
-      reducedMotion.removeEventListener("change", onPreferenceChange)
-      finePointer.removeEventListener("change", onPreferenceChange)
-    }
-  }, [galleryHover, dialogOpen, images.length])
-
   if (!project) return null
-  const ProjectIcon = project.icon
+  const visualLabel = project.visualType === "screenshot" ? "Product screenshot" : "Interface study"
+  function openDialog(button: HTMLButtonElement) {
+    triggerRef.current = button
+    setHovering(false)
+    setDialogOpen(true)
+  }
 
-  return (
-    <>
-      <article
-        className="project-card"
-        data-accent={project.accent}
-        data-project={project.slug}
-        data-visual={project.visualType ?? "illustration"}
-        onPointerEnter={(event) => {
-          if (event.pointerType !== "mouse" || images.length < 2) return
-          setGalleryIndex(0)
-          setGalleryHover(true)
-        }}
-        onPointerLeave={() => {
-          setGalleryHover(false)
-          setGalleryIndex(0)
-        }}
-      >
-        <button
-          className="project-art-trigger"
-          type="button"
-          aria-label={`Explore ${project.title} project`}
-          aria-haspopup="dialog"
-          onClick={(event) => {
-            triggerRef.current = event.currentTarget
-            setDialogOpen(true)
-          }}
-        >
-          {images.length > 1 ? (
-            <span className="project-gallery" aria-hidden="true">
-              {images.map((src, index) => (
-                <Image
-                  key={src}
-                  src={src}
-                  alt=""
-                  fill
-                  unoptimized
-                  loading="lazy"
-                  sizes="(max-width: 640px) 100vw, (max-width: 820px) 50vw, 33vw"
-                  className={`project-art-image project-gallery-frame${galleryIndex === index ? " is-active" : ""}`}
-                />
-              ))}
-            </span>
-          ) : (
-            <Image
-              src={project.image}
-              alt=""
-              fill
-              unoptimized
-              sizes="(max-width: 640px) 100vw, (max-width: 820px) 50vw, 33vw"
-              className="project-art-image"
-            />
-          )}
-          <span className="project-art-overlay" aria-hidden="true" />
-          <span className="project-art-caption" aria-hidden="true">
-            <span>{project.visualType === "screenshot" ? "Actual project UI" : project.visualType === "brand" ? "Branded visual" : "Editorial visual"} <span className="project-art-sparkle">✦</span></span>
-            <span>Explore <ArrowUpRight /></span>
-          </span>
-        </button>
-        <div className="project-card-content">
-          <div className="project-card-top">
-            <span className="project-icon">
-              <ProjectIcon aria-hidden="true" />
-            </span>
-            <button
-              ref={triggerRef}
-              className="project-open-button"
-              type="button"
-              aria-label={`View details for ${project.title}`}
-              aria-haspopup="dialog"
-              onClick={(event) => {
-                triggerRef.current = event.currentTarget
-                setDialogOpen(true)
-              }}
-            >
-              <ExternalLink aria-hidden="true" />
-            </button>
-          </div>
-          <p className="project-category">{project.category}</p>
-          <h3>
-            <button
-              type="button"
-              className="project-title-trigger"
-              aria-haspopup="dialog"
-              onClick={(event) => {
-                triggerRef.current = event.currentTarget
-                setDialogOpen(true)
-              }}
-            >
-              {project.title}
-            </button>
-          </h3>
-          <p className="project-description">{project.description}</p>
-          <ul className="tag-list" aria-label={`${project.title} technologies`}>
-            {project.tags.map((tag) => (
-              <li className="tag-pill" key={tag}>
-                {tag}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </article>
-
-      <dialog
-        ref={dialogRef}
-        className="project-dialog"
-        data-project={project.slug}
-        data-visual={project.visualType ?? "illustration"}
-        aria-labelledby={`dialog-title-${project.slug}`}
-        onCancel={(event) => {
-          event.preventDefault()
-          void closeDialog()
-        }}
-        onClose={() => {
-          setDialogOpen(false)
-        }}
-        onClick={(event) => {
-          if (event.target === dialogRef.current) {
-            void closeDialog()
-          }
-        }}
-      >
-        <div className="project-dialog-content">
-          <div className="project-dialog-visual">
-            <Image src={project.image} alt="" fill unoptimized sizes="(max-width: 600px) 100vw, 520px" />
-          </div>
-          <button
-            className="dialog-close-button"
-            type="button"
-            aria-label="Close project details"
-            onClick={() => void closeDialog()}
-          >
-            <X aria-hidden="true" />
-          </button>
-          <p className="eyebrow">
-            <span className="eyebrow-dot" />
-            {project.category} PROJECT
-          </p>
+  return <>
+    <article className="project-card" data-project={project.slug} data-accent={project.accent} data-visual={project.visualType ?? "illustration"}
+      onPointerEnter={event => { if (event.pointerType === "mouse") setHovering(true) }}
+      onPointerLeave={() => setHovering(false)}>
+      <button className="project-art-trigger" type="button" aria-label={`Explore ${project.title} project`} aria-haspopup="dialog" onClick={event => openDialog(event.currentTarget)}>
+        <ProjectMedia project={project} active={hovering && !dialogOpen} />
+        <span className="project-art-caption" aria-hidden="true"><span><i />{visualLabel}</span><span>Explore project <ArrowUpRight /></span></span>
+      </button>
+      <div className="project-card-content">
+        <div className="project-card-top"><ProjectIdentity project={project} /><span className="project-category">{project.category}</span></div>
+        <h3><button type="button" className="project-title-trigger" aria-haspopup="dialog" onClick={event => openDialog(event.currentTarget)}>{project.title}<ArrowUpRight aria-hidden="true" /></button></h3>
+        <p className="project-description">{project.description}</p>
+        <ul className="tag-list" aria-label={`${project.title} technologies`}>{project.tags.map(tag => <li className="tag-pill" key={tag}>{tag}</li>)}</ul>
+      </div>
+    </article>
+    <dialog ref={dialogRef} className="project-dialog" data-project={project.slug} data-accent={project.accent} data-visual={project.visualType ?? "illustration"}
+      aria-labelledby={`dialog-title-${project.slug}`} aria-describedby={`dialog-description-${project.slug}`}
+      onCancel={event => { event.preventDefault(); closeDialog() }}
+      onClose={() => setDialogOpen(false)}
+      onClick={event => {
+        if (event.target !== dialogRef.current) return
+        const box = event.currentTarget.getBoundingClientRect()
+        if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) closeDialog()
+      }}>
+      {dialogOpen ? <div className="project-dialog-content">
+        <header className="project-dialog-heading"><div><ProjectIdentity project={project} /><span>{project.category}<small>Project details</small></span></div>
+          <button autoFocus className="dialog-close-button" type="button" aria-label="Close project details" onClick={closeDialog}><X aria-hidden="true" /></button>
+        </header>
+        <div className="project-dialog-visual"><ProjectMedia project={project} controls /></div>
+        <div className="project-dialog-copy"><p className="project-preview-note">{visualLabel}{project.visualType !== "screenshot" ? " · Editorial illustration, not a live product screen" : " · Captured from the project"}</p>
           <h2 id={`dialog-title-${project.slug}`}>{project.title}</h2>
-          <p className="dialog-description">{project.details}</p>
-          <ul className="tag-list" aria-label="Project technologies">
-            {project.tags.map((tag) => (
-              <li className="tag-pill" key={tag}>
-                {tag}
-              </li>
-            ))}
-          </ul>
-          <a
-            className="button button-primary dialog-contact-link"
-            href={portfolioMailto(`Let’s talk about ${project.title}`)}
-          >
-            Discuss a similar project <ArrowUpRight aria-hidden="true" />
-          </a>
+          <p className="dialog-description" id={`dialog-description-${project.slug}`}>{project.details}</p>
+          <ul className="tag-list" aria-label="Project technologies">{project.tags.map(tag => <li className="tag-pill" key={tag}>{tag}</li>)}</ul>
+          <a className="button button-primary dialog-contact-link" href={portfolioMailto(`Let’s talk about ${project.title}`)}>Discuss a similar project <ArrowUpRight aria-hidden="true" /></a>
         </div>
-      </dialog>
-    </>
-  )
+      </div> : null}
+    </dialog>
+  </>
 }

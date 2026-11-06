@@ -43,3 +43,6 @@ audit-report*.json
 npm-debug.log*
 pnpm-debug.log*
 *.log
+
+# Reproducible local derivatives, regenerated before dev/build.
+/public/projects/optimized/

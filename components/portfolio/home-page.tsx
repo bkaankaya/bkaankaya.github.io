@@ -19,7 +19,7 @@ export function HomePage() {
           <div className="hero-copy">
             <div className="hero-stagger-item" style={{ "--hero-step": 0 } as CSSProperties}>
               <p className="eyebrow"><span className="eyebrow-dot" />SOFTWARE ENGINEER</p>
-              <h1 id="hero-title">Hi, I’m B. Kaan Kaya.</h1>
+              <h1 id="hero-title"><span className="hero-greeting">Hi, I’m</span>B. Kaan Kaya<span className="accent-text">.</span></h1>
             </div>
             <p
               className="hero-description hero-stagger-item"

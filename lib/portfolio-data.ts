@@ -28,9 +28,10 @@ export type PortfolioProject = {
   /** Verified identity asset; rendered only in the small project badge. */
   logo?: string
   imageAlt?: string
+  galleryAlts?: readonly string[]
   mediaFit?: "landscape" | "mobile"
   gallery?: readonly string[]
-  visualType?: "screenshot" | "illustration"
+  visualType?: "screenshot" | "illustration" | "concept"
   accent: ProjectAccent
   icon: LucideIcon
 }
@@ -42,11 +43,15 @@ export const projects: PortfolioProject[] = [
     slug: "dora-voice",
     title: "DoraVoice",
     description: "Voice AI receptionist for business calls, appointments and customer support workflows.",
-    details: "DoraVoice combines a Java / Spring Boot backend, PostgreSQL and AI-assisted voice workflows with a business-focused web experience. The editorial visual is a concept illustration, not a verified DoraVoice logo or a live product screenshot.",
+    details: "DoraVoice combines a Java / Spring Boot backend, PostgreSQL and AI-assisted voice workflows with a business-focused web experience. The two owner-provided design previews illustrate the call-management and receptionist experience; they are not live product captures. The project badge uses the original D emblem from doravoice.ai.",
     category: "AI",
     categories: ["AI", "Full-stack"],
     tags: ["Spring Boot", "Next.js", "PostgreSQL", "AI"],
-    image: "/projects/doravoice.svg",
+    image: "/projects/doravoice-call-preview.webp",
+    logo: "/projects/doravoice-mark.webp",
+    gallery: ["/projects/doravoice-call-preview.webp", "/projects/doravoice-product-preview.webp"],
+    galleryAlts: ["DoraVoice call-management interface design preview", "DoraVoice AI receptionist promotional design preview"],
+    visualType: "concept",
     accent: "violet",
     icon: Activity,
   },
@@ -125,6 +130,7 @@ export const projects: PortfolioProject[] = [
     categories: ["Games"],
     tags: ["JavaScript", "Canvas", "Electron", "2D Combat"],
     image: "/projects/optimized/rezero-gameplay.webp",
+    logo: "/projects/rezero-mark.webp",
     gallery: ["/projects/optimized/rezero-gameplay.webp", "/projects/optimized/rezero-attack.webp", "/projects/optimized/rezero-shockwave.webp", "/projects/optimized/rezero-menu.webp"],
     visualType: "screenshot",
     accent: "violet",
@@ -147,7 +153,14 @@ export const technologies: { name: string; detail: string; brand: BrandId }[] = 
   { name: "Docker", detail: "DevOps", brand: "docker" },
   { name: "PostgreSQL", detail: "Data", brand: "postgresql" },
   { name: "AWS", detail: "Cloud", brand: "aws" },
-  { name: "More", detail: "Tools", brand: "more" },
+]
+
+/** Kept deliberately short; each technology is represented in the project portfolio. */
+export const additionalTechnologies: { name: string; detail: string; brand: BrandId }[] = [
+  { name: "TypeScript", detail: "Web applications", brand: "typescript" },
+  { name: "Spring Boot", detail: "Backend services", brand: "springboot" },
+  { name: "C/C++", detail: "Embedded software", brand: "cplusplus" },
+  { name: "Solidity", detail: "Smart contracts", brand: "solidity" },
 ]
 
 export const experienceItems: { title: string; description: string; date: string; icon: LucideIcon; accent: ProjectAccent }[] = [

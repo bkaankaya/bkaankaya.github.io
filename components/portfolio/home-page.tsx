@@ -5,8 +5,9 @@ import { ArrowRight, ArrowUpRight, Mail } from "lucide-react"
 import { BrandIcon } from "@/components/portfolio/brand-icon"
 import { ProjectCard } from "@/components/portfolio/project-card"
 import { Reveal } from "@/components/portfolio/reveal"
+import { TechnologyStack } from "@/components/portfolio/technology-stack"
 import { SectionHeading } from "@/components/portfolio/section-heading"
-import { processSteps, projects, technologies } from "@/lib/portfolio-data"
+import { processSteps, projects } from "@/lib/portfolio-data"
 import { portfolioContact, portfolioMailto } from "@/lib/portfolio-contact"
 
 const portraitSource = "/portrait-kaan.webp"
@@ -102,21 +103,7 @@ export function HomePage() {
             <p className="eyebrow"><span className="eyebrow-dot" />TECH STACK</p>
             <h2 className="section-title" id="technologies-title">Technologies</h2>
           </Reveal>
-          <div className="technology-grid" role="list" aria-label="Core technologies">
-            {technologies.map(({ name, detail, brand }, index) => (
-              <Reveal key={name} className="h-full" delay={index * 35}>
-                <div
-                  className="technology-card"
-                  role="listitem"
-                  title={`${name} — ${detail}`}
-                  aria-label={`${name} (${detail})`}
-                >
-                  <BrandIcon brand={brand} size={24} />
-                  <span>{name}</span>
-                </div>
-              </Reveal>
-            ))}
-          </div>
+          <TechnologyStack />
         </div>
       </section>
     </main>

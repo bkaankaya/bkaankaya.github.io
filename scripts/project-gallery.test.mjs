@@ -49,8 +49,8 @@ test('modal is centered, bounded, keyboard accessible and has manual gallery con
   assert.match(card, /onCancel=/)
   assert.match(card, /clearTimeout/)
   assert.match(card, /aria-describedby=/)
-  assert.match(media, /Previous screenshot/)
-  assert.match(media, /Next screenshot/)
+  assert.match(media, /Previous image/)
+  assert.match(media, /Next image/)
 })
 test('screenshots keep their full aspect ratio, with a separate mobile device viewport', () => {
   assert.match(styles, /object-fit:contain/)

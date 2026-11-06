@@ -57,7 +57,7 @@ export function ProjectCard({ slug }: { slug: string }) {
   }, [dialogOpen])
 
   if (!project) return null
-  const visualLabel = project.visualType === "screenshot" ? "Product screenshot" : "Interface study"
+  const visualLabel = project.visualType === "screenshot" ? "Product screenshot" : project.visualType === "concept" ? "Design preview" : "Interface study"
   function openDialog(button: HTMLButtonElement) {
     triggerRef.current = button
     setHovering(false)
@@ -93,7 +93,7 @@ export function ProjectCard({ slug }: { slug: string }) {
           <button autoFocus className="dialog-close-button" type="button" aria-label="Close project details" onClick={closeDialog}><X aria-hidden="true" /></button>
         </header>
         <div className="project-dialog-visual"><ProjectMedia project={project} controls /></div>
-        <div className="project-dialog-copy"><p className="project-preview-note">{visualLabel}{project.visualType !== "screenshot" ? " · Editorial illustration, not a live product screen" : " · Captured from the project"}</p>
+        <div className="project-dialog-copy"><p className="project-preview-note">{visualLabel}{project.visualType === "screenshot" ? " · Captured from the project" : project.visualType === "concept" ? " · Owner-provided concepts, not live product screens" : " · Editorial illustration, not a live product screen"}</p>
           <h2 id={`dialog-title-${project.slug}`}>{project.title}</h2>
           <p className="dialog-description" id={`dialog-description-${project.slug}`}>{project.details}</p>
           <ul className="tag-list" aria-label="Project technologies">{project.tags.map(tag => <li className="tag-pill" key={tag}>{tag}</li>)}</ul>

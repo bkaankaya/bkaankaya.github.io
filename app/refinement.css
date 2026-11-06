@@ -78,3 +78,22 @@
   .footer-main { padding-block:35px; gap:29px; }
 }
 @media (prefers-reduced-motion:reduce) { .experience-entry,.education-card,.learning-card,.value-card,.contact-card,.info-panel { transition:none; } }
+
+/* Preserve the compact eight-tile row; reveal just four additional technologies. */
+.portfolio-app .technology-stack { flex:1 1 auto; min-width:0; max-width:650px; }
+.portfolio-app .technology-stack .technology-grid { width:100%; }
+.portfolio-app .technology-toggle { width:100%; height:100%; padding:12px 5px; cursor:pointer; font:inherit; font-size:10px; font-weight:600; }
+.portfolio-app .technology-toggle[aria-expanded="true"] { color:var(--site-text); border-color:var(--site-accent); background:var(--site-panel-strong); }
+.portfolio-app .technology-toggle:focus-visible { outline:2px solid var(--site-accent); outline-offset:4px; }
+.portfolio-app .technology-expanded { margin-top:15px; padding-top:15px; border-top:1px solid var(--site-border); animation:technology-disclosure-in 200ms ease-out; }
+.portfolio-app .technology-expanded[hidden] { display:none; }
+.portfolio-app .technology-expanded-label { margin:0 0 12px; font-size:11px; line-height:1.5; color:var(--site-subtle); }
+.portfolio-app .technology-extra-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; }
+.portfolio-app .technology-stack .technology-card { min-width:0; text-align:center; }
+.portfolio-app .technology-stack .technology-card span { overflow-wrap:anywhere; }
+.portfolio-app .project-brand[data-brand="dora-voice"] { padding:9px; background:#111827; }
+.portfolio-app .project-brand[data-brand="rezero-2d-game"] { padding:4px; background:#11101e; }
+@keyframes technology-disclosure-in { from { opacity:0; transform:translateY(-4px); } to { opacity:1; transform:none; } }
+@media (max-width:1000px) { .portfolio-app .technology-stack .technology-grid { grid-template-columns:repeat(4,minmax(0,1fr)); } }
+@media (max-width:700px) { .portfolio-app .technology-stack { width:100%; max-width:none; } .portfolio-app .technology-extra-grid { gap:8px; } }
+@media (prefers-reduced-motion:reduce) { .portfolio-app .technology-expanded { animation:none; } }

@@ -9,6 +9,10 @@ export type BrandId =
   | "github"
   | "linkedin"
   | "more"
+  | "typescript"
+  | "springboot"
+  | "cplusplus"
+  | "solidity"
 
 type BrandIconProps = {
   brand: BrandId
@@ -59,7 +63,7 @@ export function BrandIcon({ brand, size = 22, className = "" }: BrandIconProps) 
     )
   }
 
-  const isMonochrome = brand === "github" || brand === "linkedin"
+  const isMonochrome = brand === "github" || brand === "linkedin" || brand === "solidity"
 
   return (
     <img

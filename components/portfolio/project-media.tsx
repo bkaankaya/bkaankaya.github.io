@@ -60,7 +60,7 @@ export function ProjectMedia({ project, active = false, controls = false }: Prop
       <div className="project-media-stage">
         <div className="project-media-viewport">
           {frames.map((src, frameIndex) => frameIndex === 0 || warm ? (
-            <Image key={src} src={src} alt={frameIndex === index ? project.imageAlt ?? `${project.title} preview` : ""}
+            <Image key={src} src={src} alt={frameIndex === index ? project.galleryAlts?.[frameIndex] ?? project.imageAlt ?? `${project.title} preview` : ""}
               aria-hidden={frameIndex !== index} fill unoptimized draggable={false}
               loading={frameIndex === 0 ? "lazy" : "eager"}
               sizes={controls ? "(max-width: 700px) 90vw, 800px" : "(max-width: 700px) 90vw, 50vw"}
@@ -72,10 +72,10 @@ export function ProjectMedia({ project, active = false, controls = false }: Prop
         </div>
       </div>
       {frames.length > 1 ? controls ? (
-        <div className="project-gallery-controls" aria-label={`${project.title} screenshot gallery`}>
-          <button type="button" aria-label="Previous screenshot" onClick={() => setIndex(current => (current - 1 + frames.length) % frames.length)}><ChevronLeft aria-hidden="true" /></button>
+        <div className="project-gallery-controls" aria-label={`${project.title} image gallery`}>
+          <button type="button" aria-label="Previous image" onClick={() => setIndex(current => (current - 1 + frames.length) % frames.length)}><ChevronLeft aria-hidden="true" /></button>
           <span role="status" aria-live="polite">{index + 1} <span aria-hidden="true">/</span><span className="sr-only">of</span> {frames.length}</span>
-          <button type="button" aria-label="Next screenshot" onClick={() => setIndex(current => (current + 1) % frames.length)}><ChevronRight aria-hidden="true" /></button>
+          <button type="button" aria-label="Next image" onClick={() => setIndex(current => (current + 1) % frames.length)}><ChevronRight aria-hidden="true" /></button>
         </div>
       ) : <span className="project-gallery-count" aria-hidden="true">{index + 1} / {frames.length}</span> : null}
     </div>

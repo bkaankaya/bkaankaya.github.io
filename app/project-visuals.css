@@ -1,0 +1,227 @@
+/* A deliberate, route-wide illustrated portfolio system.
+   Illustrations are original locally stored SVG concepts, not fabricated
+   screenshots. Structural card content remains plain semantic HTML. */
+.project-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-radius: 19px;
+  background: var(--site-panel);
+  box-shadow: 0 14px 38px rgba(0, 0, 0, .09);
+  transition: transform 280ms var(--ease-out), border-color 220ms ease, box-shadow 280ms ease;
+}
+.project-card::before,
+.project-card::after {
+  display: none;
+}
+.project-card:hover,
+.project-card:focus-within {
+  transform: translateY(-5px);
+  border-color: color-mix(in srgb, var(--card-accent) 70%, var(--site-border));
+  box-shadow: 0 20px 52px color-mix(in srgb, var(--card-glow) 58%, transparent);
+}
+.project-art-trigger {
+  position: relative;
+  display: block;
+  flex: 0 0 auto;
+  width: 100%;
+  height: clamp(168px, 16vw, 205px);
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  border-radius: 18px 18px 0 0;
+  background: #151a35;
+  cursor: pointer;
+  isolation: isolate;
+  text-align: left;
+  touch-action: manipulation;
+}
+.project-art-image {
+  object-fit: cover;
+  object-position: center;
+  transition: transform 650ms cubic-bezier(.15,.7,.15,1);
+}
+.project-card:hover .project-art-image,
+.project-card:focus-within .project-art-image {
+  transform: scale(1.055);
+}
+.project-art-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(180deg, rgba(4,7,22,.12) 32%, rgba(8,13,30,.58) 100%);
+  opacity: .78;
+  transition: opacity 220ms ease;
+}
+.project-card:hover .project-art-overlay,
+.project-card:focus-within .project-art-overlay { opacity: 1; }
+.project-art-caption {
+  position: absolute;
+  z-index: 2;
+  inset: auto 15px 13px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  font: 700 10px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+  color: #f8f8ff;
+  text-shadow: 0 1px 5px rgba(0,0,0,.35);
+}
+.project-art-caption > span:last-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: transform 200ms ease;
+}
+.project-art-caption svg { width: 14px; height: 14px; }
+.project-art-sparkle { color: #e7b2ff; font-size: 14px; }
+.project-card:hover .project-art-caption > span:last-child {
+  transform: translate(2px,-2px);
+}
+.project-card-content {
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 209px;
+  padding: 17px 20px 21px;
+}
+.project-card-top { margin-bottom: 10px; }
+.project-card h3 { font-size: clamp(1rem, 1.32vw, 1.18rem); }
+.project-description { max-width: 54ch; line-height: 1.58; }
+.project-dialog { width: min(640px, calc(100% - 30px)); }
+.project-dialog-visual {
+  position: relative;
+  overflow: hidden;
+  height: clamp(158px, 25vw, 232px);
+  margin: -4px -4px 22px;
+  border-radius: 12px;
+  background: #141932;
+}
+.project-dialog-visual img { object-fit: cover; }
+.project-dialog-content .dialog-close-button {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 3;
+  margin: 0;
+  background: var(--site-panel-strong);
+  backdrop-filter: blur(12px);
+}
+.project-dialog-content { position: relative; }
+
+/* Fine, technical, interactive stipple—not a full-screen canvas or cursor trail. */
+.portfolio-app > .ambient-dot-field {
+  --dot-ink: rgba(172, 158, 255, .38);
+  --dot-active: rgba(191, 148, 255, .88);
+  --dot-halo: rgba(108, 83, 220, .12);
+  --dot-x: 50%;
+  --dot-y: 38%;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+}
+.ambient-dot-field__base,
+.ambient-dot-field__highlight,
+.ambient-dot-field__halo {
+  position: absolute;
+  inset: 0;
+  display: block;
+  pointer-events: none;
+}
+.ambient-dot-field__base,
+.ambient-dot-field__highlight {
+  background-image: radial-gradient(circle, var(--dot-ink) 1.15px, transparent 1.55px);
+  background-size: 26px 26px;
+  background-position: center;
+}
+.ambient-dot-field__base {
+  opacity: .40;
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 10%, #000 82%, transparent);
+  mask-image: linear-gradient(180deg, transparent, #000 10%, #000 82%, transparent);
+}
+.ambient-dot-field__highlight {
+  background-image: radial-gradient(circle, var(--dot-active) 1.3px, transparent 1.7px);
+  -webkit-mask-image: radial-gradient(circle 245px at var(--dot-x) var(--dot-y), #000 0%, transparent 93%);
+  mask-image: radial-gradient(circle 245px at var(--dot-x) var(--dot-y), #000 0%, transparent 93%);
+  opacity: 0;
+  transition: opacity 250ms ease;
+}
+.ambient-dot-field__halo {
+  background: radial-gradient(circle 245px at var(--dot-x) var(--dot-y), var(--dot-halo), transparent 88%);
+  opacity: 0;
+  transition: opacity 300ms ease;
+}
+.ambient-dot-field[data-active="true"] .ambient-dot-field__highlight { opacity: 1; }
+.ambient-dot-field[data-active="true"] .ambient-dot-field__halo { opacity: 1; }
+.portfolio-app[data-theme="light"] > .ambient-dot-field {
+  --dot-ink: rgba(68, 75, 137, .29);
+  --dot-active: rgba(89, 54, 196, .79);
+  --dot-halo: rgba(120, 92, 211, .12);
+}
+.portfolio-app[data-motion="paused"] .ambient-dot-field__highlight,
+.portfolio-app[data-motion="paused"] .ambient-dot-field__halo { opacity: 0 !important; }
+
+/* The visual language extends to non-project pages without painting fake imagery. */
+.experience-entry,
+.education-card,
+.learning-card,
+.value-card,
+.contact-card,
+.info-panel {
+  position: relative;
+  isolation: isolate;
+  transition: border-color 240ms ease, box-shadow 260ms ease, transform 260ms var(--ease-out);
+}
+.experience-entry:hover,
+.education-card:hover,
+.learning-card:hover,
+.value-card:hover,
+.contact-card:hover,
+.info-panel:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--site-accent) 34%, var(--site-border));
+  box-shadow: 0 16px 42px rgba(81, 62, 155, .12);
+}
+.portfolio-app[data-theme="light"] .experience-entry:hover,
+.portfolio-app[data-theme="light"] .education-card:hover,
+.portfolio-app[data-theme="light"] .learning-card:hover,
+.portfolio-app[data-theme="light"] .value-card:hover,
+.portfolio-app[data-theme="light"] .contact-card:hover,
+.portfolio-app[data-theme="light"] .info-panel:hover {
+  box-shadow: 0 16px 36px rgba(40, 39, 80, .1);
+}
+@media (max-width: 820px) {
+  .project-art-trigger { height: clamp(170px, 25vw, 210px); }
+}
+@media (max-width: 640px) {
+  .project-art-trigger { height: clamp(168px, 51vw, 235px); }
+  .project-card-content { min-height: 0; padding: 18px; }
+  .ambient-dot-field__base { opacity: .23; background-size: 30px 30px; }
+  .ambient-dot-field__highlight,
+  .ambient-dot-field__halo { display: none; }
+}
+@media (hover: none), (pointer: coarse) {
+  .ambient-dot-field__highlight,
+  .ambient-dot-field__halo { display: none; }
+  .project-card:hover,
+  .project-art-image { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .project-card,
+  .project-art-image,
+  .project-art-overlay,
+  .project-art-caption > span:last-child,
+  .ambient-dot-field__highlight,
+  .ambient-dot-field__halo {
+    transition: none !important;
+  }
+  .project-card:hover { transform: none; }
+  .ambient-dot-field__highlight,
+  .ambient-dot-field__halo { display: none; }
+}
+html[data-save-data] .ambient-dot-field__highlight,
+html[data-save-data] .ambient-dot-field__halo { display: none; }

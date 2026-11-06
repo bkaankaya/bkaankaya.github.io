@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { PortfolioFooter } from "@/components/portfolio/portfolio-footer"
+import { AmbientDotField } from "@/components/portfolio/ambient-dot-field"
 import { SiteHeader } from "@/components/portfolio/site-header"
 
 export type PortfolioTheme = "dark" | "light"
@@ -77,6 +78,7 @@ export function PortfolioShell({ children }: { children: React.ReactNode }) {
         <span className="ambient-scene__orb ambient-scene__orb--blue" />
         <span className="ambient-scene__grid" />
       </div>
+      <AmbientDotField motionPaused={motionPaused} />
       <a className="skip-link" href="#main-content">Skip to content</a>
       <SiteHeader theme={theme} onToggleTheme={toggleTheme} motionPaused={motionPaused} onToggleMotion={toggleMotion} />
       {children}

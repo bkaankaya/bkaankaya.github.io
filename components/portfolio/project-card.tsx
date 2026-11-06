@@ -170,7 +170,7 @@ export function ProjectCard({ slug }: { slug: string }) {
               sizes="(max-width: 640px) 100vw, (max-width: 820px) 50vw, 33vw"
               className="project-art-image"
             />
-          )
+          )}
           <span className="project-art-overlay" aria-hidden="true" />
           <span className="project-art-caption" aria-hidden="true">
             <span>{project.visualType === "screenshot" ? "Actual project UI" : project.visualType === "brand" ? "Branded visual" : "Editorial visual"} <span className="project-art-sparkle">✦</span></span>

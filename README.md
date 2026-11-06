@@ -11,7 +11,7 @@ All active routes live under `app/(portfolio)/` and share the persistent shell i
 | Route | Source File | Purpose |
 |---|---|---|
 | `/` | `app/(portfolio)/page.tsx` (`components/portfolio/home-page.tsx`) | Hero, circular portrait (`public/portrait-kaan.webp`), availability card, process strip, featured projects, and technology stack |
-| `/projects/` | `app/(portfolio)/projects/page.tsx` (`components/portfolio/project-archive.tsx`) | Filterable project archive (`All`, `AI`, `Web`, `Hardware`) with View Transitions and accessible `<dialog>` project modals |
+| `/projects/` | `app/(portfolio)/projects/page.tsx` (`components/portfolio/project-archive.tsx`) | Filterable seven-project archive (`All`, `AI`, `Full-stack`, `Embedded`, `Research`, `Blockchain`, `Games`) with native dialogs, project-specific SVG art and View Transitions |
 | `/experience/` | `app/(portfolio)/experience/page.tsx` | Career timeline, hands-on project highlights, and core engineering skills |
 | `/education/` | `app/(portfolio)/education/page.tsx` | Academic background, focus areas, languages, and continuous learning |
 | `/about/` | `app/(portfolio)/about/page.tsx` | Engineering philosophy, location & relocation status (`Based in Turkey, Ankara · Open to relocating to Europe`), core values, and contact cards |
@@ -82,3 +82,10 @@ Code quality: use `pnpm run check` for TypeScript diagnostics and zero-dependenc
 - The header's Pause/Play control persistently stops/resumes nonessential background motion (stored as `bk-ambient-paused`), with keyboard labels and `aria-pressed`.
 - Technical grid decoration is pointer-inert. No new animation framework or runtime dependency was added.
 
+
+## Project visual identity
+
+- Seven original SVG illustrations live in `public/projects/` and are linked by `image` in `lib/portfolio-data.ts`. They are **editorial concepts, not product screenshots** and contain no private repo assets, personal records or user data.
+- DoraVoice, Vague and QuickScan descriptions are tied to their actual GitHub repo scopes; ReZero is represented as a private hobby game without publishing protected source/art.
+- `app/project-visuals.css` controls image-led project cards and shared interactive dot ambience; `components/portfolio/ambient-dot-field.tsx` uses a single passive pointer listener plus one rAF-coalesced CSS-mask update, not a canvas or animation package.
+- At reduced motion, Save-Data and touch screen input, reactive dots are disabled. Static grid, text and navigation remain available.

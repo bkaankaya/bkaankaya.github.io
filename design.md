@@ -52,3 +52,13 @@ Visitors can pause/resume the ambient animation using the header's labeled butto
 No new UI animation dependency, canvas, WebGL, external font or telemetry was introduced. Review with high zoom, slow CPU emulation and real-device testing before making performance claims. Sources: https://www.w3.org/WAI/WCAG22/Understanding/pause-stop-hide and https://web.dev/articles/animations-guide .
 
 On viewports ≤640px and under reduced-motion or Save-Data, the decorative layers are stationary, so the pause button is hidden rather than exposing a nonfunctional control.
+
+## Project illustration + pointer-reactive stipple (6 November 2026)
+
+Each project card now has its own **editorial SVG**, stored locally in `public/projects/`, with the project name and content outside the illustration for accessibility. Artwork is an illustrative visualization, not a real screenshot or a claim of a production UI. Private source, personal data and licensed anime game assets are never exposed.
+
+A page-spanning `ambient-dot-field` adds a fine static stipple pattern and a pointer-reactive spotlight by changing a CSS radial mask at most once per animation frame; no React state updates per move and no WebGL/canvas/frame-loop dependency. The field never captures mouse or keyboard events (`pointer-events:none`, `aria-hidden`). It is static and lightweight on touch/mobile, reduced-motion and Save-Data devices and disables the spotlight when the visitor pauses ambience. It complements, rather than duplicates, the existing two slowly animated ambient orbs. Content cards retain a readable opaque surface in both themes.
+
+Visual QA contract: normal/reduced motion, pointer fine/coarse, dark/light, 320px–1920px, no lateral overflow, 7 distinct images present in static `out/projects/`, modal accessible via keyboard, focus return after Escape, data fact checks, no dangerous SVG content.
+
+References: https://vercel.com/design/guidelines , https://web.dev/articles/animations-guide , https://developer.mozilla.org/en-US/docs/Web/API/Window/requestAnimationFrame .

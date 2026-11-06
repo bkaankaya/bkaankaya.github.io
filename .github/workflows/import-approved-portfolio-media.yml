@@ -1,0 +1,78 @@
+name: Import approved portfolio media (one time)
+
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/import-approved-portfolio-media.yml']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: portfolio-approved-media-import
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: main
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1
+        with:
+          version: '10.11.0'
+          run_install: false
+      - name: Install existing locked image tooling
+        run: pnpm install --frozen-lockfile
+      - name: Fetch only explicitly approved media and verify original bytes
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/approved-media"
+          curl --proto '=https' --tlsv1.2 -fsSL --retry 2 --max-time 60 'https://at.adobe.com/desfANGdN9P5CIUC' -o "$RUNNER_TEMP/approved-media/doravoice-call.png"
+          curl --proto '=https' --tlsv1.2 -fsSL --retry 2 --max-time 60 'https://at.adobe.com/ni9poJOIHigIXbg5' -o "$RUNNER_TEMP/approved-media/doravoice-hero.png"
+          curl --proto '=https' --tlsv1.2 -fsSL --retry 2 --max-time 60 'https://at.adobe.com/lgYoRwaTv3HmDP4L' -o "$RUNNER_TEMP/approved-media/rezero-mark.png"
+          curl --proto '=https' --tlsv1.2 -fsSL --retry 2 --max-time 60 'https://doravoice.ai/brand/doravoice-emblem-white-web.webp' -o "$RUNNER_TEMP/approved-media/doravoice-mark.webp"
+          cd "$RUNNER_TEMP/approved-media"
+          sha256sum -c <<'HASHES'
+          96eb082f9f6fb6c9acacfb6a82e94e0d2f322343fec8f31ba7503644538de677  doravoice-call.png
+          2850eedb57d41cc8b1ef574d5282da78a2d5636ba87e6f427a2f512ef8485c4e  doravoice-hero.png
+          c008f0c6d9ce50104b6c671b94b55d539a3d89337d446dbb479446ac5a1bb939  rezero-mark.png
+          69f4b0c2c876acf6dcbda3e649305a0e299e5a284f15f7a7edda144906a8bcdc  doravoice-mark.webp
+          HASHES
+      - name: Produce local web assets without altering original designs
+        shell: bash
+        run: |
+          node <<'JS'
+          const { createRequire } = require('node:module');
+          const { copyFileSync } = require('node:fs');
+          const path = require('node:path');
+          const sharp = createRequire(require.resolve('next/package.json'))('sharp');
+          const source = path.join(process.env.RUNNER_TEMP, 'approved-media');
+          const out = 'public/projects';
+          (async () => {
+            for (const [input, output] of [['doravoice-call.png','doravoice-call-preview.webp'],['doravoice-hero.png','doravoice-product-preview.webp']]) {
+              await sharp(path.join(source,input)).rotate().resize({width:1440,withoutEnlargement:true}).webp({quality:88,effort:6}).toFile(path.join(out,output));
+            }
+            await sharp(path.join(source,'rezero-mark.png')).trim({threshold:10}).resize({width:192,height:192,fit:'inside',withoutEnlargement:true}).webp({quality:94,effort:6}).toFile(path.join(out,'rezero-mark.webp'));
+            copyFileSync(path.join(source,'doravoice-mark.webp'),path.join(out,'doravoice-mark.webp'));
+          })().catch(e=>{console.error(e);process.exit(1)});
+          JS
+      - name: Commit only the four approved assets to the existing main branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public/projects/doravoice-call-preview.webp public/projects/doravoice-product-preview.webp public/projects/rezero-mark.webp public/projects/doravoice-mark.webp
+          if ! git diff --cached --quiet; then
+            git commit -m 'assets: add approved DoraVoice previews and authentic project marks'
+            git push origin HEAD:main
+          fi

@@ -1,0 +1,11 @@
+/* Keep the current frame visible until another preview is decoded. */
+.portfolio-app .project-gallery-controls button:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+.portfolio-app .project-gallery-status {
+  display: block;
+  margin-top: 3px;
+  color: var(--site-muted);
+  font: 10px/1.5 var(--font-geist-sans), sans-serif;
+}

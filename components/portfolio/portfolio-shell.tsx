@@ -4,6 +4,8 @@ import { useEffect, useState } from "react"
 import { PortfolioFooter } from "@/components/portfolio/portfolio-footer"
 import { AmbientDotField } from "@/components/portfolio/ambient-dot-field"
 import { SiteHeader } from "@/components/portfolio/site-header"
+import { PortfolioNavigation, RouteContent } from "@/components/portfolio/route-transition"
+import "@/app/navigation.css"
 
 export type PortfolioTheme = "dark" | "light"
 
@@ -53,7 +55,7 @@ export function PortfolioShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="portfolio-app" data-theme={theme}>
+    <PortfolioNavigation><div className="portfolio-app" data-theme={theme}>
       <div className="ambient-scene" aria-hidden="true">
         <span className="ambient-scene__orb ambient-scene__orb--violet" />
         <span className="ambient-scene__orb ambient-scene__orb--blue" />
@@ -62,8 +64,8 @@ export function PortfolioShell({ children }: { children: React.ReactNode }) {
       <AmbientDotField />
       <a className="skip-link" href="#main-content">Skip to content</a>
       <SiteHeader theme={theme} onToggleTheme={toggleTheme} />
-      {children}
+      <RouteContent>{children}</RouteContent>
       <PortfolioFooter />
-    </div>
+    </div></PortfolioNavigation>
   )
 }

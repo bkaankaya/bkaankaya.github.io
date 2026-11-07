@@ -1,0 +1,60 @@
+{
+  "owner": "bkaankaya",
+  "verifiedOn": "2026-11-07",
+  "source": "GitHub connector list_repositories(owner=bkaankaya, page_size=100, page_offset=0)",
+  "repositoryCount": 13,
+  "repositories": [
+    {
+      "name": "YemekSepetiDapp",
+      "visibility": "public"
+    },
+    {
+      "name": "STM32_Modbus_DataMonitor",
+      "visibility": "public"
+    },
+    {
+      "name": "White-Wine-Quality-Prediction",
+      "visibility": "public"
+    },
+    {
+      "name": "Vague-",
+      "visibility": "private"
+    },
+    {
+      "name": "Software-Persona-JS-Project",
+      "visibility": "public"
+    },
+    {
+      "name": "QuickScan",
+      "visibility": "private"
+    },
+    {
+      "name": "Hospital-Management-System",
+      "visibility": "public"
+    },
+    {
+      "name": "ReZero-2D-Game",
+      "visibility": "private"
+    },
+    {
+      "name": "T2-Software-Leave-Approval-Application",
+      "visibility": "public"
+    },
+    {
+      "name": "DNN-Universal-Function-Approximator",
+      "visibility": "public"
+    },
+    {
+      "name": "CineEmbed-A-Multi-Modal-Unsupervised-Film-Recommendation-System",
+      "visibility": "public"
+    },
+    {
+      "name": "AI-Receptionist",
+      "visibility": "private"
+    },
+    {
+      "name": "bkaankaya.github.io",
+      "visibility": "public"
+    }
+  ]
+}

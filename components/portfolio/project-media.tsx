@@ -2,28 +2,47 @@
 
 import Image from "next/image"
 import "./project-media.css"
-import { ChevronLeft, ChevronRight } from "lucide-react"
+import { ChevronLeft, ChevronRight, Expand, Pause, Play } from "lucide-react"
 import { useEffect, useMemo, useRef, useState } from "react"
 import type { PortfolioProject } from "@/lib/portfolio-data"
 
 export const GALLERY_INTERVAL_MS = 5000
 
-type Props = { project: PortfolioProject; active?: boolean; controls?: boolean }
+type Props = {
+  project: PortfolioProject
+  active?: boolean
+  controls?: boolean
+  compact?: boolean
+  initialIndex?: number
+  onExplore?: (button: HTMLButtonElement, index: number) => void
+}
 
-/** Identity belongs in the badge. This component only displays project previews. */
-export function ProjectMedia({ project, active = false, controls = false }: Props) {
+/** Product imagery is separate from the small identity badge. */
+export function ProjectMedia({ project, active = false, controls = false, compact = false, initialIndex = 0, onExplore }: Props) {
   const frames = useMemo(() => project.gallery ?? [project.image], [project])
-  const [index, setIndex] = useState(0)
+  const [index, setIndex] = useState(initialIndex)
   const [warm, setWarm] = useState(false)
+  const [paused, setPaused] = useState(false)
   const [failed, setFailed] = useState<string[]>([])
   const [loaded, setLoaded] = useState<string[]>([])
   const mediaRef = useRef<HTMLDivElement>(null)
   const ready = useRef(new Set<string>())
 
+  // Preload additional views only when their card approaches the viewport.
+  // Modal galleries load immediately; offscreen cards keep lazy first images.
   useEffect(() => {
-    if (controls) { setWarm(true); return }
-    setIndex(0)
+    if (!controls) return
+    if (!compact || typeof IntersectionObserver === "undefined") { setWarm(true); return }
+    const observer = new IntersectionObserver(entries => {
+      if (entries.some(entry => entry.isIntersecting)) { setWarm(true); observer.disconnect() }
+    }, { rootMargin: "240px" })
+    if (mediaRef.current) observer.observe(mediaRef.current)
+    return () => observer.disconnect()
+  }, [controls, compact])
+
+  useEffect(() => {
     if (!active || frames.length < 2) return
+    if (paused || (controls && !compact)) return
     const reduced = matchMedia("(prefers-reduced-motion: reduce)")
     const pointer = matchMedia("(hover: hover) and (pointer: fine)")
     const network = (navigator as Navigator & { connection?: EventTarget & { saveData?: boolean } }).connection
@@ -35,7 +54,7 @@ export function ProjectMedia({ project, active = false, controls = false }: Prop
       if (!visible || reduced.matches || !pointer.matches || document.hidden || network?.saveData) return
       setWarm(true)
       timer = setInterval(() => setIndex(current => {
-        // Never fade into an undecoded or failed image on a slow connection.
+        // Keep the current image visible until the next image has decoded.
         for (let offset = 1; offset < frames.length; offset++) {
           const next = (current + offset) % frames.length
           if (ready.current.has(frames[next])) return next
@@ -43,8 +62,6 @@ export function ProjectMedia({ project, active = false, controls = false }: Prop
         return current
       }), GALLERY_INTERVAL_MS)
     }
-    // A hovered card can leave the viewport while the user scrolls.
-    // Do not keep advancing invisible artwork or spend background work on it.
     const observer = typeof IntersectionObserver === "undefined" ? null : new IntersectionObserver(entries => {
       visible = entries[0]?.isIntersecting ?? false
       synchronize()
@@ -63,12 +80,18 @@ export function ProjectMedia({ project, active = false, controls = false }: Prop
       document.removeEventListener("visibilitychange", synchronize)
       network?.removeEventListener("change", synchronize)
     }
-  }, [active, controls, frames])
+  }, [active, controls, compact, frames, paused])
 
   const canStep = frames.some((src, frameIndex) => frameIndex !== index && loaded.includes(src))
   const loading = frames.some(src => !loaded.includes(src) && !failed.includes(src))
-
+  function select(next: number) {
+    setWarm(true)
+    setPaused(true)
+    if (ready.current.has(frames[next])) setIndex(next)
+  }
   function step(direction: -1 | 1) {
+    setWarm(true)
+    setPaused(true)
     setIndex(current => {
       for (let offset = 1; offset < frames.length; offset++) {
         const next = (current + direction * offset + frames.length) % frames.length
@@ -81,14 +104,14 @@ export function ProjectMedia({ project, active = false, controls = false }: Prop
   const kind = project.mediaFit ?? "landscape"
   const unavailable = failed.includes(frames[index])
   return (
-    <div ref={mediaRef} className={`project-media project-media--${kind}`} data-frame={index}>
+    <div ref={mediaRef} className={`project-media project-media--${kind}${compact ? " project-media--compact" : ""}`} data-frame={index} data-fit={project.imageFit ?? "cover"} onFocusCapture={() => setWarm(true)}>
       <div className="project-media-stage">
         <div className="project-media-viewport">
-          {frames.map((src, frameIndex) => frameIndex === 0 || warm ? (
-            <Image key={src} src={src} alt={frameIndex === index ? project.galleryAlts?.[frameIndex] ?? project.imageAlt ?? `${project.title} preview` : ""}
+          {frames.map((src, frameIndex) => frameIndex === 0 || frameIndex === initialIndex || warm ? (
+            <Image key={src} src={src} alt={frameIndex === index ? project.galleryAlts?.[frameIndex] ?? project.imageAlt ?? `${project.title} preview ${frameIndex + 1}` : ""}
               aria-hidden={frameIndex !== index} fill unoptimized draggable={false}
               loading={frameIndex === 0 ? "lazy" : "eager"}
-              sizes={controls ? "(max-width: 700px) 90vw, 800px" : "(max-width: 700px) 90vw, 50vw"}
+              sizes={compact ? "(max-width: 700px) 90vw, 50vw" : "(max-width: 700px) 90vw, 960px"}
               className={`project-art-image project-gallery-frame${frameIndex === index ? " is-active" : ""}`}
               onLoad={() => {
                 ready.current.add(src)
@@ -103,14 +126,22 @@ export function ProjectMedia({ project, active = false, controls = false }: Prop
           ) : null)}
           {unavailable ? <span className="project-media-unavailable">Preview unavailable</span> : null}
         </div>
+        {onExplore ? <button className="project-art-trigger project-expand-trigger" type="button" aria-label={`Explore ${project.title} project`} aria-haspopup="dialog" onClick={event => onExplore(event.currentTarget, index)}><span><Expand aria-hidden="true" />View project</span></button> : null}
       </div>
       {frames.length > 1 ? controls ? (
-        <div className="project-gallery-controls" aria-label={`${project.title} image gallery`}>
-          <button type="button" aria-label="Previous image" disabled={!canStep} onClick={() => step(-1)}><ChevronLeft aria-hidden="true" /></button>
-          <span role="status" aria-live="polite">{index + 1} <span aria-hidden="true">/</span><span className="sr-only">of</span> {frames.length}
+        <div className="project-gallery-controls" role="group" aria-label={`${project.title} image gallery`}>
+          <button className="gallery-step" type="button" aria-label="Previous image" disabled={!canStep} onClick={() => step(-1)}><ChevronLeft aria-hidden="true" /></button>
+          <div className="gallery-thumbnails">
+            {frames.map((src, frameIndex) => <button key={src} className="gallery-thumbnail" type="button" aria-label={`Show image ${frameIndex + 1} of ${frames.length}`} aria-pressed={frameIndex === index} disabled={!loaded.includes(src)} onClick={() => select(frameIndex)}>
+              <Image src={src} alt="" width={72} height={44} unoptimized loading="lazy" />
+              <span>{String(frameIndex + 1).padStart(2, "0")}</span>
+            </button>)}
+          </div>
+          <span className="gallery-position" role="status" aria-live="polite">{index + 1} <span aria-hidden="true">/</span><span className="sr-only">of</span> {frames.length}
             {!canStep ? <small className="project-gallery-status">{loading ? "Loading images…" : "Other images unavailable"}</small> : null}
           </span>
-          <button type="button" aria-label="Next image" disabled={!canStep} onClick={() => step(1)}><ChevronRight aria-hidden="true" /></button>
+          {compact ? <button className="gallery-pause" type="button" aria-label={paused ? "Resume automatic previews" : "Pause automatic previews"} aria-pressed={paused} onClick={() => setPaused(value => !value)}>{paused ? <Play aria-hidden="true" /> : <Pause aria-hidden="true" />}</button> : null}
+          <button className="gallery-step" type="button" aria-label="Next image" disabled={!canStep} onClick={() => step(1)}><ChevronRight aria-hidden="true" /></button>
         </div>
       ) : <span className="project-gallery-count" aria-hidden="true">{index + 1} / {frames.length}</span> : null}
     </div>

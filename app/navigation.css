@@ -1,0 +1,80 @@
+/* Committed route content eases in; the persistent shell never remounts. */
+.portfolio-route-content {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+}
+
+/* Use one optical weight, so changing the active item cannot shift its peers. */
+.desktop-navigation .navigation-link,
+.desktop-navigation .navigation-link.is-active {
+  font-weight: 550;
+}
+
+.desktop-navigation .navigation-link.is-active {
+  text-shadow: 0 0 0.35px currentColor;
+}
+
+.desktop-navigation .navigation-link.is-active::before,
+.desktop-navigation .navigation-link.is-active:is(:hover, :focus-visible)::before {
+  opacity: 0;
+}
+
+.desktop-navigation .navigation-link.is-active::after,
+.nav-active-indicator {
+  bottom: 14px;
+  width: 20px;
+  height: 2px;
+  margin-left: 0;
+  border-radius: 2px;
+  box-shadow: 0 0 12px color-mix(in srgb, var(--site-accent) 30%, transparent);
+}
+
+.nav-active-indicator {
+  transition: transform 320ms cubic-bezier(.22, 1, .36, 1), opacity 160ms ease;
+}
+
+/* The same breakpoint controls both the hamburger and its panel (including
+   641–700px). Animate only opacity/transform instead of max-height and padding. */
+@media (max-width: 700px) {
+  .mobile-navigation {
+    position: absolute;
+    top: calc(100% + 7px);
+    right: 18px;
+    left: 18px;
+    display: grid;
+    gap: 3px;
+    overflow: hidden;
+    max-height: none;
+    padding: 9px 10px;
+    border: 1px solid var(--site-border);
+    border-radius: 14px;
+    background: rgba(12, 15, 31, .98);
+    box-shadow: var(--site-shadow);
+    visibility: hidden;
+    opacity: 0;
+    transform: translate3d(0, -6px, 0) scale(.985);
+    transform-origin: top center;
+    pointer-events: none;
+    transition: opacity 180ms ease, transform 220ms cubic-bezier(.22, 1, .36, 1), visibility 0s 220ms;
+  }
+  .mobile-navigation.is-open {
+    max-height: none;
+    padding: 9px 10px;
+    visibility: visible;
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+    transition-delay: 0s;
+  }
+  [data-theme="light"] .mobile-navigation { background: rgba(250, 250, 253, .98); }
+  .mobile-navigation .navigation-link { min-height: 44px; padding: 0 12px; }
+  .mobile-navigation .navigation-link.is-active::after { right: 12px; bottom: auto; left: auto; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-active-indicator, .mobile-navigation { transition: none !important; }
+}
+
+html[data-save-data] .nav-active-indicator,
+html[data-save-data] .mobile-navigation { transition: none; }

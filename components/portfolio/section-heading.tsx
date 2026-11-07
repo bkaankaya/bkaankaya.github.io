@@ -1,4 +1,4 @@
-import Link from "next/link"
+import { TransitionLink as Link } from "@/components/portfolio/route-transition"
 import { ArrowRight } from "lucide-react"
 import { Reveal } from "@/components/portfolio/reveal"
 

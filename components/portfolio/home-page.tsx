@@ -1,5 +1,5 @@
 import Image from "next/image"
-import Link from "next/link"
+import { TransitionLink as Link } from "@/components/portfolio/route-transition"
 import type { CSSProperties } from "react"
 import { ArrowRight, ArrowUpRight, Mail } from "lucide-react"
 import { BrandIcon } from "@/components/portfolio/brand-icon"
@@ -87,7 +87,7 @@ export function HomePage() {
       </section>
 
       <section className="content-section" aria-labelledby="selected-projects-title">
-        <SectionHeading id="selected-projects-title" eyebrow="SELECTED PROJECTS" title="Projects" description="A selection of projects I’ve built, from AI systems to embedded and full-stack applications." action={{ label: "View All Projects", href: "/projects" }} />
+        <SectionHeading id="selected-projects-title" eyebrow="PROJECT SPOTLIGHT" title="From idea to interface." description={`A closer look at three products. Explore the complete collection of ${projects.length} projects, including research, games and internship work.`} action={{ label: `Explore all ${projects.length} projects`, href: "/projects/" }} />
         <div className="project-grid featured-project-grid">
           {projects.slice(0, 3).map((project, index) => (
             <Reveal key={project.slug} className="h-full" delay={index * 70}>

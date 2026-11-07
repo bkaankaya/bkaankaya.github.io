@@ -1,4 +1,4 @@
-import Link from "next/link"
+import { TransitionLink as Link } from "@/components/portfolio/route-transition"
 import { ArrowUpRight, Mail } from "lucide-react"
 import { BrandIcon } from "@/components/portfolio/brand-icon"
 import { portfolioContact } from "@/lib/portfolio-contact"
@@ -13,7 +13,7 @@ export function PortfolioFooter() {
         </div>
         <div className="footer-links">
           <p className="footer-label">EXPLORE</p>
-          <Link href="/projects">Selected projects</Link>
+          <Link href="/projects/">All projects</Link>
           <Link href="/experience">Experience</Link>
           <Link href="/contact/">Get in touch</Link>
         </div>

@@ -48,8 +48,8 @@ jobs:
           test -s out/education/index.html
           test -s out/about/index.html
           touch out/.nojekyll
-      - name: Audit published artifact (no secrets, source maps or remote scripts)
-        run: node --test scripts/security-static.test.mjs
+      - name: Audit published artifact and complete project galleries
+        run: node --test scripts/security-static.test.mjs scripts/portfolio-inventory.test.mjs
         env:
           REQUIRE_OUT: '1'
       - name: Configure GitHub Pages

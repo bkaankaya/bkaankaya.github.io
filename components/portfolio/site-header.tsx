@@ -1,17 +1,17 @@
 "use client"
 
-import Link from "next/link"
+import { TransitionLink as Link } from "@/components/portfolio/route-transition"
 import { usePathname } from "next/navigation"
-import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react"
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react"
 import { ArrowUpRight, Menu, Moon, Sun, X } from "lucide-react"
 import type { PortfolioTheme } from "@/components/portfolio/portfolio-shell"
 
 const navigation = [
   { label: "Home", href: "/" },
-  { label: "Projects", href: "/projects" },
-  { label: "Experience", href: "/experience" },
-  { label: "Education", href: "/education" },
-  { label: "About", href: "/about" },
+  { label: "Projects", href: "/projects/" },
+  { label: "Experience", href: "/experience/" },
+  { label: "Education", href: "/education/" },
+  { label: "About", href: "/about/" },
 ] as const
 
 function normalizePath(pathname: string | null): string {
@@ -52,19 +52,28 @@ export function SiteHeader({
       setIndicatorX(null)
       return
     }
-    const center = linkRect.left - navRect.left + linkRect.width / 2 - 3
+    const center = linkRect.left - navRect.left + linkRect.width / 2 - 10
     setIndicatorX(Math.round(center * 10) / 10)
   }, [activePath])
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setMenuOpen(false)
     updateIndicator()
   }, [activePath, updateIndicator])
 
   useEffect(() => {
+    let mounted = true
     updateIndicator()
-    window.addEventListener("resize", updateIndicator, { passive: true })
-    return () => window.removeEventListener("resize", updateIndicator)
+    // Font swaps and layout changes can move links without a window resize.
+    const observer = typeof ResizeObserver === "undefined" ? null : new ResizeObserver(updateIndicator)
+    if (navRef.current) observer?.observe(navRef.current)
+    void document.fonts?.ready.then(() => { if (mounted) updateIndicator() })
+    if (!observer) window.addEventListener("resize", updateIndicator, { passive: true })
+    return () => {
+      mounted = false
+      observer?.disconnect()
+      window.removeEventListener("resize", updateIndicator)
+    }
   }, [updateIndicator])
 
   useEffect(() => {
@@ -105,7 +114,7 @@ export function SiteHeader({
           className="brand-mark"
           href="/"
           aria-label="B. Kaan Kaya home"
-          onClick={() => setMenuOpen(false)}
+          onNavigate={() => setMenuOpen(false)}
         >
           BK<span>.</span>
         </Link>
@@ -116,12 +125,12 @@ export function SiteHeader({
           aria-label="Primary navigation"
         >
           {navigation.map((item) => {
-            const active = activePath === item.href
+            const active = activePath === normalizePath(item.href)
             return (
               <Link
                 key={item.href}
                 ref={(el) => {
-                  linkRefs.current[item.href] = el
+                  linkRefs.current[normalizePath(item.href)] = el
                 }}
                 className={`navigation-link${active ? " is-active" : ""}`}
                 href={item.href}
@@ -148,7 +157,7 @@ export function SiteHeader({
           >
             <ThemeIcon aria-hidden="true" />
           </button>
-          <Link className="button button-primary header-contact" href="/contact/">
+          <Link className="button button-primary header-contact" href="/contact/" onNavigate={() => setMenuOpen(false)}>
             Contact <ArrowUpRight aria-hidden="true" />
           </Link>
           <button
@@ -170,9 +179,10 @@ export function SiteHeader({
         className={`mobile-navigation${menuOpen ? " is-open" : ""}`}
         aria-label="Mobile navigation"
         aria-hidden={!menuOpen}
+        inert={!menuOpen}
       >
         {navigation.map((item) => {
-          const active = activePath === item.href
+          const active = activePath === normalizePath(item.href)
           return (
             <Link
               key={item.href}
@@ -180,7 +190,7 @@ export function SiteHeader({
               href={item.href}
               aria-current={active ? "page" : undefined}
               tabIndex={menuOpen ? 0 : -1}
-              onClick={() => setMenuOpen(false)}
+              onNavigate={() => setMenuOpen(false)}
             >
               {item.label}
             </Link>
@@ -189,7 +199,7 @@ export function SiteHeader({
         <Link
           className="navigation-link mobile-contact-link"
           href="/contact/"
-          onClick={() => setMenuOpen(false)}
+          onNavigate={() => setMenuOpen(false)}
           tabIndex={menuOpen ? 0 : -1}
         >
           Contact

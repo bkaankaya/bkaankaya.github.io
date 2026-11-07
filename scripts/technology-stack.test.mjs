@@ -31,7 +31,10 @@ test('DoraVoice uses two supplied design previews and both projects have distinc
   assert.match(dora, /logo: "\/projects\/doravoice-mark.webp"/)
   assert.match(dora, /gallery: \["\/projects\/doravoice-call-preview.webp", "\/projects\/doravoice-product-preview.webp"\]/)
   assert.match(dora, /visualType: "concept"/)
-  assert.match(card, /Owner-provided concepts, not live product screens/)
+  const mediaNote = dora.match(/mediaNote:\s*"([^"]+)"/)?.[1]
+  assert.ok(mediaNote && /\bconcepts?\b/i.test(mediaNote), 'DoraVoice media must remain labeled as a concept')
+  assert.match(card, /Concept preview/)
+  assert.match(card, /project.mediaNote/)
   assert.match(media, /project.galleryAlts\?\.\[frameIndex\]/)
   assert.match(data, /logo: "\/projects\/rezero-mark.webp"/)
   for (const name of ['doravoice-mark.webp','rezero-mark.webp','doravoice-call-preview.webp','doravoice-product-preview.webp']) {

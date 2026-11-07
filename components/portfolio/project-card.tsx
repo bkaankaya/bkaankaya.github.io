@@ -1,9 +1,9 @@
 "use client"
 
 import Image from "next/image"
-import Link from "next/link"
+import { TransitionLink as Link } from "@/components/portfolio/route-transition"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { ArrowUpRight, X } from "lucide-react"
+import { ArrowUpRight, Code2, X } from "lucide-react"
 import { projects, type PortfolioProject } from "@/lib/portfolio-data"
 import { ProjectMedia } from "@/components/portfolio/project-media"
 
@@ -18,6 +18,7 @@ export function ProjectCard({ slug }: { slug: string }) {
   const project = projects.find(item => item.slug === slug)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [hovering, setHovering] = useState(false)
+  const [initialFrame, setInitialFrame] = useState(0)
   const dialogRef = useRef<HTMLDialogElement>(null)
   const triggerRef = useRef<HTMLButtonElement | null>(null)
   const closing = useRef(false)
@@ -76,9 +77,10 @@ export function ProjectCard({ slug }: { slug: string }) {
   }, [dialogOpen, releaseScroll])
 
   if (!project) return null
-  const visualLabel = project.visualType === "screenshot" ? "Product screenshot" : project.visualType === "concept" ? "Design preview" : "Interface study"
-  function openDialog(button: HTMLButtonElement) {
+  const visualLabel = project.visualType === "screenshot" ? "Product screenshot" : project.visualType === "concept" ? "Concept preview" : project.visualType === "visualization" ? (project.category === "Embedded" ? "Engineering visualization" : "Research visualization") : "Engineering study"
+  function openDialog(button: HTMLButtonElement, frame = 0) {
     triggerRef.current = button
+    setInitialFrame(frame)
     setHovering(false)
     setDialogOpen(true)
   }
@@ -87,12 +89,11 @@ export function ProjectCard({ slug }: { slug: string }) {
     <article className="project-card" data-project={project.slug} data-accent={project.accent} data-visual={project.visualType ?? "illustration"}
       onPointerEnter={event => { if (event.pointerType === "mouse") setHovering(true) }}
       onPointerLeave={() => setHovering(false)}>
-      <button className="project-art-trigger" type="button" aria-label={`Explore ${project.title} project`} aria-haspopup="dialog" onClick={event => openDialog(event.currentTarget)}>
-        <ProjectMedia project={project} active={hovering && !dialogOpen} />
-        <span className="project-art-caption" aria-hidden="true"><span><i />{visualLabel}</span><span>Explore project <ArrowUpRight /></span></span>
-      </button>
+      <div className="project-art-area">
+        <ProjectMedia project={project} active={hovering && !dialogOpen} controls compact onExplore={openDialog} />
+      </div>
       <div className="project-card-content">
-        <div className="project-card-top"><ProjectIdentity project={project} /><span className="project-category">{project.category}</span></div>
+        <div className="project-card-top"><ProjectIdentity project={project} /><div className="project-card-meta"><span className="project-category">{project.category}</span><span className="project-media-kind"><i />{visualLabel}</span></div></div>
         <h3><button type="button" className="project-title-trigger" aria-haspopup="dialog" onClick={event => openDialog(event.currentTarget)}>{project.title}<ArrowUpRight aria-hidden="true" /></button></h3>
         <p className="project-description">{project.description}</p>
         <ul className="tag-list" aria-label={`${project.title} technologies`}>{project.tags.map(tag => <li className="tag-pill" key={tag}>{tag}</li>)}</ul>
@@ -111,12 +112,15 @@ export function ProjectCard({ slug }: { slug: string }) {
         <header className="project-dialog-heading"><div><ProjectIdentity project={project} /><span>{project.category}<small>Project details</small></span></div>
           <button autoFocus className="dialog-close-button" type="button" aria-label="Close project details" onClick={closeDialog}><X aria-hidden="true" /></button>
         </header>
-        <div className="project-dialog-visual"><ProjectMedia project={project} controls /></div>
-        <div className="project-dialog-copy"><p className="project-preview-note">{visualLabel}{project.visualType === "screenshot" ? " · Captured from the project" : project.visualType === "concept" ? " · Owner-provided concepts, not live product screens" : " · Editorial illustration, not a live product screen"}</p>
+        <div className="project-dialog-visual"><ProjectMedia project={project} controls initialIndex={initialFrame} /></div>
+        <div className="project-dialog-copy"><p className="project-preview-note">{visualLabel} · {project.mediaNote ?? (project.visualType === "screenshot" ? "Captured from the project" : project.visualType === "concept" ? "Representative interface design" : project.visualType === "visualization" ? "Visualized from project research and recorded results" : "Illustrated from the project architecture")}</p>
           <h2 id={`dialog-title-${project.slug}`}>{project.title}</h2>
           <p className="dialog-description" id={`dialog-description-${project.slug}`}>{project.details}</p>
           <ul className="tag-list" aria-label="Project technologies">{project.tags.map(tag => <li className="tag-pill" key={tag}>{tag}</li>)}</ul>
-          <Link className="button button-primary dialog-contact-link" href="/contact/" onNavigate={dismissForNavigation}>Discuss a similar project <ArrowUpRight aria-hidden="true" /></Link>
+          <div className="project-dialog-actions">
+            {project.sourceUrl ? <a className="button button-outline" href={project.sourceUrl} target="_blank" rel="noopener noreferrer"><Code2 aria-hidden="true" />View repository <ArrowUpRight aria-hidden="true" /></a> : <span className="project-private-source">Private source · Project showcase</span>}
+            <Link className="button button-primary dialog-contact-link" href="/contact/" onNavigate={dismissForNavigation}>Let’s talk <ArrowUpRight aria-hidden="true" /></Link>
+          </div>
         </div>
       </div> : null}
     </dialog>

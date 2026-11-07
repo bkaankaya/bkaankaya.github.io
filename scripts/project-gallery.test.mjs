@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { existsSync, readFileSync } from 'node:fs'
 import { test } from 'node:test'
+import ts from 'typescript'
 const read = path => readFileSync(path, 'utf8')
 const data = read('lib/portfolio-data.ts')
 const card = read('components/portfolio/project-card.tsx')
@@ -9,24 +10,25 @@ const styles = read('app/project-visuals.css')
 const dots = read('components/portfolio/ambient-dot-field.tsx')
 const shell = read('components/portfolio/portfolio-shell.tsx')
 
-test('all seven projects and filter categories survive the visual refinement', () => {
-  for (const slug of ['dora-voice','vague','embedded-systems-suite','quickscan','hospital-management-system','yemeksepeti-dapp','rezero-2d-game']) assert.ok(data.includes(`slug: "${slug}"`))
-  assert.equal((data.match(/\bslug: "/g) || []).length, 7)
-  assert.match(data, /title: "Embedded Software"/)
-  assert.match(data, /sports e-commerce/)
-  assert.match(data, /Exam processing/)
-})
-test('logos are identity badges, never substituted for product previews', () => {
-  assert.match(data, /logo: "\/projects\/optimized\/quickscan-mark.webp"/)
-  assert.match(data, /image: "\/projects\/optimized\/quickscan-screen.webp"/)
-  assert.match(data, /logo: "\/projects\/vague-brand.svg"/)
-  assert.doesNotMatch(data, /image: "[^"\n]*(?:logo|brand|mark)[^"\n]*"/)
+// Complete data, repository, media and category contracts are validated from the
+// TypeScript AST in portfolio-inventory.test.mjs rather than counting source text.
+test('identity is rendered separately from interactive product galleries', () => {
   assert.match(card, /project-icon/)
   assert.match(card, /src=\{project.logo\}/)
   assert.doesNotMatch(media, /project.logo/)
+  assert.match(card, /<ProjectMedia\b[^>]*\bcontrols\b[^>]*\bcompact\b[^>]*\bonExplore=\{openDialog\}/)
+  assert.match(media, /className="project-art-trigger project-expand-trigger"\s+type="button"/)
+  assert.match(media, /aria-haspopup="dialog"/)
+  const tree = ts.createSourceFile('project-card.tsx', card, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX)
+  function check(node, buttonDepth = 0) {
+    if (ts.isJsxSelfClosingElement(node) && node.tagName.getText(tree) === 'ProjectMedia') assert.equal(buttonDepth, 0, 'Gallery controls must not be nested inside an outer button')
+    const isButton = ts.isJsxElement(node) && node.openingElement.tagName.getText(tree) === 'button'
+    ts.forEachChild(node, child => check(child, buttonDepth + Number(isButton)))
+  }
+  check(tree)
 })
 test('original evidence stays local and optimized derivatives are reproducible', () => {
-  for (const name of ['quickscan-logo.png','quickscan-login.png','rezero-gameplay.png','rezero-attack.png','rezero-shockwave.png','rezero-menu.png']) assert.ok(existsSync(`public/projects/${name}`))
+  for (const name of ['quickscan-logo.png','quickscan-login.png','quickscan-home.png','quickscan-publish.png','rezero-gameplay.png','rezero-attack.png','rezero-shockwave.png','rezero-menu.png']) assert.ok(existsSync(`public/projects/${name}`), name)
   const prepare = read('scripts/prepare-project-media.mjs')
   assert.match(prepare, /withoutEnlargement: true/)
   assert.match(prepare, /webp/)
@@ -41,6 +43,16 @@ test('gallery starts only on capable-device hover and tears down its timer', () 
   assert.match(media, /if \(!active \|\| frames.length < 2\) return/)
   for (const check of ['clearInterval', 'prefers-reduced-motion: reduce', 'hover: hover', 'document.hidden', 'saveData', 'removeEventListener', 'ready.current.has']) assert.ok(media.includes(check), check)
   assert.match(card, /active=\{hovering && !dialogOpen\}/)
+  assert.match(media, /if \(paused \|\| \(controls && !compact\)\) return/)
+})
+test('cards and dialogs expose labeled controls and retain the selected view when expanded', () => {
+  for (const label of ['Previous image', 'Next image', 'Pause automatic previews', 'Resume automatic previews', 'Show image']) assert.ok(media.includes(label), label)
+  assert.match(media, /role="group"\s+aria-label=/)
+  assert.match(media, /aria-pressed=\{frameIndex === index\}/)
+  assert.match(media, /aria-pressed=\{paused\}/)
+  assert.match(media, /onExplore\(event.currentTarget, index\)/)
+  assert.match(card, /setInitialFrame\(frame\)/)
+  assert.match(card, /<ProjectMedia\b[^>]*initialIndex=\{initialFrame\}/)
 })
 test('modal is centered, bounded, keyboard accessible and has manual gallery controls', () => {
   assert.match(styles, /inset:0; margin:auto;/)

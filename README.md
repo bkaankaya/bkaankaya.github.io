@@ -1,6 +1,6 @@
-# B. Kaan Kaya — Software Engineer Portfolio
+# Bertan Kaan Kaya — Software Engineer Portfolio
 
-Production personal portfolio for **B. Kaan Kaya** (`https://bkaankaya.github.io/`), built with **Next.js 16 (App Router)**, **React 19**, **Tailwind CSS 4**, and **TypeScript**, and deployed as a static export (`out/`) to **GitHub Pages**.
+Production personal portfolio for **Bertan Kaan Kaya** (`https://bkaankaya.github.io/`), built with **Next.js 16 (App Router)**, **React 19**, **Tailwind CSS 4**, and **TypeScript**, and deployed as a static export (`out/`) to **GitHub Pages**.
 
 ---
 

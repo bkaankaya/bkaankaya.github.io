@@ -3,8 +3,8 @@ import { PageIntro } from "@/components/portfolio/section-heading"
 import { ProjectArchive } from "@/components/portfolio/project-archive"
 
 export const metadata: Metadata = {
-  title: "Projects | B. Kaan Kaya",
-  description: "The complete project collection by B. Kaan Kaya: AI products, full-stack applications, embedded systems, research and games.",
+  title: "Projects | Bertan Kaan Kaya",
+  description: "The complete project collection by Bertan Kaan Kaya: AI products, full-stack applications, embedded systems, research and games.",
 }
 
 export default function ProjectsPage() {

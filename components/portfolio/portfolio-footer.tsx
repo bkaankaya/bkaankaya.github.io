@@ -8,7 +8,7 @@ export function PortfolioFooter() {
     <footer className="portfolio-footer">
       <div className="portfolio-container footer-main">
         <div className="footer-intro">
-          <Link className="brand-mark footer-brand" href="/" aria-label="B. Kaan Kaya home">BK<span>.</span></Link>
+          <Link className="brand-mark footer-brand" href="/" aria-label="Bertan Kaan Kaya home">BK<span>.</span></Link>
           <p>Thoughtful software, designed and built to make a real-world impact.</p>
         </div>
         <div className="footer-links">
@@ -31,7 +31,7 @@ export function PortfolioFooter() {
         </div>
       </div>
       <div className="portfolio-container footer-bottom">
-        <span>© {new Date().getFullYear()} B. Kaan Kaya</span>
+        <span>© {new Date().getFullYear()} Bertan Kaan Kaya</span>
         <span>Designed with clarity. Built with curiosity.</span>
       </div>
     </footer>

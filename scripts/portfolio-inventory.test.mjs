@@ -74,7 +74,7 @@ function availableMedia(paths) {
 }
 
 // Owned repositories and visibility verified through GitHub on 7 November 2026.
-// An intentional inventory change should update this snapshot after verification.
+// Keep the complete source inventory separate from the owner's display choices.
 const expected = {
   'AI-Receptionist': 'private',
   'Vague-': 'private',
@@ -91,9 +91,13 @@ const expected = {
   'bkaankaya.github.io': 'public',
 }
 
-test('every verified GitHub repository has exactly one project, including T2 and the portfolio', () => {
-  assert.equal(projects.length, 13)
-  assert.deepEqual(projects.map(project => project.repository).sort(), Object.keys(expected).sort())
+// The owner explicitly requested that the personal website not be listed as a project.
+const excludedRepositories = new Set(['bkaankaya.github.io'])
+const displayedRepositories = Object.keys(expected).filter(repository => !excludedRepositories.has(repository))
+
+test('every verified GitHub repository has exactly one project except the owner-excluded personal website', () => {
+  assert.equal(projects.length, 12)
+  assert.deepEqual(projects.map(project => project.repository).sort(), displayedRepositories.sort())
   assert.equal(new Set(projects.map(project => project.slug)).size, projects.length, 'Duplicate project slug')
   assert.equal(new Set(projects.map(project => project.repository)).size, projects.length, 'Duplicate repository mapping')
   for (const project of projects) {
@@ -128,6 +132,7 @@ test('every project category is reachable through the complete filter set', () =
 })
 
 test('all projects have distinct, local preview paths with matching accessible descriptions and provenance', () => {
+  assert.equal(projects.reduce((total, project) => total + project.gallery.length, 0), 26, 'Unexpected collection gallery count')
   const badges = new Set(projects.map(project => project.logo).filter(Boolean))
   for (const project of projects) {
     const gallery = project.gallery
@@ -178,7 +183,7 @@ test('every referenced preview exists, decodes as a sufficiently sized image, an
 
 const builtArchive = 'out/projects/index.html'
 const publishedTest = existsSync('out') || process.env.REQUIRE_OUT === '1' ? test : test.skip
-publishedTest('the exported Projects page contains all 13 cards and all gallery files are published', () => {
+publishedTest('the exported Projects page contains all 12 requested cards and all gallery files are published', () => {
   assert.ok(existsSync(builtArchive), 'Build the complete project archive before publishing')
   const html = readFileSync(builtArchive, 'utf8')
   const visibleSlugs = [...html.matchAll(/<article\b[^>]*\bdata-project="([^"]+)"/g)].map(match => match[1])

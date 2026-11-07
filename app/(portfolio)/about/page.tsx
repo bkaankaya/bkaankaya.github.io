@@ -7,8 +7,8 @@ import { ContactPanel } from "@/components/portfolio/contact-panel"
 const portraitSource = "/portrait-kaan.webp"
 
 export const metadata: Metadata = {
-  title: "About | B. Kaan Kaya",
-  description: "Learn about B. Kaan Kaya’s approach to product engineering, software, AI and design.",
+  title: "About | Bertan Kaan Kaya",
+  description: "Learn about Bertan Kaan Kaya’s approach to product engineering, software, AI and design.",
 }
 
 const values = [
@@ -24,7 +24,7 @@ export default function AboutPage() {
         <Reveal className="about-copy">
           <p className="eyebrow"><span className="eyebrow-dot" />ABOUT ME</p>
           <h1 id="about-title">Design-minded engineering with a focus on clarity, systems and impact.</h1>
-          <p>I’m B. Kaan Kaya, a TED University Computer Engineering graduate with a minor in Business Administration. I build products that combine software and <span className="accent-text">AI</span>, including DoraVoice, an AI phone receptionist for small businesses.</p>
+          <p>I’m Bertan Kaan Kaya, a TED University Computer Engineering graduate with a minor in Business Administration. I build products that combine software and <span className="accent-text">AI</span>, including DoraVoice, an AI phone receptionist for small businesses.</p>
           <p>My internship and project experience spans web development, backend software, embedded systems and blockchain applications. I enjoy turning ideas into practical tools, from exam-grading workflows to interactive games.</p>
         </Reveal>
         <Reveal className="about-profile-panel" delay={100}>
@@ -32,7 +32,7 @@ export default function AboutPage() {
             <Image
               className="profile-photo"
               src={portraitSource}
-              alt="Portrait of B. Kaan Kaya"
+              alt="Portrait of Bertan Kaan Kaya"
               width={520}
               height={520}
               priority

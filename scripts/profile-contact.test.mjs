@@ -10,8 +10,9 @@ const footer = read('components/portfolio/portfolio-footer.tsx')
 const home = read('components/portfolio/home-page.tsx')
 function source(dir) { return readdirSync(dir, { withFileTypes: true }).flatMap(e => e.isDirectory() ? source(`${dir}/${e.name}`) : /\.(ts|tsx)$/.test(e.name) ? [`${dir}/${e.name}`] : []) }
 
-test('education and grades follow the general CV and Cambridge certificate', () => {
-  for (const value of ['TED University', 'B.Sc. in Computer Engineering', 'Business Administration', 'GPA: 2.94', 'Sep 2022 – Jun 2026', 'Beştepe Koleji', '2017 – 2022', 'June 2021']) assert.ok(profile.includes(value), value)
+test('education follows the CV and Cambridge certificate while omitting GPA as requested', () => {
+  assert.doesNotMatch(profile, /GPA|2\.94/)
+  for (const value of ['TED University', 'B.Sc. in Computer Engineering', 'Business Administration', 'Sep 2022 – Jun 2026', 'Beştepe Koleji', '2017 – 2022', 'June 2021']) assert.ok(profile.includes(value), value)
   for (const [subject, grade] of [['Mathematics','A'],['Biology','B'],['Business','B']]) assert.ok(profile.includes(`subject: "${subject}", grade: "${grade}"`))
   assert.match(education, /href=\{website\}/)
   assert.match(education, /languages.map/)

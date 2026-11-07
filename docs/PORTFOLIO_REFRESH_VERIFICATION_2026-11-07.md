@@ -1,9 +1,9 @@
 # Portfolio refresh verification — 7 November 2026
 
-## Delivered scope
+## Current requested scope
 
-- The authenticated GitHub listing was rechecked before publication: all 13 owned repositories have a project entry.
-- The archive contains 28 distinct gallery frames, with at least two per project and four for ReZero.
+- The authenticated GitHub listing contains 13 owned repositories. The owner subsequently requested removal of the personal website from Projects, leaving all 12 other repositories in the collection.
+- The current archive contains 26 distinct gallery frames, with at least two per project and four for ReZero.
 - T2 Software's internship project has its own card, manager view and employee leave-status view.
 - Search, category counts, visible image thumbnails, previous/next controls, larger project dialogs and public repository links are available.
 - Original screenshots and research figures retain their full aspect ratios. Identity marks are separate small badges.
@@ -26,7 +26,9 @@ The header's explicit `prefetch={true}` behavior selected Next 16.4.5's Full pre
 
 Next now owns ordinary link navigation, history and scroll restoration. A committed pathname change receives a 300 ms content entrance, while the persistent header's underline moves to the active link. Reduced motion and Save-Data suppress the enhancement. The mobile menu uses one 700 px breakpoint, closes after navigation, supports Escape and makes closed links inert.
 
-## Automated validation
+## Automated validation of the initial 13-project release
+
+These results were recorded before the owner's subsequent request to exclude the personal website. They describe the initial 13-project, 28-frame release; they are not claims that those checks have been rerun for the revised collection.
 
 - TypeScript and the production static build passed.
 - All 54 Node regression tests passed.
@@ -36,7 +38,7 @@ Next now owns ordinary link navigation, history and scroll restoration. A commit
 - The deployment workflow now runs the inventory check again with `REQUIRE_OUT=1` after building.
 - `git diff --check` and the existing contact-link verification passed.
 
-## Browser validation before publication
+## Browser validation of the initial 13-project release
 
 - Projects → Experience → Education → About → Home → Projects completed with the expected page heading and active navigation link.
 - Browser Back/Forward and rapid Experience → Education clicks reached the expected final page.
@@ -48,3 +50,16 @@ Next now owns ordinary link navigation, history and scroll restoration. A commit
 - Both themes were visually reviewed. Mobile search text is 16 px and gallery controls have touch-sized targets.
 
 Application captures used demonstration content only. The project source repositories were inspected or built for media preparation; this refresh changes only the portfolio repository.
+
+## Follow-up: requested collection exclusion
+
+The personal website project was removed from the display data at the owner's request. The complete 13-repository GitHub snapshot remains unchanged; the existing inventory check explicitly excludes only `bkaankaya.github.io` and requires 12 displayed projects with 26 gallery frames. The earlier production-build and browser checks above remain historical.
+
+The five source-inventory checks passed after this change, including the 12-project/26-frame counts, repository visibility, category coverage, media descriptions and image integrity. `git diff --check` passed. The export check detected that the existing `out/` still contained the removed `personal-portfolio` card; a fresh production build and publication check are required before release.
+
+### Follow-up validation after a clean build
+
+- The owner’s full name, Bertan Kaan Kaya, is used in the hero, About text, footer, accessible labels and page metadata. The GPA is omitted from the public education summary.
+- A clean production build and TypeScript check passed. All 54 existing regression tests passed, followed by all 13 required exported-artifact checks.
+- All six exported content routes contain the full name, with no previous abbreviated name or GPA. The exported Projects page contains exactly 12 project cards and excludes the personal website.
+- Current source/media checks cover all 26 gallery frames. Deployment and live verification are recorded in the publishing workflow and task result.

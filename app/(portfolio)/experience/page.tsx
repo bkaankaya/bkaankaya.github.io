@@ -6,8 +6,8 @@ import { Reveal } from "@/components/portfolio/reveal"
 import { experienceItems } from "@/lib/portfolio-data"
 
 export const metadata: Metadata = {
-  title: "Experience | B. Kaan Kaya",
-  description: "Career path, product work and engineering experience of B. Kaan Kaya.",
+  title: "Experience | Bertan Kaan Kaya",
+  description: "Career path, product work and engineering experience of Bertan Kaan Kaya.",
 }
 
 const skillHighlights = ["Frontend", "Backend Development", "AI Products", "Embedded Systems", "Data Analysis", "Problem Solving"]

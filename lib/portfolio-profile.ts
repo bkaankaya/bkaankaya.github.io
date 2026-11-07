@@ -9,7 +9,7 @@ export const educationItems: {
   {
     school: "TED University",
     program: "B.Sc. in Computer Engineering",
-    description: "Computer Engineering graduate with a minor in Business Administration (Management Program). GPA: 2.94.",
+    description: "Computer Engineering graduate with a minor in Business Administration (Management Program).",
     degree: "Bachelor’s", status: "Graduated", period: "Sep 2022 – Jun 2026", location: "Ankara, Turkey",
     website: "https://www.tedu.edu.tr/", accent: "violet", icon: GraduationCap,
   },

@@ -2,8 +2,8 @@ import type { Metadata } from "next"
 import { ContactPanel } from "@/components/portfolio/contact-panel"
 
 export const metadata: Metadata = {
-  title: "Contact | B. Kaan Kaya",
-  description: "Contact B. Kaan Kaya for software engineering opportunities and collaborations via email, LinkedIn or GitHub.",
+  title: "Contact | Bertan Kaan Kaya",
+  description: "Contact Bertan Kaan Kaya for software engineering opportunities and collaborations via email, LinkedIn or GitHub.",
 }
 
 export default function ContactPage() {

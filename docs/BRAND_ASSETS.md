@@ -9,7 +9,7 @@ All brand icons and media assets used in the portfolio are hosted locally under 
 
 | Asset Path | Purpose | Source & Provenance | Format & Dimensions | License / Usage Notes |
 | --- | --- | --- | --- | --- |
-| `public/icon.svg` | Browser tab SVG favicon (`BK.` monogram) | First-party vector artwork created for B. Kaan Kaya (`#080a16` navy badge, `#f5f6fc` geometric `BK`, `#a77aff` accent dot) | SVG (`viewBox="0 0 180 180"`) | First-party / MIT (repository license) |
+| `public/icon.svg` | Browser tab SVG favicon (`BK.` monogram) | First-party vector artwork created for Bertan Kaan Kaya (`#080a16` navy badge, `#f5f6fc` geometric `BK`, `#a77aff` accent dot) | SVG (`viewBox="0 0 180 180"`) | First-party / MIT (repository license) |
 | `public/icon-dark-32x32.png` | 32×32 PNG favicon (dark scheme) | Rasterized from `public/icon.svg` via `sharp` | PNG (`32×32`) | First-party / MIT |
 | `public/icon-light-32x32.png` | 32×32 PNG favicon (light scheme) | Rasterized from `public/icon.svg` via `sharp` | PNG (`32×32`) | First-party / MIT |
 | `public/apple-icon.png` | Apple touch icon | Rasterized from `public/icon.svg` via `sharp` | PNG (`180×180`) | First-party / MIT |

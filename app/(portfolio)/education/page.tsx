@@ -5,8 +5,8 @@ import { Reveal } from "@/components/portfolio/reveal"
 import { educationItems, focusAreas, learningAreas, languages } from "@/lib/portfolio-data"
 
 export const metadata: Metadata = {
-  title: "Education | B. Kaan Kaya",
-  description: "TED University Computer Engineering, Beştepe Koleji and Cambridge A Level results of B. Kaan Kaya.",
+  title: "Education | Bertan Kaan Kaya",
+  description: "TED University Computer Engineering, Beştepe Koleji and Cambridge A Level results of Bertan Kaan Kaya.",
 }
 
 export default function EducationPage() {

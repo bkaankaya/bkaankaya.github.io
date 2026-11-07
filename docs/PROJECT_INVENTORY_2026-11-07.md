@@ -2,9 +2,9 @@
 
 ## Scope and completeness
 
-The authenticated GitHub repository listing for `bkaankaya` returned **13 owned repositories**. The previous portfolio data contained seven projects. This update includes one project entry for every repository, including the personal portfolio itself, rather than selecting a subset.
+The authenticated GitHub repository listing for `bkaankaya` returned **13 owned repositories**. At the owner's subsequent request, the personal website repository (`bkaankaya.github.io`) is excluded from the Projects collection. All other **12 repositories** remain represented, including the T2 Software internship project.
 
-The independent inventory snapshot is `docs/project-repositories-2026-11-07.json`. The display data is in `lib/portfolio-data.ts`. Every project has at least two distinct gallery frames and descriptive alternative text; ReZero retains its four existing frames, for **28 frames across 13 projects**.
+The independent inventory snapshot in `docs/project-repositories-2026-11-07.json` retains all 13 verified repositories. The display data is in `lib/portfolio-data.ts`; the inventory test records the owner's explicit exclusion separately from the source snapshot. Every displayed project has at least two distinct gallery frames and descriptive alternative text; ReZero retains its four existing frames, for **26 frames across 12 projects**.
 
 | GitHub repository | Portfolio project | Gallery frames | Source access |
 | --- | --- | ---: | --- |
@@ -20,7 +20,6 @@ The independent inventory snapshot is `docs/project-repositories-2026-11-07.json
 | YemekSepetiDapp | YemekSepeti DApp | 2 | Public |
 | Software-Persona-JS-Project | Software Persona · Task Manager | 2 | Public |
 | ReZero-2D-Game | ReZero 2D Game | 4 | Private |
-| bkaankaya.github.io | Personal Portfolio | 2 | Public |
 
 Private source repositories are represented as portfolio projects, with no source-code link that would fail for a public visitor. Public projects link to their exact GitHub repository. Private source code, authentication material and deployment configuration are not part of this site's media assets.
 
@@ -42,7 +41,6 @@ Identity marks remain in the small project badges. Large previews contain applic
 | YemekSepeti DApp | Running original frontend with its built-in sample restaurant catalog; no wallet connection, payment or on-chain order. |
 | Software Persona | Running task-manager UI with demonstration tasks; overview and edit-dialog captures (`persona-overview.jpg`, `persona-edit.jpg`). |
 | ReZero 2D Game | Four existing original gameplay/menu captures from the project's visual QA evidence. |
-| Personal Portfolio | Captures of the implemented homepage and complete project archive. |
 
 ### Research accuracy
 

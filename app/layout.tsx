@@ -9,10 +9,10 @@ const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono'
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://bkaankaya.github.io'),
-  title: 'B. Kaan Kaya | Software Engineer',
+  title: 'Bertan Kaan Kaya | Software Engineer',
   description: 'I build end-to-end products that combine software, AI and real-world impact.',
   openGraph: {
-    title: 'B. Kaan Kaya | Software Engineer',
+    title: 'Bertan Kaan Kaya | Software Engineer',
     description: 'Thoughtful software, designed and built to make a real-world impact.',
     url: 'https://bkaankaya.github.io/',
     type: 'website',
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
         url: '/portrait-kaan.webp',
         width: 520,
         height: 520,
-        alt: 'Portrait of B. Kaan Kaya',
+        alt: 'Portrait of Bertan Kaan Kaya',
       },
     ],
   },

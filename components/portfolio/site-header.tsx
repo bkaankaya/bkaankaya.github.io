@@ -113,7 +113,7 @@ export function SiteHeader({
         <Link
           className="brand-mark"
           href="/"
-          aria-label="B. Kaan Kaya home"
+          aria-label="Bertan Kaan Kaya home"
           onNavigate={() => setMenuOpen(false)}
         >
           BK<span>.</span>

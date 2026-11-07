@@ -8,8 +8,9 @@ June 2021 certificate was inspected visually because its scanned PDF has no text
 layer. Only the requested public education summary and grades are published; the
 source documents, phone number and certificate/candidate identifiers are not.
 
-- TED University: B.Sc. Computer Engineering, Sep 2022–Jun 2026, GPA 2.94;
-  Business Administration minor (Management Program).
+- TED University: B.Sc. Computer Engineering, Sep 2022–Jun 2026;
+  Business Administration minor (Management Program). The GPA is omitted from the
+  public profile at the owner’s request.
 - Beştepe Koleji / Anatolian High School: 2017–2022. The owner described the dual
   diploma programme. The certificate independently confirms GCE Advanced Level
   Mathematics A, Biology B and Business B, June 2021.

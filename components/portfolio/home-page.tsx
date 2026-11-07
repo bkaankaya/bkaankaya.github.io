@@ -20,7 +20,7 @@ export function HomePage() {
           <div className="hero-copy">
             <div className="hero-stagger-item" style={{ "--hero-step": 0 } as CSSProperties}>
               <p className="eyebrow"><span className="eyebrow-dot" />SOFTWARE ENGINEER</p>
-              <h1 id="hero-title"><span className="hero-greeting">Hi, I’m</span>B. Kaan Kaya<span className="accent-text">.</span></h1>
+              <h1 id="hero-title"><span className="hero-greeting">Hi, I’m</span>Bertan Kaan Kaya<span className="accent-text">.</span></h1>
             </div>
             <p
               className="hero-description hero-stagger-item"
@@ -46,7 +46,7 @@ export function HomePage() {
               <a href={portfolioContact.linkedinUrl} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile" title="LinkedIn">
                 <BrandIcon brand="linkedin" size={20} />
               </a>
-              <a href={portfolioContact.mailto} aria-label="Email B. Kaan Kaya" title="Email">
+              <a href={portfolioContact.mailto} aria-label="Email Bertan Kaan Kaya" title="Email">
                 <Mail aria-hidden="true" />
               </a>
             </div>
@@ -57,7 +57,7 @@ export function HomePage() {
               <Image
                 className="profile-photo"
                 src={portraitSource}
-                alt="Portrait of B. Kaan Kaya"
+                alt="Portrait of Bertan Kaan Kaya"
                 width={520}
                 height={520}
                 priority

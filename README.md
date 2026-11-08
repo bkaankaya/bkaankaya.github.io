@@ -22,11 +22,12 @@ The routes under `app/(portfolio)/` share `components/portfolio/portfolio-shell.
 ## Components and interaction
 
 - `portfolio-shell.tsx` restores the dark/light preference from `bk-portfolio-theme`, contains the skip link and keeps the header/footer persistent.
-- `site-header.tsx` provides route-aware navigation, a theme toggle and a mobile disclosure with Escape/outside-click handling. Crossing the desktop breakpoint closes the disclosure and transfers focus from a hidden mobile control to a visible navigation link. It does not currently render a separate ambient-motion toggle.
-- `route-transition.tsx` leaves navigation, history, prefetching and scroll restoration to Next.js. Its short entrance animation respects reduced motion and Save-Data.
-- `project-archive.tsx` combines category and text filtering. The search input has an explicit label; clearing or resetting results returns focus to the surviving input. Category transitions are progressively enhanced.
+- `site-header.tsx` provides route-aware navigation, theme and site-wide motion toggles, and a mobile disclosure with Escape/outside-click handling. Crossing the desktop breakpoint closes the disclosure and transfers focus from a hidden mobile control to a visible navigation link.
+- `motion-preference.tsx` persists the non-sensitive `bk-portfolio-motion-paused` choice. Device reduced-motion and Save-Data preferences always win; static initial rendering keeps content visible before preferences settle.
+- `route-transition.tsx` leaves navigation, history, prefetching and scroll restoration to Next.js. Its short entrance animation respects the site preference, reduced motion and Save-Data.
+- `project-archive.tsx` combines category and text filtering. The search input has an explicit label; clearing or resetting results returns focus to the surviving input. Category transitions are progressively enhanced and stop when motion is paused.
 - `project-card.tsx` uses a native dialog with close handling and focus restoration. Verified project logos stay in the small identity badge, not in the product-preview area.
-- `project-media.tsx` keeps manual navigation on loaded images. Keyboard focus pauses automatic previews until an explicit resume; Resume enables the existing eligible hover behavior. Automatic changes do not announce slide positions as a live stream. Pause is first within the gallery control group, while Explore still precedes that group. Hover previews remain a design choice; this is not a claim of complete carousel/WCAG conformance.
+- `project-media.tsx` keeps manual navigation on loaded images. Keyboard focus pauses automatic previews until an explicit resume; Resume enables the existing eligible hover behavior unless site/device motion is paused. Automatic changes do not announce slide positions as a live stream. Pause is first within the gallery control group in both DOM and visual order, while Explore still precedes that group. Hover previews remain a design choice; this is not a claim of complete carousel/WCAG conformance.
 - `contact-panel.tsx` uses email/profile links, not a simulated submission form. Clipboard failure offers a selectable email fallback. Repeated attempts update status content; stale or unmounted requests cannot overwrite the latest feedback or move focus.
 
 Contact details come from `lib/portfolio-contact.ts` and are checked by `scripts/verify-portfolio-contacts.mjs`. Keep published identity and availability consistent across routes.
@@ -39,13 +40,13 @@ Local originals live in `public/projects/`. The existing `predev`/`prebuild` scr
 
 Nearby card preparation honors hidden tabs and Save-Data; explicit focus/dialog intent can prepare the gallery. Thumbnail images only mount after their matching stage frame loads. They still reuse full-frame URLs; transfer/cache/decode savings have not been measured and separate small derivatives remain future work.
 
-The portrait and brand marks remain local. Existing CSS and `ambient-dot-field.tsx` provide decorative motion; OS reduced-motion, coarse-pointer and Save-Data behavior must be retained. The former README claim that the header exposes a persistent Pause/Play control was stale; no such control is claimed here.
+The portrait and brand marks remain local. Decorative motion respects OS, coarse-pointer and Save-Data settings. The header now includes a persistent site-wide motion control; this was implemented and tested after the earlier source-only review.
 
-Pointer ambience now responds to preference changes and cancels queued frames on leave/hidden/unmount. Theme setup releases both scheduled frames and its data-preference listener; route entrance animation cancels when the tab becomes hidden. Desktop decorative CSS loops still lack an independent pause control; rendered motion acceptance remains open.
+Pointer ambience cancels queued frames on leave/hidden/unmount or motion pause. Theme setup releases scheduled frames and listeners. The global control also stops decorative CSS loops, route entrances, filter view transitions, reveal effects and automatic gallery previews without hiding content. `app/accessibility.css` corrects the measured active-filter count contrast in the light theme.
 
 ## Verification and export
 
-Toolchain used by the existing workflow: Node 22, pnpm 10.11.0. Commands below are a future authorized validation sequence, not evidence that this revision has passed them:
+Toolchain: Node 22, pnpm 10.11.0. The following sequence was executed in an isolated Vercel environment for application commit `96a98fb`; see the [build/browser evidence](docs/PORTFOLIO_BUILD_BROWSER_2026-11-09.md) for scope and versions:
 
 ```bash
 pnpm install --frozen-lockfile
@@ -66,16 +67,16 @@ Remove-Item Env:REQUIRE_OUT
 
 `output: 'export'`, `trailingSlash: true` and `images.unoptimized: true` are intentional. `scripts/flatten-rsc-export.mjs` prepares the exported route payloads for Pages. Preserve its fail-closed checks. Use the generated static files for hosting; `next start` is not the deployment method for this export.
 
-Some tests inspect source contracts; others validate files and generated output. None of these alone proves real-browser behavior, visual quality, keyboard accessibility or measured performance. `pnpm run check` is not an ESLint substitute.
+Some tests inspect source contracts; others validate files and generated output. Neither alone proves browser behavior or full accessibility. `scripts/verify-portfolio-release.cjs` runs real Chromium checks against an authorized static server; Playwright 1.65.0 and axe-core 4.14.0 are installed in a separate QA directory rather than the application graph. `pnpm run check` is not an ESLint substitute.
 
-Artifact assertions require explicit `REQUIRE_OUT=1`; a leftover `out/` is not current-build evidence. The inventory's image-integrity test can generate missing derivatives even in source mode, so do not run the full test glob under a no-generation policy. The 8 November local maintenance used a reviewed explicit file list and filtered that image test: 100 passed, 3 artifact checks skipped. No-emit TypeScript passed with installed TypeScript 5.7.3, but installed Next 16.2.0 differs from locked 16.4.5 and host Node 24.20.0 differs from CI Node 22. No dependencies were installed. Exact commands and limitations are in the [current handoff](docs/PORTFOLIO_REVIEW_2026-11-08.md).
+Artifact assertions require explicit `REQUIRE_OUT=1`; a leftover `out/` is not current-build evidence. The 8 November local no-build run and its stale installed versions remain historical in [the earlier handoff](docs/PORTFOLIO_REVIEW_2026-11-08.md). The later authorized remote run used the frozen lock, generated media, built a fresh export and ran the artifact checks; it did not use the owner's computer.
 
 ## Security and publishing
 
-The published repository/artifact is public. Do not add credentials, private-project source, personal records or debug artifacts. External links, SVG content and exported artifacts have existing regression checks. SHA-pinned workflow actions, limited permissions and the frozen pnpm lock are retained.
+The published repository/artifact is public. Do not add credentials, private-project source, personal records or debug artifacts. External links, SVG content and exported artifacts have regression checks. SHA-pinned workflow actions, limited permissions and the frozen pnpm lock are retained.
 
-The existing security job reports high/critical advisories, but the deployment job currently depends only on `build`, not `security`. The existing owner exception is retained and recorded as R-6 in the risk register; the recommended default requires both jobs. A red audit is not a clean security result. Historical scan claims in earlier reports do not establish the current advisory state. Post-build artifact checks require all six routes, metadata/sitemap/robots/404 assertions and reject accidental source/key/credential exports.
+The existing security job reports high/critical advisories, but the deployment job currently depends only on `build`, not `security`. The documented R-6 owner exception remains. A successful audit during this verification does not silently change that policy or guarantee future advisory status. Post-build checks cover all six routes, metadata/sitemap/robots/404 and accidental source/key/credential exports.
 
 GitHub Pages is static hosting: adding `headers()` to Next config does not implement response security headers. Preserve the CSP/hosting limitations documented in [docs/SECURITY_ARCHITECTURE.md](docs/SECURITY_ARCHITECTURE.md), [SECURITY_RISK_REGISTER.md](SECURITY_RISK_REGISTER.md) and [SECURITY_REVIEW_2026-11-05.md](SECURITY_REVIEW_2026-11-05.md).
 
-All commits in the 8 November local maintenance use `[skip ci]` to respect the owner's Actions restriction. Their source push is not a fresh Pages deployment. See [the scoped review and remaining validation](docs/PORTFOLIO_REVIEW_2026-11-08.md).
+GitHub Actions was not used for this work; commits include `[skip ci]`. A separate protected Vercel workbench preview was built from the exact reviewed source and checked after deployment. Its noindex policy and temporary share access do not migrate the production hostname or update GitHub Pages. See the [new verification report](docs/PORTFOLIO_BUILD_BROWSER_2026-11-09.md).

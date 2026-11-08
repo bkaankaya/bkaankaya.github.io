@@ -1,10 +1,12 @@
 // Zero-dependency regression checks for outbound links, SVG assets, dangerous
-// sinks and (when out/ exists) the published artifact. Run: node --test scripts/*.test.mjs
-// Set REQUIRE_OUT=1 (CI after the build) to make a missing out/ a failure.
+// sinks. Run: node --test scripts/security-static.test.mjs
+// Set REQUIRE_OUT=1 only after a fresh build to validate the published artifact;
+// otherwise an existing local out/ is deliberately ignored. CI requires the artifact.
 import assert from "node:assert/strict"
-import { existsSync, lstatSync, readFileSync, readdirSync } from "node:fs"
+import { existsSync, readFileSync, readdirSync } from "node:fs"
 import { join, relative } from "node:path"
 import { test } from "node:test"
+import { assertSafeArtifact } from "./security-artifact.mjs"
 
 const root = process.cwd()
 
@@ -113,42 +115,8 @@ test("public SVG assets contain no scripts, handlers or external references", ()
 })
 
 const outDir = join(root, "out")
-const outTest = existsSync(outDir) || process.env.REQUIRE_OUT === "1" ? test : test.skip
+const outTest = process.env.REQUIRE_OUT === "1" ? test : test.skip
 
 outTest("published out/ artifact: routes, no secrets/source maps/debug files, no remote scripts", () => {
-  assert.ok(existsSync(outDir), "out/ is missing")
-  const files = walk(outDir)
-  const rel = files.map((f) => relative(outDir, f).split("\\").join("/"))
-  for (const route of ["index.html", "projects/index.html", "experience/index.html", "education/index.html", "about/index.html", "contact/index.html"]) {
-    assert.ok(rel.includes(route) && lstatSync(join(outDir, route)).size > 1000, `route missing or empty: ${route}`)
-  }
-  const forbidden = /(^|\/)\.env|\.(map|pem|key|p12|pfx|log|csv|sarif)$|(^|\/)(debug|build)[^/]*\.json$/i
-  for (const f of rel) assert.ok(!forbidden.test(f), `forbidden file published: ${f}`)
-
-  const secretPatterns = [
-    ["AWS access key", /AKIA[0-9A-Z]{16}/],
-    ["GitHub token", /gh[pousr]_[A-Za-z0-9]{30,}|github_pat_[A-Za-z0-9_]{30,}/],
-    ["private key block", /-----BEGIN [A-Z ]*PRIVATE KEY-----/],
-    ["Slack token", /xox[baprs]-[A-Za-z0-9-]{10,}/],
-    ["Google API key", /AIza[0-9A-Za-z_-]{35}/],
-    ["NEXT_PUBLIC variable", /NEXT_PUBLIC_[A-Z_]+/],
-  ]
-  const text = (f) => /\.(html|txt|js|css|svg|json|xml|webmanifest)$/.test(f)
-  for (const file of files.filter(text)) {
-    const content = readFileSync(file, "utf8")
-    for (const [name, re] of secretPatterns) {
-      // Report only the label and file; never print the matched value.
-      assert.ok(!re.test(content), `${name} pattern matched in ${relative(outDir, file)}`)
-    }
-  }
-
-  for (const file of files.filter((f) => f.endsWith(".html"))) {
-    const html = readFileSync(file, "utf8")
-    for (const tag of html.match(/<script\b[^>]*>/gi) ?? []) {
-      const src = tag.match(/\ssrc=["']([^"']+)["']/i)?.[1]
-      if (src) assert.ok(src.startsWith("/_next/"), `non-local script src ${src} in ${relative(outDir, file)}`)
-    }
-    assert.ok(!/<iframe\b/i.test(html), `iframe in ${relative(outDir, file)}`)
-    assert.ok(!/(src|href)=["']http:\/\//i.test(html), `mixed-content http: reference in ${relative(outDir, file)}`)
-  }
+  assertSafeArtifact(outDir)
 })

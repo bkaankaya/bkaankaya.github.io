@@ -1,8 +1,8 @@
 # Portfolio Security Risk Register
 
-**Updated:** 5 November 2026. **Baseline:** `3e006bc` / `83ae99b` hardening review. Current release uses a static Next.js export to GitHub Pages. This document separates resolved package advisories from limitations of the hosting model.
+**Updated:** 8 November 2026. **Source review baseline:** `7d440ac`; earlier hardening: `3e006bc` / `83ae99b`. The site uses a static Next.js export to GitHub Pages. This document separates historical scan evidence, current source controls and hosting limits. The 8 November maintenance does not build, audit, run CI or deploy.
 
-## Verified dependency remediation
+## Historical dependency remediation (5 November)
 
 The repository owner explicitly authorized a narrow security exception to the usual no-upgrade policy.
 
@@ -23,11 +23,25 @@ The direct React 19 / React-DOM 19, Tailwind 4, Lucide, TypeScript and Actions t
 
 | ID | Surface | Status and necessary action |
 | --- | --- | --- |
-| R-1 | Known high/critical dependency advisories | **Resolved in the current scanned lockfile**. Future advisories continue to fail the security CI job. |
+| R-1 | Known high/critical dependency advisories | **5 November scan passed; no fresh audit on 8 November.** New high/critical advisories fail the security CI job, but do not block deployment under R-6. |
 | R-2 | Response-header CSP, HSTS, X-Frame-Options, Permissions-Policy | **Open by platform limitation.** GitHub Pages static output cannot configure custom response headers via Next.js. See [architecture](docs/SECURITY_ARCHITECTURE.md). Do not add a brittle meta CSP that breaks Next.js hydration. |
 | R-3 | GitHub repository settings | **Owner-admin verification needed.** Review Dependabot alerts, security updates, CodeQL, secret scanning, push protection, rulesets and Pages Enforce HTTPS in the GitHub UI. |
 | R-4 | Full ESLint flat-config linting | **Not installed by design**, to avoid adding a large developer dependency tree. `pnpm run check` runs TypeScript and repository regression tests; it is not equivalent to ESLint. |
 | R-5 | Cross-browser and field performance audit | **Partially unverified.** CI verifies static routes and application logic, not complete manual Safari/Firefox accessibility or Core Web Vitals field results. |
+| R-6 | Security audit is outside the deployment gate | **Existing workflow exception retained.** `deploy.needs: build` lets deployment proceed when build succeeds even if `security` fails. The audit itself is unsuppressed. Recommended default: require both build and security success. The existing documented exception is not silently revoked or treated as a new approval; the owner must resolve applicable advisories or explicitly retain this release exception before calling the security gate satisfied. No workflow run or deployment occurred in this maintenance. |
+
+## Locked graph and execution context (8 November source review)
+
+The committed manifest and pnpm lockfile agree. `packageManager: pnpm@10.11.0` and Node `22.x` / pnpm `10.11.0` engines now record the existing CI toolchain; this metadata does not update or install any package. The lockfile is unchanged.
+
+| Layer | Exact lock resolution | Execution / applicability |
+| --- | --- | --- |
+| Direct application dependencies | Next 16.4.5; React / React-DOM 19.2.5; Lucide React 0.564.0 | Next renders during export and supplies browser bundles. React, React-DOM and icons support the static browser UI. The deployment has no Next Node server or request-processing API. |
+| Direct development dependencies | TypeScript 5.7.3; `@types/node` 22.19.17; `@types/react` 19.2.14; `@types/react-dom` 19.2.3; Tailwind / `@tailwindcss/postcss` 4.2.4; PostCSS 8.5.32; tw-animate-css 1.3.3 | Typechecking / CSS processing occur before deployment; generated CSS remains public. |
+| Next transitive build dependencies | PostCSS **8.5.23**, Sharp 0.35.5 (optional dependency), `@next/env` / SWC 16.4.5 | Direct PostCSS 8.5.32 does not replace Next's separate 8.5.23 resolution. Sharp is also used by the local media recipe through Next's dependency; it is not dead code. No new advisory applicability or clean scan is asserted. |
+| Shared / overridden transitives | nanoid 3.3.20; source-map-js 1.2.2; baseline-browser-mapping 2.11.0 | Both PostCSS versions resolve nanoid and source-map-js; Next resolves baseline-browser-mapping. Narrow existing overrides remain intact. |
+
+A server-only advisory needs a reachable server feature before being described as a public-site exploit. Dependency installation, build-time processing and browser code remain separate relevant surfaces. No upgrade was attempted without a concrete verified advisory and coherent lock resolution. Historical scanner evidence above is not a fresh assessment of this tree or the locally installed modules.
 
 ## Architecture / trust boundary
 

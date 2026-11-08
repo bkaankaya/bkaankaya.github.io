@@ -182,7 +182,9 @@ test('every referenced preview exists, decodes as a sufficiently sized image, an
 })
 
 const builtArchive = 'out/projects/index.html'
-const publishedTest = existsSync('out') || process.env.REQUIRE_OUT === '1' ? test : test.skip
+// A pre-existing out/ can belong to an older revision. Only the explicit
+// post-build mode audits it; missing output still fails closed in that mode.
+const publishedTest = process.env.REQUIRE_OUT === '1' ? test : test.skip
 publishedTest('the exported Projects page contains all 12 requested cards and all gallery files are published', () => {
   assert.ok(existsSync(builtArchive), 'Build the complete project archive before publishing')
   const html = readFileSync(builtArchive, 'utf8')

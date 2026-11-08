@@ -2,17 +2,28 @@
 
 ## Trust boundary
 - Build: GitHub Actions → `pnpm run build` → `out/` (+ `postbuild` flatten) → Pages artifact → `actions/deploy-pages`.
-- Runtime: static files only. No server, API, auth, database, cookies (localStorage is used only for theme and nonessential animation preferences), forms or uploads. CSRF/SQLi/JWT/etc. are not applicable.
+- Runtime: static files only. No server, API, auth, database, cookies, submission forms or uploads. localStorage holds only the non-sensitive `bk-portfolio-theme` preference. CSRF/SQLi/JWT/etc. are not applicable.
 - Public repo: everything in the repo and `out/` is public.
 
 ## Controls in the repo
 - Actions pinned to full commit SHAs; `contents: read` globally; deploy job only `pages: write` + `id-token: write`; `persist-credentials: false`; `pnpm install --frozen-lockfile`.
 - `scripts/flatten-rsc-export.mjs` is fail-closed (missing `out/`, symlinks, unsafe names, unexpected file types, different-content collisions all exit non-zero); tests in `scripts/flatten-rsc-export.test.mjs`.
-- `scripts/security-static.test.mjs`: https-only derived link allowlist, `rel="noopener noreferrer"` on `_blank`, no dangerous sinks, clean SVG assets, artifact has no secrets/source maps/debug files/remote scripts.
+- `scripts/security-static.test.mjs`: https-only derived link allowlist, `rel="noopener noreferrer"` on `_blank`, no dangerous sinks and clean SVG assets. The shared read-only `security-artifact.mjs` checker requires all six routes (including Contact), rejects symlinks, source/key/credential/debug exports, source maps, known secret patterns and remote scripts. Small fixture tests exercise acceptance and rejection without generating site media or building the app. Source runs ignore any local `out/`; actual artifact checks require explicit `REQUIRE_OUT=1`, which remains mandatory in the post-build CI step together with gallery and metadata output checks.
 - `.gitignore` covers `.env*` (except `.env.example`), key/cert files and scanner output.
+- The separate unsuppressed dependency audit is currently outside `deploy.needs`; build success alone gates deployment. This existing exception and the recommendation to require build + security success are recorded as R-6 in the [risk register](../SECURITY_RISK_REGISTER.md). A red security job does not automatically stop Pages deployment.
+
+## Source-to-sink review (8 November 2026)
+
+| Source → sink | Applicability and retained / changed control | Evidence boundary |
+| --- | --- | --- |
+| Search input → in-memory filtering / React-rendered result text | No query is interpolated into HTML, code or navigation. No `dangerouslySetInnerHTML`, HTML insertion API, `eval`, `Function` constructor, external script or frame was found in application source. Source regression checks remain in place. | Source inspection and narrow tests, not browser execution or a universal XSS proof. |
+| Public contact/profile/project constants → anchor `href` | Outbound hosts come from the reviewed public contact/profile sources; project repository URLs are fixed HTTPS GitHub links. `_blank` anchors retain `noopener noreferrer`; the mail subject helper URL-encodes its argument. There is no user-controlled destination. | Source checks reject dangerous schemes and unexpected literal hosts; future URL construction still needs review. |
+| Local trusted SVG files → image assets | Existing checks reject scripts, handlers, foreign objects, external references and active embedding. Provenance labels distinguish concept, synthetic/demo and captured media; no private source or newly inferred personal data is introduced. | SVG source scan does not verify the identities visible in every bitmap. Existing media is preserved. |
+| Exported files → Pages upload | The artifact checker now also denies `.p8` / `.keystore`, credential JSON, `.git`, source directories and source extensions. It rejects links / unexpected file types before reading content and keeps masked secret diagnostics. Flattening retains its symlink/path/collision protections unchanged. | New small fixtures validate the checker. A fresh `out/` audit requires a future authorized build with `REQUIRE_OUT=1`; stale local output is not current evidence. |
+| Dependencies → install / export build / browser bundle | Frozen lockfile, pinned Actions, read-only build credentials and deploy-only Pages permissions remain. Toolchain metadata now matches Node 22 / pnpm 10.11.0 CI. | No install, dependency audit, workflow execution or deployment was performed in this maintenance. |
 
 ## CSP and HTTP headers (SEC-04) — decision: option B (documented limit), C proposed
-Measured on the fresh build (`out/*/index.html`): 17–24 `<script>` tags per page, 10 external same-origin `/_next/` scripts and 7–14 **inline** Next.js bootstrap/RSC scripts whose content differs per page, plus 7–22 inline `style=""` attributes. No CSP meta exists.
+Historical measurement from the 5 November build (`out/*/index.html`): 17–24 `<script>` tags per page, 10 external same-origin `/_next/` scripts and 7–14 **inline** Next.js bootstrap/RSC scripts whose content differs per page, plus 7–22 inline `style=""` attributes. This was not remeasured on 8 November. No CSP meta exists.
 
 - Response headers (CSP header, `X-Frame-Options`, HSTS, `X-Content-Type-Options`, `Permissions-Policy`, `frame-ancestors`) **cannot be set from files on GitHub Pages**. `next.config.mjs` `headers()` is ignored by static export. None are claimed as implemented.
 - A meta CSP would need per-page SHA-256 hashes of every inline script (generated by a post-build step) and `style-src 'unsafe-inline'` (or `unsafe-hashes`) for inline style attributes, and cannot carry `frame-ancestors`/`sandbox`/report directives. It would have to be regression-tested in real browsers (hydration, modal, theme, filters, navigation, 6 viewport widths). No browser was available in this session, so such a CSP was **not added** rather than shipped untested or weakened.

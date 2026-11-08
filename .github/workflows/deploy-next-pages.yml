@@ -47,9 +47,10 @@ jobs:
           test -s out/experience/index.html
           test -s out/education/index.html
           test -s out/about/index.html
+          test -s out/contact/index.html
           touch out/.nojekyll
       - name: Audit published artifact and complete project galleries
-        run: node --test scripts/security-static.test.mjs scripts/portfolio-inventory.test.mjs
+        run: node --test scripts/security-static.test.mjs scripts/portfolio-inventory.test.mjs scripts/portfolio-metadata.test.mjs
         env:
           REQUIRE_OUT: '1'
       - name: Configure GitHub Pages
@@ -60,9 +61,9 @@ jobs:
           path: ./out
 
   # Reports known advisories for the locked dependency graph. Intentionally not
-  # continue-on-error and not suppressed: a red result is the truthful state until
-  # the owner approves a Next.js upgrade (see SECURITY_RISK_REGISTER.md). It does not
-  # gate the deploy job, so a published site is never blocked by an advisory alone.
+  # continue-on-error and not suppressed. The last audit is historical evidence;
+  # a new red result remains visible. The existing owner deployment exception keeps
+  # this job outside deploy.needs (see R-6 in SECURITY_RISK_REGISTER.md).
   security:
     runs-on: ubuntu-latest
     timeout-minutes: 10

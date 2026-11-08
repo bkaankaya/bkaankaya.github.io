@@ -1,14 +1,11 @@
-import type { Metadata } from "next"
 import Link from "next/link"
 import { ArrowUpRight, CalendarDays, Code2, GraduationCap, Layers, Rocket } from "lucide-react"
 import { PageIntro } from "@/components/portfolio/section-heading"
 import { Reveal } from "@/components/portfolio/reveal"
 import { experienceItems } from "@/lib/portfolio-data"
+import { portfolioPageMetadata } from "@/lib/portfolio-metadata"
 
-export const metadata: Metadata = {
-  title: "Experience | Bertan Kaan Kaya",
-  description: "Career path, product work and engineering experience of Bertan Kaan Kaya.",
-}
+export const metadata = portfolioPageMetadata("/experience/")
 
 const skillHighlights = ["Frontend", "Backend Development", "AI Products", "Embedded Systems", "Data Analysis", "Problem Solving"]
 

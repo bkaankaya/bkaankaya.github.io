@@ -1,10 +1,7 @@
-import type { Metadata } from "next"
 import { ContactPanel } from "@/components/portfolio/contact-panel"
+import { portfolioPageMetadata } from "@/lib/portfolio-metadata"
 
-export const metadata: Metadata = {
-  title: "Contact | Bertan Kaan Kaya",
-  description: "Contact Bertan Kaan Kaya for software engineering opportunities and collaborations via email, LinkedIn or GitHub.",
-}
+export const metadata = portfolioPageMetadata("/contact/")
 
 export default function ContactPage() {
   return <main id="main-content" className="portfolio-main interior-main contact-main">

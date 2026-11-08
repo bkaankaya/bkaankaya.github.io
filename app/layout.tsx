@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
+import { portfolioOrigin, portfolioPages } from '@/lib/portfolio-metadata'
 import './globals.css'
 import './refinement.css'
 import './collection.css'
@@ -8,23 +9,9 @@ const geist = Geist({ subsets: ['latin'], variable: '--font-geist-sans' })
 const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono' })
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://bkaankaya.github.io'),
-  title: 'Bertan Kaan Kaya | Software Engineer',
-  description: 'I build end-to-end products that combine software, AI and real-world impact.',
-  openGraph: {
-    title: 'Bertan Kaan Kaya | Software Engineer',
-    description: 'Thoughtful software, designed and built to make a real-world impact.',
-    url: 'https://bkaankaya.github.io/',
-    type: 'website',
-    images: [
-      {
-        url: '/portrait-kaan.webp',
-        width: 520,
-        height: 520,
-        alt: 'Portrait of Bertan Kaan Kaya',
-      },
-    ],
-  },
+  metadataBase: new URL(portfolioOrigin),
+  title: portfolioPages['/'].title,
+  description: portfolioPages['/'].description,
   icons: {
     icon: [
       {

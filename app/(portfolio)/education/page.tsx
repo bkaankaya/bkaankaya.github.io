@@ -1,13 +1,10 @@
-import type { Metadata } from "next"
 import { ArrowUpRight, BookOpen, CalendarDays, Globe2, Layers, MapPin, Microscope, Settings2, Target } from "lucide-react"
 import { PageIntro } from "@/components/portfolio/section-heading"
 import { Reveal } from "@/components/portfolio/reveal"
 import { educationItems, focusAreas, learningAreas, languages } from "@/lib/portfolio-data"
+import { portfolioPageMetadata } from "@/lib/portfolio-metadata"
 
-export const metadata: Metadata = {
-  title: "Education | Bertan Kaan Kaya",
-  description: "TED University Computer Engineering, Beştepe Koleji and Cambridge A Level results of Bertan Kaan Kaya.",
-}
+export const metadata = portfolioPageMetadata("/education/")
 
 export default function EducationPage() {
   return (

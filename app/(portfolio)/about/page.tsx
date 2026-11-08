@@ -1,15 +1,12 @@
-import type { Metadata } from "next"
 import Image from "next/image"
 import { MapPin, Layers, Activity, Code2 } from "lucide-react"
 import { Reveal } from "@/components/portfolio/reveal"
 import { ContactPanel } from "@/components/portfolio/contact-panel"
+import { portfolioPageMetadata } from "@/lib/portfolio-metadata"
 
 const portraitSource = "/portrait-kaan.webp"
 
-export const metadata: Metadata = {
-  title: "About | Bertan Kaan Kaya",
-  description: "Learn about Bertan Kaan Kaya’s approach to product engineering, software, AI and design.",
-}
+export const metadata = portfolioPageMetadata("/about/")
 
 const values = [
   { title: "How I Work", icon: Code2, accent: "violet", points: ["Turn ideas into working, reliable products.", "Keep things simple, modular and maintainable.", "Iterate with feedback and focus on real impact."] },

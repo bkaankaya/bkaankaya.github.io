@@ -1,11 +1,8 @@
-import type { Metadata } from "next"
 import { PageIntro } from "@/components/portfolio/section-heading"
 import { ProjectArchive } from "@/components/portfolio/project-archive"
+import { portfolioPageMetadata } from "@/lib/portfolio-metadata"
 
-export const metadata: Metadata = {
-  title: "Projects | Bertan Kaan Kaya",
-  description: "The complete project collection by Bertan Kaan Kaya: AI products, full-stack applications, embedded systems, research and games.",
-}
+export const metadata = portfolioPageMetadata("/projects/")
 
 export default function ProjectsPage() {
   return (

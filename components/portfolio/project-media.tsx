@@ -29,17 +29,32 @@ export function ProjectMedia({ project, active = false, controls = false, compac
   const ready = useRef(new Set<string>())
   const pointerPauseState = useRef<boolean | null>(null)
 
-  // Preload additional views only when their card approaches the viewport.
-  // Modal galleries load immediately; offscreen cards keep lazy first images.
+  // Modal/focused galleries express intent; nearby cards prepare extra views
+  // only while visible and without a reduced-data preference.
   useEffect(() => {
-    if (!controls) return
-    if (!compact || typeof IntersectionObserver === "undefined") { setWarm(true); return }
-    const observer = new IntersectionObserver(entries => {
-      if (entries.some(entry => entry.isIntersecting)) { setWarm(true); observer.disconnect() }
+    if (!controls || warm) return
+    if (!compact) { setWarm(true); return }
+    const network = (navigator as Navigator & { connection?: EventTarget & { saveData?: boolean } }).connection
+    let nearby = typeof IntersectionObserver === "undefined"
+    function prepare() {
+      if (!nearby || document.hidden || network?.saveData) return
+      setWarm(true)
+      observer?.disconnect()
+    }
+    const observer = typeof IntersectionObserver === "undefined" ? null : new IntersectionObserver(entries => {
+      nearby = entries.some(entry => entry.isIntersecting)
+      prepare()
     }, { rootMargin: "240px" })
-    if (mediaRef.current) observer.observe(mediaRef.current)
-    return () => observer.disconnect()
-  }, [controls, compact])
+    if (mediaRef.current) observer?.observe(mediaRef.current)
+    prepare()
+    document.addEventListener("visibilitychange", prepare)
+    network?.addEventListener("change", prepare)
+    return () => {
+      observer?.disconnect()
+      document.removeEventListener("visibilitychange", prepare)
+      network?.removeEventListener("change", prepare)
+    }
+  }, [controls, compact, warm])
 
   useEffect(() => {
     if (!active || frames.length < 2) return
@@ -137,16 +152,6 @@ export function ProjectMedia({ project, active = false, controls = false, compac
       </div>
       {frames.length > 1 ? controls ? (
         <div className="project-gallery-controls" role="group" aria-label={`${project.title} image gallery`}>
-          <button className="gallery-step" type="button" aria-label="Previous image" disabled={!canStep} onClick={() => step(-1)}><ChevronLeft aria-hidden="true" /></button>
-          <div className="gallery-thumbnails">
-            {frames.map((src, frameIndex) => <button key={src} className="gallery-thumbnail" type="button" aria-label={`Show image ${frameIndex + 1} of ${frames.length}`} aria-pressed={frameIndex === index} disabled={!loaded.includes(src)} onClick={() => select(frameIndex)}>
-              <Image src={src} alt="" width={72} height={44} unoptimized loading="lazy" />
-              <span>{String(frameIndex + 1).padStart(2, "0")}</span>
-            </button>)}
-          </div>
-          <span className="gallery-position" role="status" aria-live={active && !paused && compact ? "off" : "polite"} aria-atomic="true">{index + 1} <span aria-hidden="true">/</span><span className="sr-only">of</span> {frames.length}
-            {!canStep ? <small className="project-gallery-status">{loading ? "Loading images…" : "Other images unavailable"}</small> : null}
-          </span>
           {compact ? <button className="gallery-pause" type="button"
             aria-label={paused ? "Resume automatic previews" : "Pause automatic previews"}
             onPointerDown={() => { pointerPauseState.current = paused }}
@@ -159,6 +164,17 @@ export function ProjectMedia({ project, active = false, controls = false, compac
               pointerPauseState.current = null
               setPaused(!wasPaused)
             }}>{paused ? <Play aria-hidden="true" /> : <Pause aria-hidden="true" />}</button> : null}
+          <button className="gallery-step" type="button" aria-label="Previous image" disabled={!canStep} onClick={() => step(-1)}><ChevronLeft aria-hidden="true" /></button>
+          <div className="gallery-thumbnails">
+            {frames.map((src, frameIndex) => <button key={src} className="gallery-thumbnail" type="button" aria-label={`Show image ${frameIndex + 1} of ${frames.length}`} aria-pressed={frameIndex === index} disabled={!loaded.includes(src)} onClick={() => select(frameIndex)}>
+              {/* Reuse a loaded stage frame; thumbnails must not start hidden-frame downloads. */}
+              {loaded.includes(src) ? <Image src={src} alt="" width={72} height={44} unoptimized loading="lazy" /> : null}
+              <span>{String(frameIndex + 1).padStart(2, "0")}</span>
+            </button>)}
+          </div>
+          <span className="gallery-position" role="status" aria-live={active && !paused && compact ? "off" : "polite"} aria-atomic="true">{index + 1} <span aria-hidden="true">/</span><span className="sr-only">of</span> {frames.length}
+            {!canStep ? <small className="project-gallery-status">{loading ? "Loading images…" : "Other images unavailable"}</small> : null}
+          </span>
           <button className="gallery-step" type="button" aria-label="Next image" disabled={!canStep} onClick={() => step(1)}><ChevronRight aria-hidden="true" /></button>
         </div>
       ) : <span className="project-gallery-count" aria-hidden="true">{index + 1} / {frames.length}</span> : null}

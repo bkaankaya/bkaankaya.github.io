@@ -9,3 +9,10 @@
   color: var(--site-muted);
   font: 10px/1.5 var(--font-geist-sans), sans-serif;
 }
+/* Pause comes first in the control group's tab order; retain its visual slot. */
+.portfolio-app .project-gallery-controls .gallery-pause {
+  order: 1;
+}
+.portfolio-app .project-gallery-controls .gallery-step:last-child {
+  order: 2;
+}

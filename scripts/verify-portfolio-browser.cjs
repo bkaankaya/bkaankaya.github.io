@@ -45,7 +45,7 @@ async function run() {
     checks.push('More/Less: four technologies; click, Enter, Space and Escape')
 
     await page.goto(base + '/projects/', { waitUntil: 'networkidle' })
-    assert.equal(await page.locator('article.project-card').count(), 7)
+    assert.equal(await page.locator('article.project-card').count(), 12)
     const dora = page.locator('article[data-project="dora-voice"]')
     const rezero = page.locator('article[data-project="rezero-2d-game"]')
     for (const card of [dora, rezero]) {
@@ -67,8 +67,8 @@ async function run() {
     await dora.screenshot({ path: path.join(output, 'doravoice.png') })
     checks.push('Original DoraVoice/ReZero badge assets; DoraVoice 0→1→0 every 5 seconds; timer cleanup')
 
-    for (const [filter, count] of Object.entries({ AI: 2, 'Full-stack': 4, Embedded: 1, Research: 1, Blockchain: 1, Games: 1, All: 7 })) {
-      await page.getByRole('button', { name: filter, exact: true }).click()
+    for (const [filter, count] of Object.entries({ AI: 5, 'Full-stack': 7, Frontend: 1, Embedded: 1, Research: 4, Blockchain: 1, Games: 1, All: 12 })) {
+      await page.getByRole('group', { name: 'Filter projects by category' }).getByRole('button', { name: filter, exact: true }).click()
       await page.waitForFunction(n => document.querySelectorAll('article.project-card').length === n, count)
     }
     checks.push('All category filters')
@@ -135,7 +135,7 @@ async function run() {
     const modal = touch.locator('dialog[open]')
     await modal.getByRole('button', { name: 'Next image' }).tap()
     assert.equal(await modal.locator('.project-media').getAttribute('data-frame'), '1')
-    await modal.getByRole('link', { name: 'Discuss a similar project' }).tap()
+    await modal.getByRole('link', { name: 'Let’s talk' }).tap()
     await touch.waitForURL('**/contact/')
     assert.notEqual(await touch.evaluate(() => document.documentElement.style.overflow), 'hidden')
     await mobile.close()

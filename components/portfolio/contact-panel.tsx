@@ -1,24 +1,31 @@
 "use client"
 
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { ArrowUpRight, Check, Copy, Mail } from "lucide-react"
 import { BrandIcon } from "@/components/portfolio/brand-icon"
 import { portfolioContact } from "@/lib/portfolio-contact"
 
 /** No pretend form submission: email opens the visitor's app; copying is explicit. */
 export function ContactPanel({ standalone = false }: { standalone?: boolean }) {
-  const [copyState, setCopyState] = useState<"idle" | "copied" | "fallback">("idle")
+  const [copyFeedback, setCopyFeedback] = useState<{ state: "idle" | "copied" | "fallback"; request: number }>({ state: "idle", request: 0 })
+  const copyState = copyFeedback.state
+  const copyRequest = useRef(0)
   const emailRef = useRef<HTMLInputElement>(null)
 
+  useEffect(() => () => { copyRequest.current += 1 }, [])
+
   async function copyEmail() {
+    const request = ++copyRequest.current
     try {
       if (!navigator.clipboard?.writeText) throw new Error("Clipboard unavailable")
       await navigator.clipboard.writeText(portfolioContact.email)
-      setCopyState("copied")
+      if (request !== copyRequest.current) return
+      setCopyFeedback({ state: "copied", request })
     } catch {
+      if (request !== copyRequest.current) return
       emailRef.current?.focus({ preventScroll: true })
       emailRef.current?.select()
-      setCopyState("fallback")
+      setCopyFeedback({ state: "fallback", request })
     }
   }
 
@@ -34,7 +41,7 @@ export function ContactPanel({ standalone = false }: { standalone?: boolean }) {
           <button className="button button-outline copy-email-button" type="button" onClick={copyEmail}>{copyState === "copied" ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}{copyState === "copied" ? "Copied" : "Copy email"}</button>
         </div>
         <p className="contact-email-help">No mail app configured? Copy the address and use your preferred email service.</p>
-        <p className="contact-copy-status" role="status" aria-live="polite">{copyState === "copied" ? "Email address copied." : copyState === "fallback" ? "Automatic copying is unavailable. The address is selected; copy it manually." : ""}</p>
+        <p className="contact-copy-status" role="status" aria-live="polite" aria-atomic="true"><span key={copyFeedback.request}>{copyState === "copied" ? "Email address copied." : copyState === "fallback" ? "Automatic copying is unavailable. The address is selected; copy it manually." : ""}</span></p>
       </article>
       <a className="contact-card" href={portfolioContact.githubUrl} target="_blank" rel="noopener noreferrer">
         <BrandIcon brand="github" size={25} /><ArrowUpRight className="contact-card-arrow" aria-hidden="true" /><strong>GitHub</strong><span>{portfolioContact.githubLabel}</span><p>Explore my public repositories.</p>

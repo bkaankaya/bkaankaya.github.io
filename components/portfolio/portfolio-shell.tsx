@@ -17,27 +17,34 @@ export function PortfolioShell({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // React hydrates the static dark-themed markup before reading localStorage.
     // Restore transitions only after the saved theme and text colors have settled.
-    window.requestAnimationFrame(() => {
-      window.requestAnimationFrame(() => {
+    let settledFrame = 0
+    const initialFrame = window.requestAnimationFrame(() => {
+      settledFrame = window.requestAnimationFrame(() => {
         document.documentElement.dataset.themeReady = "true"
       })
     })
     // Browser Network Information API is optional. Content never depends on it.
-    const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection
-    document.documentElement.toggleAttribute("data-save-data", connection?.saveData === true)
+    const connection = (navigator as Navigator & { connection?: EventTarget & { saveData?: boolean } }).connection
+    const updateDataPreference = () => document.documentElement.toggleAttribute("data-save-data", connection?.saveData === true)
+    updateDataPreference()
+    connection?.addEventListener("change", updateDataPreference)
+    let initialTheme: PortfolioTheme = "dark"
     try {
       const saved = window.localStorage.getItem(STORAGE_KEY)
       if (saved === "light" || saved === "dark") {
-        setTheme(saved)
-        document.documentElement.dataset.theme = saved
-        document.documentElement.style.colorScheme = saved
-        return
+        initialTheme = saved
       }
     } catch {
       // Ignore storage access errors in restricted browsing modes
     }
-    document.documentElement.dataset.theme = "dark"
-    document.documentElement.style.colorScheme = "dark"
+    setTheme(initialTheme)
+    document.documentElement.dataset.theme = initialTheme
+    document.documentElement.style.colorScheme = initialTheme
+    return () => {
+      window.cancelAnimationFrame(initialFrame)
+      window.cancelAnimationFrame(settledFrame)
+      connection?.removeEventListener("change", updateDataPreference)
+    }
   }, [])
 
   function toggleTheme() {

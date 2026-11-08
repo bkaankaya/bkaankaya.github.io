@@ -55,6 +55,22 @@ test('cards and dialogs expose labeled controls and retain the selected view whe
   assert.match(card, /setInitialFrame\(frame\)/)
   assert.match(card, /<ProjectMedia\b[^>]*initialIndex=\{initialFrame\}/)
 })
+test('rotation control is first in its control group while retaining its visual position', () => {
+  const tree = ts.createSourceFile('project-media.tsx', media, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX)
+  const controlButtons = []
+  function visit(node) {
+    if (ts.isJsxElement(node) && node.openingElement.tagName.getText(tree) === 'button') {
+      const className = node.openingElement.attributes.properties.find(attribute => ts.isJsxAttribute(attribute) && attribute.name.getText(tree) === 'className')?.initializer
+      if (className && /^gallery-/.test(className.text)) controlButtons.push(className.text)
+    }
+    ts.forEachChild(node, visit)
+  }
+  visit(tree)
+  assert.equal(controlButtons[0], 'gallery-pause')
+  const mediaStyles = read('components/portfolio/project-media.css')
+  assert.match(mediaStyles, /\.gallery-pause\s*\{\s*order:\s*1/)
+  assert.match(mediaStyles, /\.gallery-step:last-child\s*\{\s*order:\s*2/)
+})
 test('modal is centered, bounded, keyboard accessible and has manual gallery controls', () => {
   assert.match(styles, /inset:0; margin:auto;/)
   assert.match(styles, /max-height:calc\(100dvh - 48px\)/)

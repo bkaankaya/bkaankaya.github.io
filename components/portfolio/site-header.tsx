@@ -34,6 +34,8 @@ export function SiteHeader({
   const headerRef = useRef<HTMLElement>(null)
   const navRef = useRef<HTMLElement>(null)
   const menuToggleRef = useRef<HTMLButtonElement>(null)
+  const mobileNavRef = useRef<HTMLElement>(null)
+  const contactLinkRef = useRef<HTMLAnchorElement>(null)
   const linkRefs = useRef<Record<string, HTMLAnchorElement | null>>({})
 
   const ThemeIcon = theme === "dark" ? Sun : Moon
@@ -75,6 +77,22 @@ export function SiteHeader({
       window.removeEventListener("resize", updateIndicator)
     }
   }, [updateIndicator])
+
+  useEffect(() => {
+    const mobileLayout = window.matchMedia("(max-width: 700px)")
+    function handleLayoutChange() {
+      if (mobileLayout.matches) return
+      // A resize can hide a focused mobile link. Move to the visible equivalent.
+      if (mobileNavRef.current?.contains(document.activeElement) || document.activeElement === menuToggleRef.current) {
+        const destination = linkRefs.current[activePath] ?? contactLinkRef.current
+        destination?.focus({ preventScroll: true })
+      }
+      setMenuOpen(false)
+    }
+    handleLayoutChange()
+    mobileLayout.addEventListener("change", handleLayoutChange)
+    return () => mobileLayout.removeEventListener("change", handleLayoutChange)
+  }, [activePath])
 
   useEffect(() => {
     if (!menuOpen) return
@@ -157,7 +175,7 @@ export function SiteHeader({
           >
             <ThemeIcon aria-hidden="true" />
           </button>
-          <Link className="button button-primary header-contact" href="/contact/" onNavigate={() => setMenuOpen(false)}>
+          <Link ref={contactLinkRef} className="button button-primary header-contact" href="/contact/" onNavigate={() => setMenuOpen(false)}>
             Contact <ArrowUpRight aria-hidden="true" />
           </Link>
           <button
@@ -175,6 +193,7 @@ export function SiteHeader({
       </div>
 
       <nav
+        ref={mobileNavRef}
         id="mobile-navigation"
         className={`mobile-navigation${menuOpen ? " is-open" : ""}`}
         aria-label="Mobile navigation"

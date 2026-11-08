@@ -37,14 +37,17 @@ export function PortfolioNavigation({ children }: { children: ReactNode }) {
     const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)")
     const connection = (navigator as Navigator & { connection?: EventTarget & { saveData?: boolean } }).connection
     const cancel = () => entrance.current?.cancel()
+    const handleVisibility = () => { if (document.hidden) cancel() }
     const handlePreference = () => { if (reducedMotion.matches || connection?.saveData) cancel() }
     window.addEventListener("popstate", cancel)
     window.addEventListener("pagehide", cancel)
+    document.addEventListener("visibilitychange", handleVisibility)
     reducedMotion.addEventListener("change", handlePreference)
     connection?.addEventListener("change", handlePreference)
     return () => {
       window.removeEventListener("popstate", cancel)
       window.removeEventListener("pagehide", cancel)
+      document.removeEventListener("visibilitychange", handleVisibility)
       reducedMotion.removeEventListener("change", handlePreference)
       connection?.removeEventListener("change", handlePreference)
       cancel()

@@ -49,7 +49,8 @@ test('cards and dialogs expose labeled controls and retain the selected view whe
   for (const label of ['Previous image', 'Next image', 'Pause automatic previews', 'Resume automatic previews', 'Show image']) assert.ok(media.includes(label), label)
   assert.match(media, /role="group"\s+aria-label=/)
   assert.match(media, /aria-pressed=\{frameIndex === index\}/)
-  assert.match(media, /aria-pressed=\{paused\}/)
+  // The rotation button announces its action with a changing label, not a toggle state.
+  assert.doesNotMatch(media, /aria-pressed=\{paused\}/)
   assert.match(media, /onExplore\(event.currentTarget, index\)/)
   assert.match(card, /setInitialFrame\(frame\)/)
   assert.match(card, /<ProjectMedia\b[^>]*initialIndex=\{initialFrame\}/)

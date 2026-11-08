@@ -23,7 +23,8 @@ test('manual choices pause automatic rotation and loading does not require hover
     assert.ok(body.includes('setWarm(true)'), `${name} must warm the gallery`)
     assert.ok(body.includes('setPaused(true)'), `${name} must preserve a manual choice`)
   }
-  assert.match(media, /onFocusCapture=\{\(\) => setWarm\(true\)\}/)
+  assert.match(media, /onFocusCapture=\{pauseForFocus\}/)
+  assert.match(media, /function pauseForFocus\(\)[\s\S]*?setWarm\(true\)[\s\S]*?setPaused\(true\)/)
   assert.match(media, /if \(!compact \|\| typeof IntersectionObserver === "undefined"\) \{ setWarm\(true\); return \}/)
 })
 

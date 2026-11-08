@@ -27,6 +27,7 @@ export function ProjectMedia({ project, active = false, controls = false, compac
   const [loaded, setLoaded] = useState<string[]>([])
   const mediaRef = useRef<HTMLDivElement>(null)
   const ready = useRef(new Set<string>())
+  const pointerPauseState = useRef<boolean | null>(null)
 
   // Preload additional views only when their card approaches the viewport.
   // Modal galleries load immediately; offscreen cards keep lazy first images.
@@ -101,10 +102,16 @@ export function ProjectMedia({ project, active = false, controls = false, compac
     })
   }
 
+  function pauseForFocus() {
+    setWarm(true)
+    // Focus must stop hover previews until the visitor explicitly resumes them.
+    setPaused(true)
+  }
+
   const kind = project.mediaFit ?? "landscape"
   const unavailable = failed.includes(frames[index])
   return (
-    <div ref={mediaRef} className={`project-media project-media--${kind}${compact ? " project-media--compact" : ""}`} data-frame={index} data-fit={project.imageFit ?? "cover"} onFocusCapture={() => setWarm(true)}>
+    <div ref={mediaRef} className={`project-media project-media--${kind}${compact ? " project-media--compact" : ""}`} data-frame={index} data-fit={project.imageFit ?? "cover"} onFocusCapture={pauseForFocus}>
       <div className="project-media-stage">
         <div className="project-media-viewport">
           {frames.map((src, frameIndex) => frameIndex === 0 || frameIndex === initialIndex || warm ? (
@@ -137,10 +144,21 @@ export function ProjectMedia({ project, active = false, controls = false, compac
               <span>{String(frameIndex + 1).padStart(2, "0")}</span>
             </button>)}
           </div>
-          <span className="gallery-position" role="status" aria-live="polite">{index + 1} <span aria-hidden="true">/</span><span className="sr-only">of</span> {frames.length}
+          <span className="gallery-position" role="status" aria-live={active && !paused && compact ? "off" : "polite"} aria-atomic="true">{index + 1} <span aria-hidden="true">/</span><span className="sr-only">of</span> {frames.length}
             {!canStep ? <small className="project-gallery-status">{loading ? "Loading images…" : "Other images unavailable"}</small> : null}
           </span>
-          {compact ? <button className="gallery-pause" type="button" aria-label={paused ? "Resume automatic previews" : "Pause automatic previews"} aria-pressed={paused} onClick={() => setPaused(value => !value)}>{paused ? <Play aria-hidden="true" /> : <Pause aria-hidden="true" />}</button> : null}
+          {compact ? <button className="gallery-pause" type="button"
+            aria-label={paused ? "Resume automatic previews" : "Pause automatic previews"}
+            onPointerDown={() => { pointerPauseState.current = paused }}
+            onPointerCancel={() => { pointerPauseState.current = null }}
+            onKeyDown={() => { pointerPauseState.current = null }}
+            onClick={event => {
+              // Pointer focus pauses before click. Honor the action the visitor
+              // pressed, rather than inadvertently resuming on the first click.
+              const wasPaused = event.detail > 0 ? pointerPauseState.current ?? paused : paused
+              pointerPauseState.current = null
+              setPaused(!wasPaused)
+            }}>{paused ? <Play aria-hidden="true" /> : <Pause aria-hidden="true" />}</button> : null}
           <button className="gallery-step" type="button" aria-label="Next image" disabled={!canStep} onClick={() => step(1)}><ChevronRight aria-hidden="true" /></button>
         </div>
       ) : <span className="project-gallery-count" aria-hidden="true">{index + 1} / {frames.length}</span> : null}

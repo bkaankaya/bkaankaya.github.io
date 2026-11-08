@@ -6,6 +6,8 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState, type CSSProp
 import { ArrowUpRight, Menu, Moon, Sun, X } from "lucide-react"
 import type { PortfolioTheme } from "@/components/portfolio/portfolio-shell"
 
+import { MotionToggle } from "@/components/portfolio/motion-preference"
+
 const navigation = [
   { label: "Home", href: "/" },
   { label: "Projects", href: "/projects/" },
@@ -166,6 +168,7 @@ export function SiteHeader({
         </nav>
 
         <div className="header-actions">
+          <MotionToggle />
           <button
             className="theme-toggle"
             type="button"

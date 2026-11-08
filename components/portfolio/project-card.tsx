@@ -54,7 +54,7 @@ export function ProjectCard({ slug }: { slug: string }) {
       setDialogOpen(false)
       triggerRef.current?.focus({ preventScroll: true })
     }
-    if (matchMedia("(prefers-reduced-motion: reduce)").matches) finish()
+    if (document.documentElement.dataset.motion === "paused" || matchMedia("(prefers-reduced-motion: reduce)").matches) finish()
     else {
       dialog.setAttribute("data-closing", "")
       closeTimer.current = setTimeout(finish, 180)

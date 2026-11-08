@@ -55,7 +55,7 @@ test('cards and dialogs expose labeled controls and retain the selected view whe
   assert.match(card, /setInitialFrame\(frame\)/)
   assert.match(card, /<ProjectMedia\b[^>]*initialIndex=\{initialFrame\}/)
 })
-test('rotation control is first in its control group while retaining its visual position', () => {
+test('rotation control is first in both keyboard and visual order', () => {
   const tree = ts.createSourceFile('project-media.tsx', media, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX)
   const controlButtons = []
   function visit(node) {
@@ -68,8 +68,7 @@ test('rotation control is first in its control group while retaining its visual 
   visit(tree)
   assert.equal(controlButtons[0], 'gallery-pause')
   const mediaStyles = read('components/portfolio/project-media.css')
-  assert.match(mediaStyles, /\.gallery-pause\s*\{\s*order:\s*1/)
-  assert.match(mediaStyles, /\.gallery-step:last-child\s*\{\s*order:\s*2/)
+  assert.doesNotMatch(mediaStyles, /order\s*:/, 'CSS must not reorder the keyboard sequence')
 })
 test('modal is centered, bounded, keyboard accessible and has manual gallery controls', () => {
   assert.match(styles, /inset:0; margin:auto;/)

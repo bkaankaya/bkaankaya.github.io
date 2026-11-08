@@ -23,7 +23,7 @@ export function AmbientDotField() {
     let y = -1
 
     function enabled() {
-      return !document.hidden && !motionQuery.matches && fineQuery.matches && !network?.saveData
+      return document.documentElement.dataset.motion !== "paused" && !document.hidden && !motionQuery.matches && fineQuery.matches && !network?.saveData
     }
     function onMove(event: PointerEvent) {
       if (!enabled()) return
@@ -44,6 +44,7 @@ export function AmbientDotField() {
       field!.dataset.active = "false"
     }
     function onPreferenceChange() { if (!enabled()) hide() }
+    window.addEventListener("portfolio-motion-change", onPreferenceChange)
     window.addEventListener("pointermove", onMove, { passive: true })
     document.addEventListener("pointerleave", hide)
     document.addEventListener("visibilitychange", onPreferenceChange)
@@ -51,6 +52,7 @@ export function AmbientDotField() {
     fineQuery.addEventListener("change", onPreferenceChange)
     network?.addEventListener("change", onPreferenceChange)
     return () => {
+      window.removeEventListener("portfolio-motion-change", onPreferenceChange)
       window.removeEventListener("pointermove", onMove)
       document.removeEventListener("pointerleave", hide)
       document.removeEventListener("visibilitychange", onPreferenceChange)

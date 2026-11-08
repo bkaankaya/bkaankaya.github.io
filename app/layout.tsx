@@ -4,6 +4,7 @@ import { portfolioOrigin, portfolioPages } from '@/lib/portfolio-metadata'
 import './globals.css'
 import './refinement.css'
 import './collection.css'
+import './accessibility.css'
 
 const geist = Geist({ subsets: ['latin'], variable: '--font-geist-sans' })
 const geistMono = Geist_Mono({ subsets: ['latin'], variable: '--font-geist-mono' })

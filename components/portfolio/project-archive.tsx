@@ -1,6 +1,6 @@
 "use client"
 
-import { useId, useMemo, useRef, useState, type CSSProperties } from "react"
+import { useEffect, useId, useMemo, useRef, useState, type CSSProperties } from "react"
 import { flushSync } from "react-dom"
 import { ArrowUpRight, Search, X } from "lucide-react"
 import { projects, projectFilters, type ProjectCategory } from "@/lib/portfolio-data"
@@ -15,6 +15,17 @@ export function ProjectArchive() {
   const searchId = useId()
   const resultsId = useId()
   const searchRef = useRef<HTMLInputElement>(null)
+  const filterTransition = useRef<{ skipTransition?: () => void } | null>(null)
+  useEffect(() => {
+    const stop = () => {
+      if (document.documentElement.dataset.motion === "paused") filterTransition.current?.skipTransition?.()
+    }
+    window.addEventListener("portfolio-motion-change", stop)
+    return () => {
+      window.removeEventListener("portfolio-motion-change", stop)
+      filterTransition.current?.skipTransition?.()
+    }
+  }, [])
   const visibleProjects = useMemo(() => {
     const term = query.trim().toLocaleLowerCase()
     return projects.filter(project =>
@@ -36,11 +47,14 @@ export function ProjectArchive() {
 
   function handleSelectFilter(nextFilter: FilterOption) {
     if (nextFilter === activeFilter) return
-    const doc = document as Document & { startViewTransition?: (update: () => void) => { ready?: Promise<void>; finished: Promise<void> } }
-    if (!matchMedia("(prefers-reduced-motion: reduce)").matches && doc.startViewTransition && !document.documentElement.hasAttribute("data-route-transition")) {
+    const doc = document as Document & { startViewTransition?: (update: () => void) => { ready?: Promise<void>; finished: Promise<void>; skipTransition?: () => void } }
+    if (document.documentElement.dataset.motion !== "paused" && !matchMedia("(prefers-reduced-motion: reduce)").matches && doc.startViewTransition && !document.documentElement.hasAttribute("data-route-transition")) {
       const transition = doc.startViewTransition(() => flushSync(() => setActiveFilter(nextFilter)))
+      filterTransition.current = transition
       void transition.ready?.catch(() => {})
-      void transition.finished.catch(() => {})
+      void transition.finished.catch(() => {}).finally(() => {
+        if (filterTransition.current === transition) filterTransition.current = null
+      })
     } else setActiveFilter(nextFilter)
   }
 

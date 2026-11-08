@@ -5,6 +5,7 @@ import { PortfolioFooter } from "@/components/portfolio/portfolio-footer"
 import { AmbientDotField } from "@/components/portfolio/ambient-dot-field"
 import { SiteHeader } from "@/components/portfolio/site-header"
 import { PortfolioNavigation, RouteContent } from "@/components/portfolio/route-transition"
+import { MotionPreferenceProvider } from "@/components/portfolio/motion-preference"
 import "@/app/navigation.css"
 
 export type PortfolioTheme = "dark" | "light"
@@ -62,7 +63,7 @@ export function PortfolioShell({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <PortfolioNavigation><div className="portfolio-app" data-theme={theme}>
+    <MotionPreferenceProvider><PortfolioNavigation><div className="portfolio-app" data-theme={theme}>
       <div className="ambient-scene" aria-hidden="true">
         <span className="ambient-scene__orb ambient-scene__orb--violet" />
         <span className="ambient-scene__orb ambient-scene__orb--blue" />
@@ -73,6 +74,6 @@ export function PortfolioShell({ children }: { children: React.ReactNode }) {
       <SiteHeader theme={theme} onToggleTheme={toggleTheme} />
       <RouteContent>{children}</RouteContent>
       <PortfolioFooter />
-    </div></PortfolioNavigation>
+    </div></PortfolioNavigation></MotionPreferenceProvider>
   )
 }

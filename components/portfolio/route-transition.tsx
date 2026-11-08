@@ -8,7 +8,7 @@ const RouteContentRef = createContext<RefObject<HTMLDivElement | null> | null>(n
 
 function motionAllowed() {
   const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection
-  return !document.hidden && !matchMedia("(prefers-reduced-motion: reduce)").matches && !connection?.saveData
+  return document.documentElement.dataset.motion !== "paused" && !document.hidden && !matchMedia("(prefers-reduced-motion: reduce)").matches && !connection?.saveData
 }
 
 /**
@@ -38,13 +38,15 @@ export function PortfolioNavigation({ children }: { children: ReactNode }) {
     const connection = (navigator as Navigator & { connection?: EventTarget & { saveData?: boolean } }).connection
     const cancel = () => entrance.current?.cancel()
     const handleVisibility = () => { if (document.hidden) cancel() }
-    const handlePreference = () => { if (reducedMotion.matches || connection?.saveData) cancel() }
+    const handlePreference = () => { if (reducedMotion.matches || connection?.saveData || document.documentElement.dataset.motion === "paused") cancel() }
+    window.addEventListener("portfolio-motion-change", handlePreference)
     window.addEventListener("popstate", cancel)
     window.addEventListener("pagehide", cancel)
     document.addEventListener("visibilitychange", handleVisibility)
     reducedMotion.addEventListener("change", handlePreference)
     connection?.addEventListener("change", handlePreference)
     return () => {
+      window.removeEventListener("portfolio-motion-change", handlePreference)
       window.removeEventListener("popstate", cancel)
       window.removeEventListener("pagehide", cancel)
       document.removeEventListener("visibilitychange", handleVisibility)

@@ -51,7 +51,7 @@ test('ambient pointer work is cancelled on leave, hidden tab and preference chan
   const fine = target({ matches: true })
   const network = target({ saveData: false })
   const field = { style: { setProperty() {} }, dataset: { active: 'false' } }
-  const document = target({ hidden: false })
+  const document = target({ hidden: false, documentElement: { dataset: { motion: "full" } } })
   const window = target({ ...frames, matchMedia: query => query.includes('reduced') ? motion : fine })
   const cleanup = effect('components/portfolio/ambient-dot-field.tsx', { window, document, navigator: { connection: network }, fieldRef: { current: field } })
   const move = () => window.emit('pointermove', { pointerType: 'mouse', clientX: 50, clientY: 80 })
@@ -79,6 +79,13 @@ test('ambient pointer work is cancelled on leave, hidden tab and preference chan
     preference[name] = previous
     preference.emit('change')
   }
+  move()
+  document.documentElement.dataset.motion = 'paused'
+  window.emit('portfolio-motion-change')
+  assert.equal(frames.count(), 0)
+  move()
+  assert.equal(frames.count(), 0)
+  document.documentElement.dataset.motion = 'full'
   move()
   frames.flush()
   assert.equal(field.dataset.active, 'true')
@@ -210,7 +217,7 @@ test('route entrance is cancelled when a tab becomes hidden and releases all lis
   const reducedMotion = target({ matches: false })
   const connection = target({ saveData: false })
   const window = target()
-  const document = target({ hidden: false })
+  const document = target({ hidden: false, documentElement: { dataset: { motion: "full" } } })
   const cleanup = effect('components/portfolio/route-transition.tsx', {
     window, document, matchMedia: () => reducedMotion, navigator: { connection },
     entrance: { current: { cancel: () => cancellations++ } },

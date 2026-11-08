@@ -1,0 +1,23 @@
+/* Shared motion preference and measured contrast correction. */
+/* Static until preferences settle; pausing never hides content or disables controls. */
+html:not([data-motion="full"]) { scroll-behavior: auto !important; }
+html:not([data-motion="full"]) .portfolio-app *,
+html:not([data-motion="full"]) .portfolio-app *::before,
+html:not([data-motion="full"]) .portfolio-app *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+html:not([data-motion="full"]) .reveal { opacity: 1 !important; transform: none !important; }
+html[data-motion="paused"] .gallery-pause { display: none !important; }
+.portfolio-app .motion-toggle { width: 44px; height: 44px; flex: 0 0 44px; }
+.portfolio-app .motion-toggle[aria-pressed="true"] { color: var(--site-accent); background: var(--site-panel); }
+.portfolio-app .motion-toggle:disabled { cursor: default; }
+
+/* The active light-theme chip was 4.13:1. Inherit its readable text color. */
+.filter-button.is-active .filter-count { color: inherit; }
+
+/* View-transition snapshots live in the root top layer, outside the app element. */
+html[data-motion="paused"]::view-transition-group(*),
+html[data-motion="paused"]::view-transition-old(*),
+html[data-motion="paused"]::view-transition-new(*) { animation: none !important; }

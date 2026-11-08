@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, type CSSProperties, type ReactNode } from "react"
 
+import { useMotionPreference } from "@/components/portfolio/motion-preference"
+
 export function Reveal({
   children,
   className = "",
@@ -11,6 +13,7 @@ export function Reveal({
   className?: string
   delay?: number
 }) {
+  const { paused: motionPaused } = useMotionPreference()
   const elementRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -23,7 +26,7 @@ export function Reveal({
       "connection" in navigator &&
       Boolean((navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData)
 
-    if (prefersReducedMotion || saveData || !("IntersectionObserver" in window)) {
+    if (motionPaused || prefersReducedMotion || saveData || !("IntersectionObserver" in window)) {
       element.dataset.revealState = "idle"
       return
     }
@@ -58,7 +61,7 @@ export function Reveal({
       window.clearTimeout(fallbackTimer)
       observer.disconnect()
     }
-  }, [])
+  }, [motionPaused])
 
   const style = { "--reveal-delay": `${delay}ms` } as CSSProperties
 

@@ -6,6 +6,8 @@ import { ChevronLeft, ChevronRight, Expand, Pause, Play } from "lucide-react"
 import { useEffect, useMemo, useRef, useState } from "react"
 import type { PortfolioProject } from "@/lib/portfolio-data"
 
+import { useMotionPreference } from "@/components/portfolio/motion-preference"
+
 export const GALLERY_INTERVAL_MS = 5000
 
 type Props = {
@@ -19,6 +21,7 @@ type Props = {
 
 /** Product imagery is separate from the small identity badge. */
 export function ProjectMedia({ project, active = false, controls = false, compact = false, initialIndex = 0, onExplore }: Props) {
+  const { paused: motionPaused } = useMotionPreference()
   const frames = useMemo(() => project.gallery ?? [project.image], [project])
   const [index, setIndex] = useState(initialIndex)
   const [warm, setWarm] = useState(false)
@@ -58,6 +61,7 @@ export function ProjectMedia({ project, active = false, controls = false, compac
 
   useEffect(() => {
     if (!active || frames.length < 2) return
+    if (motionPaused) return
     if (paused || (controls && !compact)) return
     const reduced = matchMedia("(prefers-reduced-motion: reduce)")
     const pointer = matchMedia("(hover: hover) and (pointer: fine)")
@@ -96,7 +100,7 @@ export function ProjectMedia({ project, active = false, controls = false, compac
       document.removeEventListener("visibilitychange", synchronize)
       network?.removeEventListener("change", synchronize)
     }
-  }, [active, controls, compact, frames, paused])
+  }, [active, controls, compact, frames, paused, motionPaused])
 
   const canStep = frames.some((src, frameIndex) => frameIndex !== index && loaded.includes(src))
   const loading = frames.some(src => !loaded.includes(src) && !failed.includes(src))

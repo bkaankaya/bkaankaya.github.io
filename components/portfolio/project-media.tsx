@@ -29,6 +29,7 @@ export function ProjectMedia({ project, active = false, controls = false, compac
   const [loaded, setLoaded] = useState<string[]>([])
   const mediaRef = useRef<HTMLDivElement>(null)
   const ready = useRef(new Set<string>())
+  const restartAutoplay = useRef<(() => void) | null>(null)
 
   // Modal/focused galleries express intent; nearby cards prepare extra views
   // only while visible and without a reduced-data preference.
@@ -84,6 +85,7 @@ export function ProjectMedia({ project, active = false, controls = false, compac
       visible = entries[0]?.isIntersecting ?? false
       synchronize()
     }, { threshold: 0.05 })
+    restartAutoplay.current = synchronize
     if (mediaRef.current) observer?.observe(mediaRef.current)
     synchronize()
     reduced.addEventListener("change", synchronize)
@@ -91,6 +93,7 @@ export function ProjectMedia({ project, active = false, controls = false, compac
     document.addEventListener("visibilitychange", synchronize)
     network?.addEventListener("change", synchronize)
     return () => {
+      restartAutoplay.current = null
       observer?.disconnect()
       if (timer) clearInterval(timer)
       reduced.removeEventListener("change", synchronize)
@@ -104,7 +107,10 @@ export function ProjectMedia({ project, active = false, controls = false, compac
   const loading = frames.some(src => !loaded.includes(src) && !failed.includes(src))
   function select(next: number) {
     setWarm(true)
-    if (ready.current.has(frames[next])) setIndex(next)
+    if (ready.current.has(frames[next])) {
+      setIndex(next)
+      restartAutoplay.current?.()
+    }
   }
   function step(direction: -1 | 1) {
     setWarm(true)
@@ -115,6 +121,8 @@ export function ProjectMedia({ project, active = false, controls = false, compac
       }
       return current
     })
+    // Give a manually chosen image a full interval without disabling autoplay.
+    restartAutoplay.current?.()
   }
 
   function prepareForFocus() {

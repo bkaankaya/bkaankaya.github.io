@@ -36,6 +36,12 @@ async function until(fn, message, timeoutMs = 4000) {
         await until(() => page.locator('html').getAttribute('data-motion').then(Boolean), 'Motion preference did not initialize')
         const layout = await page.evaluate(() => ({
           overflow: document.documentElement.scrollWidth - innerWidth,
+          clippedProjectElements: [...document.querySelectorAll('.project-card, .project-card .gallery-step')].flatMap(element => {
+            const rect = element.getBoundingClientRect()
+            const availableWidth = document.documentElement.clientWidth
+            if (!rect.width || (rect.left >= -1 && rect.right <= availableWidth + 1)) return []
+            return [{ project: element.closest('.project-card')?.dataset.project, part: element.className, left: rect.left, right: rect.right, availableWidth }]
+          }),
           h1Count: document.querySelectorAll('main h1').length,
           canonical: document.querySelector('link[rel="canonical"]')?.getAttribute('href'),
           running: document.getAnimations().filter(a => a.playState === 'running').length,
@@ -47,7 +53,7 @@ async function until(fn, message, timeoutMs = 4000) {
         }
         const record = { width, theme, route, status: response.status(), ...layout, errors: [...errors], violations }
         results.matrix.push(record)
-        if (record.status !== 200 || layout.overflow > 1 || layout.h1Count !== 1 || errors.length || violations.length) results.failures.push(record)
+        if (record.status !== 200 || layout.overflow > 1 || layout.clippedProjectElements.length || layout.h1Count !== 1 || errors.length || violations.length) results.failures.push(record)
         if ((width === 1440 && route === '/' && theme === 'dark') || (width === 1440 && route === '/projects/' && theme === 'light') || (width === 390 && route === '/projects/' && theme === 'dark') || (width === 390 && route === '/contact/' && theme === 'light')) {
           await page.screenshot({ path: path.join(evidence, 'screenshots', `final-${route.replaceAll('/', '') || 'home'}-${width}-${theme}.jpg`), type: 'jpeg', quality: 80 })
         }
@@ -154,6 +160,32 @@ async function until(fn, message, timeoutMs = 4000) {
       await page.setViewportSize({ width: 1440, height: 900 })
       await until(() => page.locator('#mobile-navigation').getAttribute('aria-hidden').then(v => v === 'true'), 'Mobile menu stayed open')
       assert.ok(await page.evaluate(() => { const e = document.activeElement, r = e.getBoundingClientRect(); return e !== document.body && r.width > 0 && r.height > 0 }))
+    })
+    await check('short landscape menu stays within the viewport and scrolls to Contact', async () => {
+      await page.setViewportSize({ width: 568, height: 320 })
+      try {
+        await page.goto(base + '/projects/', { waitUntil: 'networkidle' })
+        await page.getByRole('button', { name: 'Open navigation', exact: true }).click()
+        const menu = page.locator('#mobile-navigation')
+        const bounds = await menu.evaluate(element => {
+          const rect = element.getBoundingClientRect()
+          return { top: rect.top, bottom: rect.bottom, viewport: innerHeight, scrollable: element.scrollHeight > element.clientHeight, overflow: getComputedStyle(element).overflowY }
+        })
+        assert.ok(bounds.top >= 0 && bounds.bottom <= bounds.viewport, 'Menu extends beyond the viewport')
+        assert.equal(bounds.scrollable, true)
+        assert.equal(bounds.overflow, 'auto')
+        const contact = menu.getByRole('link', { name: 'Contact', exact: true })
+        await contact.focus()
+        assert.equal(await contact.evaluate(element => {
+          const rect = element.getBoundingClientRect(), menuRect = element.parentElement.getBoundingClientRect()
+          return rect.top >= menuRect.top && rect.bottom <= menuRect.bottom && rect.bottom <= innerHeight
+        }), true, 'The final menu link must scroll fully into view')
+        await contact.click()
+        await page.waitForURL('**/contact/')
+        assert.equal(await menu.getAttribute('aria-hidden'), 'true')
+      } finally {
+        await page.setViewportSize({ width: 1440, height: 900 })
+      }
     })
     await check('deep links, history and 404 retain correct route semantics', async () => {
       await page.goto(base + '/education/', { waitUntil: 'networkidle' })

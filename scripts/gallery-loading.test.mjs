@@ -47,6 +47,61 @@ function preparation({ hidden = false, saveData = false, observed = true, compac
   return { document, connection, warmed, cleanup, get observer() { return observer }, intersect: value => observer.callback([{ isIntersecting: value }]) }
 }
 
+// Exercise the actual rotation effect and manual handlers with a deterministic
+// clock. This verifies deadlines and cleanup, not React or browser rendering.
+function rotation(overrides = {}) {
+  let now = 0, sequence = 0, index = 0, listenerAdds = 0, observer
+  const timers = new Map()
+  const target = properties => ({
+    ...properties, listeners: new Map(),
+    addEventListener(name, callback) { listenerAdds++; this.listeners.set(name, callback) },
+    removeEventListener(name, callback) { if (this.listeners.get(name) === callback) this.listeners.delete(name) },
+    emit(name) { this.listeners.get(name)?.() },
+  })
+  const document = target({ hidden: false })
+  const connection = target({ saveData: false })
+  const reduced = target({ matches: false })
+  const pointer = target({ matches: true })
+  const restartAutoplay = { current: null }
+  const context = {
+    active: true, motionPaused: false, controls: true, compact: true,
+    frames: ['first', 'second', 'third'], ready: { current: new Set(['first', 'second', 'third']) },
+    document, navigator: { connection }, matchMedia: query => query.includes('reduced-motion') ? reduced : pointer,
+    mediaRef: { current: {} }, restartAutoplay, GALLERY_INTERVAL_MS: 5000, setWarm() {},
+    setIndex: update => { index = typeof update === 'function' ? update(index) : update },
+    setInterval(callback, delay) { const id = ++sequence; timers.set(id, { callback, delay, due: now + delay }); return id },
+    clearInterval: id => timers.delete(id),
+    IntersectionObserver: class {
+      constructor(callback) { this.callback = callback; this.disconnected = false; observer = this }
+      observe() {}
+      disconnect() { this.disconnected = true }
+    },
+    ...overrides,
+  }
+  const evaluate = node => runInNewContext(ts.transpileModule(`(${node.getText(tree)})`, {
+    compilerOptions: { target: ts.ScriptTarget.ES2020 },
+  }).outputText, context, { timeout: 1000 })
+  const cleanup = evaluate(effects[1].arguments[0])()
+  const handler = name => evaluate(nodes(tree, node => ts.isFunctionDeclaration(node) && node.name?.text === name)[0])
+  return {
+    document, connection, reduced, pointer, restartAutoplay, timers, cleanup,
+    select: handler('select'), step: handler('step'),
+    get index() { return index }, get listenerAdds() { return listenerAdds }, get observer() { return observer },
+    intersect: visible => observer.callback([{ isIntersecting: visible }]),
+    advance(milliseconds) {
+      const end = now + milliseconds
+      while (true) {
+        const next = [...timers.values()].sort((a, b) => a.due - b.due)[0]
+        if (!next || next.due > end) break
+        now = next.due
+        next.due += next.delay
+        next.callback()
+      }
+      now = end
+    },
+  }
+}
+
 test('manual galleries only advance into loaded images', () => {
   assert.match(media, /disabled=\{!canStep\}/)
   assert.equal((media.match(/disabled=\{!canStep\}/g) || []).length, 2)
@@ -77,6 +132,56 @@ test('offscreen galleries release their timer and observer', () => {
   assert.match(media, /observer\?\.disconnect\(\)/)
   assert.match(media, /clearInterval\(timer\)/)
   assert.match(media, /GALLERY_INTERVAL_MS = 5000/)
+})
+
+test('manual thumbnail and arrow choices each receive a fresh five-second autoplay interval', () => {
+  for (const action of ['select', 'step']) {
+    const gallery = rotation()
+    gallery.advance(4900)
+    gallery[action](1)
+    assert.equal(gallery.index, 1)
+    assert.equal(gallery.timers.size, 1)
+    assert.equal(gallery.listenerAdds, 4, 'Selection must not reattach preference or visibility listeners')
+    gallery.advance(4999)
+    assert.equal(gallery.index, 1, `${action} must retain the image until the full interval expires`)
+    gallery.advance(1)
+    assert.equal(gallery.index, 2, `${action} must continue autoplay at five seconds`)
+    gallery.cleanup()
+    assert.equal(gallery.timers.size, 0)
+    assert.equal(gallery.restartAutoplay.current, null)
+    assert.equal(gallery.observer.disconnected, true)
+    for (const target of [gallery.document, gallery.connection, gallery.reduced, gallery.pointer]) assert.equal(target.listeners.size, 0)
+    gallery.advance(10000)
+    assert.equal(gallery.index, 2, 'Cleanup must prevent later automatic updates')
+  }
+})
+
+test('manual timer resets preserve device, visibility and hover eligibility guards', () => {
+  for (const [target, property, blocked] of [
+    ['document', 'hidden', true], ['connection', 'saveData', true],
+    ['reduced', 'matches', true], ['pointer', 'matches', false],
+  ]) {
+    const gallery = rotation()
+    gallery[target][property] = blocked
+    gallery.select(1)
+    assert.equal(gallery.timers.size, 0, `${target} must still block autoplay after selection`)
+    gallery.advance(6000)
+    assert.equal(gallery.index, 1)
+    gallery.cleanup()
+  }
+  const offscreen = rotation()
+  offscreen.intersect(false)
+  offscreen.step(1)
+  assert.equal(offscreen.timers.size, 0)
+  offscreen.cleanup()
+  for (const overrides of [{ active: false }, { compact: false }, { motionPaused: true }]) {
+    const gallery = rotation(overrides)
+    gallery.select(1)
+    gallery.step(1)
+    assert.equal(gallery.index, 2)
+    assert.equal(gallery.timers.size, 0)
+    assert.equal(gallery.restartAutoplay.current, null)
+  }
 })
 
 test('nearby card preparation respects save-data and releases preference listeners', () => {

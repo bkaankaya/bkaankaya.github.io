@@ -9,6 +9,8 @@ const root = join(process.cwd(), 'public/projects')
 const out = join(root, 'optimized')
 await mkdir(out, { recursive: true })
 const specifications = [
+  ['vague-storefront.png', 'vague-storefront.webp', 1600, false],
+  ['vague-product.png', 'vague-product.webp', 1600, false],
   ['quickscan-logo.png', 'quickscan-mark.webp', 160, true],
   ['quickscan-login.png', 'quickscan-screen.webp', 600, false],
   ['quickscan-home.png', 'quickscan-home.webp', 720, false],

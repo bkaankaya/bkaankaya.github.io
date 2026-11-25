@@ -105,6 +105,7 @@ test('thumbnail selection only changes to a decoded frame without setting a paus
   const context = {
     frames: ['first', 'second', 'pending'], ready: { current: new Set(['first', 'second']) },
     setWarm: value => calls.push(['warm', value]), setIndex: value => calls.push(['index', value]),
+    restartAutoplay: { current: null },
   }
   const select = galleryHandler('select', context)
   select(1)
@@ -117,6 +118,7 @@ test('gallery arrows skip unloaded frames and wrap without setting a pause', () 
   const context = {
     frames: ['first', 'pending', 'third'], ready: { current: new Set(['first', 'third']) },
     setWarm: () => {}, setIndex: update => { index = update(index) },
+    restartAutoplay: { current: null },
   }
   const step = galleryHandler('step', context)
   step(1)

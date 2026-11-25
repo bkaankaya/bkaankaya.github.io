@@ -44,8 +44,11 @@
     left: 18px;
     display: grid;
     gap: 3px;
-    overflow: hidden;
-    max-height: none;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior-y: contain;
+    max-height: calc(100vh - 100% - 14px);
+    max-height: calc(100dvh - 100% - 14px);
     padding: 9px 10px;
     border: 1px solid var(--site-border);
     border-radius: 14px;
@@ -59,7 +62,8 @@
     transition: opacity 180ms ease, transform 220ms cubic-bezier(.22, 1, .36, 1), visibility 0s 220ms;
   }
   .mobile-navigation.is-open {
-    max-height: none;
+    max-height: calc(100vh - 100% - 14px);
+    max-height: calc(100dvh - 100% - 14px);
     padding: 9px 10px;
     visibility: visible;
     opacity: 1;

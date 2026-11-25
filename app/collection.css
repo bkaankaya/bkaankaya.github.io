@@ -54,8 +54,6 @@ html { scrollbar-gutter:stable; }
 .portfolio-app .gallery-thumbnail > span { position:absolute; right:2px; bottom:2px; background:#080b21dc; color:#fff; padding:0 3px; border-radius:2px; font:8px/1.5 var(--font-geist-mono),monospace; }
 .portfolio-app .project-gallery-controls .gallery-thumbnail[aria-pressed="true"] { opacity:1; border-color:var(--card-accent); box-shadow:0 0 0 1px var(--card-accent); }
 .portfolio-app .project-gallery-controls .gallery-position { min-width:36px; margin-left:auto; font-size:10px; }
-.portfolio-app .project-gallery-controls .gallery-pause { width:36px; border-color:transparent; }
-.portfolio-app .gallery-pause svg { width:13px; height:13px; }
 .portfolio-app .project-card-content { padding:24px 25px 25px; }
 .portfolio-app .project-card-top { align-items:center; margin-bottom:19px; }
 .portfolio-app .project-icon { width:46px; height:46px; border-radius:12px; }
@@ -119,6 +117,5 @@ html { scrollbar-gutter:stable; }
   .portfolio-app .project-gallery-controls { gap:4px; padding-inline:7px; }
   .portfolio-app .project-media--compact:has(.gallery-thumbnail:nth-child(4)) .gallery-position { display:none; }
 }
-@media(hover:none),(pointer:coarse) { .portfolio-app .project-expand-trigger > span { opacity:1; transform:none; } .portfolio-app .gallery-pause { display:none; } }
-@media(prefers-reduced-motion:reduce) { .portfolio-app .project-gallery-frame,.portfolio-app .project-expand-trigger > span { transition:none; } .portfolio-app .gallery-pause { display:none; } }
-html[data-save-data] .portfolio-app .gallery-pause { display:none; }
+@media(hover:none),(pointer:coarse) { .portfolio-app .project-expand-trigger > span { opacity:1; transform:none; } }
+@media(prefers-reduced-motion:reduce) { .portfolio-app .project-gallery-frame,.portfolio-app .project-expand-trigger > span { transition:none; } }

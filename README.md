@@ -22,12 +22,12 @@ The routes under `app/(portfolio)/` share `components/portfolio/portfolio-shell.
 ## Components and interaction
 
 - `portfolio-shell.tsx` restores the dark/light preference from `bk-portfolio-theme`, contains the skip link and keeps the header/footer persistent.
-- `site-header.tsx` provides route-aware navigation, theme and site-wide motion toggles, and a mobile disclosure with Escape/outside-click handling. Crossing the desktop breakpoint closes the disclosure and transfers focus from a hidden mobile control to a visible navigation link.
-- `motion-preference.tsx` persists the non-sensitive `bk-portfolio-motion-paused` choice. Device reduced-motion and Save-Data preferences always win; static initial rendering keeps content visible before preferences settle.
-- `route-transition.tsx` leaves navigation, history, prefetching and scroll restoration to Next.js. Its short entrance animation respects the site preference, reduced motion and Save-Data.
-- `project-archive.tsx` combines category and text filtering. The search input has an explicit label; clearing or resetting results returns focus to the surviving input. Category transitions are progressively enhanced and stop when motion is paused.
+- `site-header.tsx` provides route-aware navigation, a theme toggle, and a mobile disclosure with Escape/outside-click handling. Crossing the desktop breakpoint closes the disclosure and transfers focus from a hidden mobile control to a visible navigation link.
+- `motion-preference.tsx` follows device reduced-motion and Save-Data preferences. There is no site-wide pause control or stored user pause preference; previously saved pause choices are ignored. Static initial rendering keeps content visible before device preferences settle.
+- `route-transition.tsx` leaves navigation, history, prefetching and scroll restoration to Next.js. Its short entrance animation respects reduced motion and Save-Data.
+- `project-archive.tsx` combines category and text filtering. The search input has an explicit label; clearing or resetting results returns focus to the surviving input. Category transitions are progressively enhanced and stop when device preferences reduce motion.
 - `project-card.tsx` uses a native dialog with close handling and focus restoration. Verified project logos stay in the small identity badge, not in the product-preview area.
-- `project-media.tsx` keeps manual navigation on loaded images. Keyboard focus pauses automatic previews until an explicit resume; Resume enables the existing eligible hover behavior unless site/device motion is paused. Automatic changes do not announce slide positions as a live stream. Pause is first within the gallery control group in both DOM and visual order, while Explore still precedes that group. Hover previews remain a design choice; this is not a claim of complete carousel/WCAG conformance.
+- `project-media.tsx` keeps manual navigation on loaded images. Card previews rotate every five seconds during eligible hover, and focus, arrow navigation and thumbnail selection do not stop rotation. Galleries expose previous/next buttons and thumbnails without a pause/resume control. Dialog galleries remain manual, and automatic changes do not announce slide positions as a live stream. Device preferences, visibility and image readiness still govern automatic previews.
 - `contact-panel.tsx` uses email/profile links, not a simulated submission form. Clipboard failure offers a selectable email fallback. Repeated attempts update status content; stale or unmounted requests cannot overwrite the latest feedback or move focus.
 
 Contact details come from `lib/portfolio-contact.ts` and are checked by `scripts/verify-portfolio-contacts.mjs`. Keep published identity and availability consistent across routes.
@@ -40,9 +40,9 @@ Local originals live in `public/projects/`. The existing `predev`/`prebuild` scr
 
 Nearby card preparation honors hidden tabs and Save-Data; explicit focus/dialog intent can prepare the gallery. Thumbnail images only mount after their matching stage frame loads. They still reuse full-frame URLs; transfer/cache/decode savings have not been measured and separate small derivatives remain future work.
 
-The portrait and brand marks remain local. Decorative motion respects OS, coarse-pointer and Save-Data settings. The header now includes a persistent site-wide motion control; this was implemented and tested after the earlier source-only review.
+The portrait and brand marks remain local. Decorative motion respects OS, coarse-pointer and Save-Data settings. Site and gallery pause controls have been removed.
 
-Pointer ambience cancels queued frames on leave/hidden/unmount or motion pause. Theme setup releases scheduled frames and listeners. The global control also stops decorative CSS loops, route entrances, filter view transitions, reveal effects and automatic gallery previews without hiding content. `app/accessibility.css` corrects the measured active-filter count contrast in the light theme.
+Pointer ambience cancels queued frames on leave/hidden/unmount or a device preference change. Theme setup releases scheduled frames and listeners. Reduced-motion and Save-Data settings stop decorative CSS loops, route entrances, filter view transitions, reveal effects and automatic gallery previews without hiding content. `app/accessibility.css` corrects the measured active-filter count contrast in the light theme.
 
 ## Verification and export
 

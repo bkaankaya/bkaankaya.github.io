@@ -36,13 +36,12 @@ function namedFunction(tree, name) {
   assert.equal(found.length, 1, `Expected one ${name} function`)
   return found[0]
 }
-function callback(button, name, tree, context) {
-  const source = value(button, name, tree)
-  assert.ok(source, `Missing ${name}`)
-  // Only the reviewed inline event callback is evaluated, against synthetic bindings.
-  return runInNewContext(`(${source})`, context, { timeout: 1000 })
+function galleryHandler(name, context) {
+  const fn = namedFunction(trees.media, name)
+  const source = ts.transpileModule(`(${fn.getText(trees.media)})`, { compilerOptions: { target: ts.ScriptTarget.ES2020 } }).outputText
+  // Only the reviewed gallery handler is evaluated, against synthetic bindings.
+  return runInNewContext(source, context, { timeout: 1000 })
 }
-const pauseButton = elements(trees.media, 'button').find(node => value(node, 'className', trees.media) === 'gallery-pause')
 
 // Real event order, rendering and accessibility-tree behavior still need a browser.
 test('changed components are syntactically valid TSX', () => {
@@ -91,43 +90,48 @@ test('result count is announced once and controls address either result state', 
   assert.equal(elements(status.parent, 'span').filter(node => value(node, 'aria-hidden', tree) === 'true').length, 1)
 })
 
-test('gallery focus warms images and persists a rotation pause', () => {
+test('gallery focus warms images without pausing rotation', () => {
   const calls = []
-  const context = { setWarm: value => calls.push(['warm', value]), setPaused: value => calls.push(['paused', value]) }
-  const fn = namedFunction(trees.media, 'pauseForFocus')
-  runInNewContext(`(${fn.getText(trees.media)})`, context, { timeout: 1000 })()
-  assert.deepEqual(calls, [['warm', true], ['paused', true]])
+  const context = { setWarm: value => calls.push(['warm', value]) }
+  galleryHandler('prepareForFocus', context)()
+  assert.deepEqual(calls, [['warm', true]])
   const root = elements(trees.media, 'div').find(node => value(node, 'ref', trees.media) === 'mediaRef')
-  assert.equal(value(root, 'onFocusCapture', trees.media), 'pauseForFocus')
-  assert.equal(attribute(root, 'onBlurCapture'), undefined, 'Blur must not automatically resume rotation')
+  assert.equal(value(root, 'onFocusCapture', trees.media), 'prepareForFocus')
+  assert.equal(attribute(root, 'onBlurCapture'), undefined)
 })
 
-test('pointer focus does not turn an intended Pause into Resume', () => {
-  const context = { paused: false, pointerPauseState: { current: null }, setWarm: () => {} }
-  context.setPaused = value => { context.paused = value }
-  callback(pauseButton, 'onPointerDown', trees.media, context)()
-  const focus = namedFunction(trees.media, 'pauseForFocus')
-  runInNewContext(`(${focus.getText(trees.media)})`, context, { timeout: 1000 })()
-  callback(pauseButton, 'onClick', trees.media, context)({ detail: 1 })
-  assert.equal(context.paused, true)
-  assert.equal(context.pointerPauseState.current, null)
+test('thumbnail selection only changes to a decoded frame without setting a pause', () => {
+  const calls = []
+  const context = {
+    frames: ['first', 'second', 'pending'], ready: { current: new Set(['first', 'second']) },
+    setWarm: value => calls.push(['warm', value]), setIndex: value => calls.push(['index', value]),
+  }
+  const select = galleryHandler('select', context)
+  select(1)
+  select(2)
+  assert.deepEqual(calls, [['warm', true], ['index', 1], ['warm', true]])
 })
 
-test('explicit keyboard Resume works and discards an abandoned pointer action', () => {
-  const context = { paused: true, pointerPauseState: { current: false } }
-  context.setPaused = value => { context.paused = value }
-  callback(pauseButton, 'onKeyDown', trees.media, context)()
-  callback(pauseButton, 'onClick', trees.media, context)({ detail: 0 })
-  assert.equal(context.paused, false)
-  assert.equal(context.pointerPauseState.current, null)
-  assert.equal(attribute(pauseButton, 'aria-pressed'), undefined)
+test('gallery arrows skip unloaded frames and wrap without setting a pause', () => {
+  let index = 0
+  const context = {
+    frames: ['first', 'pending', 'third'], ready: { current: new Set(['first', 'third']) },
+    setWarm: () => {}, setIndex: update => { index = update(index) },
+  }
+  const step = galleryHandler('step', context)
+  step(1)
+  assert.equal(index, 2)
+  step(1)
+  assert.equal(index, 0)
+  step(-1)
+  assert.equal(index, 2)
 })
 
 test('automatic previews do not generate live slide announcements', () => {
   const node = elements(trees.media, 'span').find(node => value(node, 'className', trees.media) === 'gallery-position')
   const expression = value(node, 'aria-live', trees.media)
-  for (const [active, paused, compact, expected] of [[true, false, true, 'off'], [true, true, true, 'polite'], [false, false, false, 'polite']]) {
-    assert.equal(runInNewContext(expression, { active, paused, compact }, { timeout: 1000 }), expected)
+  for (const [active, compact, expected] of [[true, true, 'off'], [false, true, 'polite'], [false, false, 'polite']]) {
+    assert.equal(runInNewContext(expression, { active, compact }, { timeout: 1000 }), expected)
   }
   assert.equal(value(node, 'aria-atomic', trees.media), 'true')
 })

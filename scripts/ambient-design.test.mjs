@@ -43,13 +43,13 @@ test("ambient scene uses only compositor-friendly transform and opacity animatio
   assert.match(ambient, /@media \(prefers-reduced-motion: reduce\)/)
   assert.match(ambient, /html\[data-save-data\] \.ambient-scene__orb/)
 })
-test("site-wide motion controls preserve device overrides and static first paint", () => {
+test("motion follows device preferences and static first paint without a user pause control", () => {
   const motion = readFileSync("components/portfolio/motion-preference.tsx", "utf8")
   assert.match(shell, /MotionPreferenceProvider/)
-  assert.match(header, /<MotionToggle \/>/)
-  assert.match(motion, /!ready \|\| userPaused \|\| devicePaused/)
-  assert.match(motion, /aria-pressed=\{paused\}/)
-  assert.match(motion, /localStorage.setItem/)
+  assert.doesNotMatch(header, /MotionToggle/)
+  assert.match(motion, /!ready \|\| devicePaused/)
+  assert.doesNotMatch(motion, /userPaused|localStorage|MotionToggle/)
+  assert.match(motion, /reduced\.matches \|\| connection\?\.saveData === true/)
   assert.match(motion, /removeEventListener/)
   const accessibility = readFileSync("app/accessibility.css", "utf8")
   assert.match(accessibility, /html:not\(\[data-motion="full"\]\)/)

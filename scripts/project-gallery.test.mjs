@@ -43,19 +43,18 @@ test('gallery starts only on capable-device hover and tears down its timer', () 
   assert.match(media, /if \(!active \|\| frames.length < 2\) return/)
   for (const check of ['clearInterval', 'prefers-reduced-motion: reduce', 'hover: hover', 'document.hidden', 'saveData', 'removeEventListener', 'ready.current.has']) assert.ok(media.includes(check), check)
   assert.match(card, /active=\{hovering && !dialogOpen\}/)
-  assert.match(media, /if \(paused \|\| \(controls && !compact\)\) return/)
+  assert.match(media, /if \(controls && !compact\) return/)
 })
 test('cards and dialogs expose labeled controls and retain the selected view when expanded', () => {
-  for (const label of ['Previous image', 'Next image', 'Pause automatic previews', 'Resume automatic previews', 'Show image']) assert.ok(media.includes(label), label)
+  for (const label of ['Previous image', 'Next image', 'Show image']) assert.ok(media.includes(label), label)
   assert.match(media, /role="group"\s+aria-label=/)
   assert.match(media, /aria-pressed=\{frameIndex === index\}/)
-  // The rotation button announces its action with a changing label, not a toggle state.
-  assert.doesNotMatch(media, /aria-pressed=\{paused\}/)
+  assert.doesNotMatch(media, /gallery-pause|Pause automatic previews|Resume automatic previews/)
   assert.match(media, /onExplore\(event.currentTarget, index\)/)
   assert.match(card, /setInitialFrame\(frame\)/)
   assert.match(card, /<ProjectMedia\b[^>]*initialIndex=\{initialFrame\}/)
 })
-test('rotation control is first in both keyboard and visual order', () => {
+test('gallery navigation keeps matching keyboard and visual order without a pause control', () => {
   const tree = ts.createSourceFile('project-media.tsx', media, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX)
   const controlButtons = []
   function visit(node) {
@@ -66,7 +65,7 @@ test('rotation control is first in both keyboard and visual order', () => {
     ts.forEachChild(node, visit)
   }
   visit(tree)
-  assert.equal(controlButtons[0], 'gallery-pause')
+  assert.deepEqual(controlButtons, ['gallery-step', 'gallery-thumbnail', 'gallery-step'])
   const mediaStyles = read('components/portfolio/project-media.css')
   assert.doesNotMatch(mediaStyles, /order\s*:/, 'CSS must not reorder the keyboard sequence')
 })

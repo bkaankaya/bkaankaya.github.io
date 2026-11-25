@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import "./project-media.css"
-import { ChevronLeft, ChevronRight, Expand, Pause, Play } from "lucide-react"
+import { ChevronLeft, ChevronRight, Expand } from "lucide-react"
 import { useEffect, useMemo, useRef, useState } from "react"
 import type { PortfolioProject } from "@/lib/portfolio-data"
 
@@ -25,12 +25,10 @@ export function ProjectMedia({ project, active = false, controls = false, compac
   const frames = useMemo(() => project.gallery ?? [project.image], [project])
   const [index, setIndex] = useState(initialIndex)
   const [warm, setWarm] = useState(false)
-  const [paused, setPaused] = useState(false)
   const [failed, setFailed] = useState<string[]>([])
   const [loaded, setLoaded] = useState<string[]>([])
   const mediaRef = useRef<HTMLDivElement>(null)
   const ready = useRef(new Set<string>())
-  const pointerPauseState = useRef<boolean | null>(null)
 
   // Modal/focused galleries express intent; nearby cards prepare extra views
   // only while visible and without a reduced-data preference.
@@ -62,7 +60,7 @@ export function ProjectMedia({ project, active = false, controls = false, compac
   useEffect(() => {
     if (!active || frames.length < 2) return
     if (motionPaused) return
-    if (paused || (controls && !compact)) return
+    if (controls && !compact) return
     const reduced = matchMedia("(prefers-reduced-motion: reduce)")
     const pointer = matchMedia("(hover: hover) and (pointer: fine)")
     const network = (navigator as Navigator & { connection?: EventTarget & { saveData?: boolean } }).connection
@@ -100,18 +98,16 @@ export function ProjectMedia({ project, active = false, controls = false, compac
       document.removeEventListener("visibilitychange", synchronize)
       network?.removeEventListener("change", synchronize)
     }
-  }, [active, controls, compact, frames, paused, motionPaused])
+  }, [active, controls, compact, frames, motionPaused])
 
   const canStep = frames.some((src, frameIndex) => frameIndex !== index && loaded.includes(src))
   const loading = frames.some(src => !loaded.includes(src) && !failed.includes(src))
   function select(next: number) {
     setWarm(true)
-    setPaused(true)
     if (ready.current.has(frames[next])) setIndex(next)
   }
   function step(direction: -1 | 1) {
     setWarm(true)
-    setPaused(true)
     setIndex(current => {
       for (let offset = 1; offset < frames.length; offset++) {
         const next = (current + direction * offset + frames.length) % frames.length
@@ -121,16 +117,14 @@ export function ProjectMedia({ project, active = false, controls = false, compac
     })
   }
 
-  function pauseForFocus() {
+  function prepareForFocus() {
     setWarm(true)
-    // Focus must stop hover previews until the visitor explicitly resumes them.
-    setPaused(true)
   }
 
   const kind = project.mediaFit ?? "landscape"
   const unavailable = failed.includes(frames[index])
   return (
-    <div ref={mediaRef} className={`project-media project-media--${kind}${compact ? " project-media--compact" : ""}`} data-frame={index} data-fit={project.imageFit ?? "cover"} onFocusCapture={pauseForFocus}>
+    <div ref={mediaRef} className={`project-media project-media--${kind}${compact ? " project-media--compact" : ""}`} data-frame={index} data-fit={project.imageFit ?? "cover"} onFocusCapture={prepareForFocus}>
       <div className="project-media-stage">
         <div className="project-media-viewport">
           {frames.map((src, frameIndex) => frameIndex === 0 || frameIndex === initialIndex || warm ? (
@@ -156,18 +150,6 @@ export function ProjectMedia({ project, active = false, controls = false, compac
       </div>
       {frames.length > 1 ? controls ? (
         <div className="project-gallery-controls" role="group" aria-label={`${project.title} image gallery`}>
-          {compact ? <button className="gallery-pause" type="button"
-            aria-label={paused ? "Resume automatic previews" : "Pause automatic previews"}
-            onPointerDown={() => { pointerPauseState.current = paused }}
-            onPointerCancel={() => { pointerPauseState.current = null }}
-            onKeyDown={() => { pointerPauseState.current = null }}
-            onClick={event => {
-              // Pointer focus pauses before click. Honor the action the visitor
-              // pressed, rather than inadvertently resuming on the first click.
-              const wasPaused = event.detail > 0 ? pointerPauseState.current ?? paused : paused
-              pointerPauseState.current = null
-              setPaused(!wasPaused)
-            }}>{paused ? <Play aria-hidden="true" /> : <Pause aria-hidden="true" />}</button> : null}
           <button className="gallery-step" type="button" aria-label="Previous image" disabled={!canStep} onClick={() => step(-1)}><ChevronLeft aria-hidden="true" /></button>
           <div className="gallery-thumbnails">
             {frames.map((src, frameIndex) => <button key={src} className="gallery-thumbnail" type="button" aria-label={`Show image ${frameIndex + 1} of ${frames.length}`} aria-pressed={frameIndex === index} disabled={!loaded.includes(src)} onClick={() => select(frameIndex)}>
@@ -176,7 +158,7 @@ export function ProjectMedia({ project, active = false, controls = false, compac
               <span>{String(frameIndex + 1).padStart(2, "0")}</span>
             </button>)}
           </div>
-          <span className="gallery-position" role="status" aria-live={active && !paused && compact ? "off" : "polite"} aria-atomic="true">{index + 1} <span aria-hidden="true">/</span><span className="sr-only">of</span> {frames.length}
+          <span className="gallery-position" role="status" aria-live={active && compact ? "off" : "polite"} aria-atomic="true">{index + 1} <span aria-hidden="true">/</span><span className="sr-only">of</span> {frames.length}
             {!canStep ? <small className="project-gallery-status">{loading ? "Loading images…" : "Other images unavailable"}</small> : null}
           </span>
           <button className="gallery-step" type="button" aria-label="Next image" disabled={!canStep} onClick={() => step(1)}><ChevronRight aria-hidden="true" /></button>

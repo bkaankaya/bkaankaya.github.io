@@ -109,7 +109,7 @@
 }
 
 @media (max-width: 640px) {
-  /* Small screens run a static composition, so no inert pause control. */
+  /* Small screens run a static composition. */
   .ambient-scene__orb--violet {
     width: 120vw;
     height: 70vw;

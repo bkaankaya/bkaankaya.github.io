@@ -14,8 +14,8 @@ const widths = [320, 390, 768, 1024, 1440]
 const results = { matrix: [], interactions: [], failures: [] }
 fs.mkdirSync(path.join(evidence, 'screenshots'), { recursive: true })
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms))
-async function until(fn, message) {
-  for (let i = 0; i < 40; i++) { if (await fn()) return; await sleep(100) }
+async function until(fn, message, timeoutMs = 4000) {
+  for (let i = 0; i < timeoutMs / 100; i++) { if (await fn()) return; await sleep(100) }
   assert.fail(message)
 }
 
@@ -89,46 +89,51 @@ async function until(fn, message) {
       assert.equal(await trigger.evaluate(e => e === document.activeElement), true)
       assert.notEqual(await page.evaluate(() => document.documentElement.style.overflow), 'hidden')
     })
-    await check('motion pause stops animations and persists across routes/reload', async () => {
-      const toggle = page.getByRole('button', { name: 'Pause visual effects', exact: true })
-      await toggle.click()
-      await until(() => page.locator('html').getAttribute('data-motion').then(v => v === 'paused'), 'Motion did not pause')
-      await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))))
-      assert.equal(await page.evaluate(() => document.getAnimations().filter(a => a.playState === 'running').length), 0)
+    await check('pause controls are absent and old saved pauses do not suppress effects', async () => {
+      await page.emulateMedia({ reducedMotion: 'no-preference' })
+      assert.equal(await page.getByRole('button', { name: /^(Pause|Resume) (visual effects|automatic previews)$/ }).count(), 0)
+      assert.equal(await page.locator('.motion-toggle, .gallery-pause').count(), 0)
+      await page.evaluate(() => localStorage.setItem('bk-portfolio-motion-paused', 'true'))
+      await page.reload({ waitUntil: 'networkidle' })
+      await until(() => page.locator('html').getAttribute('data-motion').then(v => v === 'full'), 'Old saved pause disabled motion')
       await page.locator('.desktop-navigation').getByRole('link', { name: 'About', exact: true }).click()
       await page.waitForURL('**/about/')
-      assert.equal(await page.locator('html').getAttribute('data-motion'), 'paused')
+      assert.equal(await page.locator('html').getAttribute('data-motion'), 'full')
       await page.reload({ waitUntil: 'networkidle' })
-      assert.equal(await toggle.getAttribute('aria-pressed'), 'true')
-      await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))))
-      assert.equal(await page.evaluate(() => document.getAnimations().filter(a => a.playState === 'running').length), 0)
-      await toggle.click()
-      await until(() => page.locator('html').getAttribute('data-motion').then(v => v === 'full'), 'Motion did not resume')
+      await until(() => page.locator('html').getAttribute('data-motion').then(v => v === 'full'), 'Motion changed after route reload')
+      assert.equal(await page.locator('.motion-toggle, .gallery-pause').count(), 0)
     })
-    await check('OS reduced motion overrides saved full effects', async () => {
+    await check('OS reduced motion still suppresses visual effects', async () => {
       await page.emulateMedia({ reducedMotion: 'reduce' })
-      await until(() => page.getByRole('button', { name: 'Pause visual effects', exact: true }).isDisabled(), 'Device preference not respected')
-      assert.equal(await page.locator('html').getAttribute('data-motion'), 'paused')
+      await until(() => page.locator('html').getAttribute('data-motion').then(v => v === 'paused'), 'Device preference not respected')
       await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))))
       assert.equal(await page.evaluate(() => document.getAnimations().filter(a => a.playState === 'running').length), 0)
       await page.emulateMedia({ reducedMotion: 'no-preference' })
       await until(() => page.locator('html').getAttribute('data-motion').then(v => v === 'full'), 'Full motion not restored after device change')
     })
-    await check('gallery retains manual selection and consistent control order', async () => {
+    await check('gallery continues rotation after manual selection and focus with consistent control order', async () => {
       await page.emulateMedia({ reducedMotion: 'no-preference' })
-      await page.evaluate(() => localStorage.removeItem('bk-portfolio-motion-paused'))
       await page.goto(base + '/projects/', { waitUntil: 'networkidle' })
       const card = page.locator('article[data-project="quickscan"]')
       await card.scrollIntoViewIfNeeded()
       const next = card.getByRole('button', { name: 'Next image', exact: true })
+      const media = card.locator('.project-media')
       await until(() => next.isEnabled(), 'Gallery images unavailable')
+      const before = await media.getAttribute('data-frame')
       await next.click()
-      const index = await card.locator('.project-media').getAttribute('data-frame')
+      await until(() => media.getAttribute('data-frame').then(value => value !== before), 'Next image did not advance')
+      const index = await media.getAttribute('data-frame')
       await card.hover()
-      await page.waitForTimeout(5200)
-      assert.equal(await card.locator('.project-media').getAttribute('data-frame'), index)
+      await next.focus()
+      await until(() => media.getAttribute('data-frame').then(value => value !== index), 'Arrow selection or focus stopped automatic previews', 8000)
+      const thumbnail = card.locator('.gallery-thumbnail').first()
+      await thumbnail.click()
+      await until(() => media.getAttribute('data-frame').then(value => value === '0'), 'Thumbnail did not select its image')
+      await thumbnail.focus()
+      await until(() => media.getAttribute('data-frame').then(value => value !== '0'), 'Thumbnail selection or focus stopped automatic previews', 8000)
       const order = await card.locator('.project-gallery-controls button').evaluateAll(elements => elements.filter(e => e.getBoundingClientRect().width > 0).map(e => ({ cls: e.className, x: e.getBoundingClientRect().left })))
-      assert.equal(order[0].cls, 'gallery-pause')
+      assert.equal(order[0].cls, 'gallery-step')
+      assert.ok(order.every(control => control.cls !== 'gallery-pause'))
       assert.ok(order[0].x <= order[1].x)
     })
     await check('clipboard rejection exposes manual copy fallback', async () => {
